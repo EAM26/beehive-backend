@@ -3,11 +3,8 @@ package nl.novi.beehivebackend.controllers;
 import nl.novi.beehivebackend.dtos.output.EmployeeOutputDto;
 import nl.novi.beehivebackend.services.EmployeeService;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/employees")
@@ -20,7 +17,12 @@ public class EmployeeController {
     }
 
     @GetMapping
-    public ResponseEntity<Iterable<EmployeeOutputDto>> showAllEmployees(){
-        return new ResponseEntity(this.employeeService.showAllEmployees(), HttpStatus.OK);
+    public ResponseEntity<Iterable<EmployeeOutputDto>> getAllEmployees(){
+        return new ResponseEntity<>(this.employeeService.getAllEmployees(), HttpStatus.OK);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<EmployeeOutputDto> getEmployee(@PathVariable Long id)  {
+        return new ResponseEntity<>(this.employeeService.getEmployee(id), HttpStatus.OK);
     }
 }

@@ -1,4 +1,4 @@
-package nl.novi.beehivebackend;
+package nl.novi.beehivebackend.exceptions;
 
 public class RecordNotFoundException extends RuntimeException{
 
