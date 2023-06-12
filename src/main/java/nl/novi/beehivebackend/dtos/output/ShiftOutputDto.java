@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 @Setter
 public class ShiftOutputDto {
 
-    private Long id;
-    private LocalDateTime startTime;
-    private LocalDateTime endTime;
+    public Long id;
+    public LocalDateTime startTime;
+    public LocalDateTime endTime;
 }

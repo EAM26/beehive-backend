@@ -35,6 +35,13 @@ public class ShiftService {
         return this.convertShiftToDto(shift);
     }
 
+    public ShiftOutputDto createShift(ShiftInputDto shiftInputDto) {
+        Shift shift = this.shiftRepository.save(this.convertDtoToShift(shiftInputDto));
+        return this.convertShiftToDto(shift);
+
+    }
+
+
 //    Conversion modelmapper methods
 
     private ShiftOutputDto convertShiftToDto(Shift shift) {

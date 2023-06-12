@@ -6,6 +6,9 @@ import nl.novi.beehivebackend.services.EmployeeService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import java.net.URI;
 
 @RestController
 @RequestMapping("/employees")
@@ -18,18 +21,20 @@ public class EmployeeController {
     }
 
     @GetMapping
-    public ResponseEntity<Iterable<EmployeeOutputDto>> getAllEmployees(){
+    public ResponseEntity<Iterable<EmployeeOutputDto>> getAllEmployees() {
         return new ResponseEntity<>(this.employeeService.getAllEmployees(), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<EmployeeOutputDto> getEmployee(@PathVariable Long id)  {
+    public ResponseEntity<EmployeeOutputDto> getEmployee(@PathVariable Long id) {
         return new ResponseEntity<>(this.employeeService.getEmployee(id), HttpStatus.OK);
     }
 
     @PostMapping
     public ResponseEntity<Object> createEmployee(@RequestBody EmployeeInputDto employeeInputDto) {
-        return new ResponseEntity<>(this.employeeService.createEmployee(employeeInputDto), HttpStatus.CREATED);
+        EmployeeOutputDto employeeOutputDto = employeeService.createEmployee(employeeInputDto);
+        URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentRequest().path("/" + employeeOutputDto.id).toUriString());
+        return ResponseEntity.created(uri).body(employeeOutputDto);
 
     }
 }

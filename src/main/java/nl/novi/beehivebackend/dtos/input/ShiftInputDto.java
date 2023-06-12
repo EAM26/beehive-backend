@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 public class ShiftInputDto {
-    private LocalDateTime startTime;
-    private LocalDateTime endTime;
+
+    public LocalDateTime startTime;
+    public LocalDateTime endTime;
 }
