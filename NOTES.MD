@@ -1,0 +1,1 @@
+1. Validatie sSN number in aparte Utitlies folder. Validatie dmv legale eisen (wikipedia) en check voor double. Deze  methode gebruiken in post request; Vraag: ook in put request? Mag je een ssn veranderen? Hij zou bij aanmaak verkeerd ingevuld kunnen worden. Wellicht Ssn final maken na aanmaak

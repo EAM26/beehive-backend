@@ -25,6 +25,9 @@ public class Employee {
     private LocalDate dob;
     private String phoneNumber;
     private String email;
+    private String socialSecurityNumber;
+
+
 
     // Employment details
     private LocalDate hireDate;

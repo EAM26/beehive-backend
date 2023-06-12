@@ -1,5 +1,6 @@
 package nl.novi.beehivebackend.controllers;
 
+import nl.novi.beehivebackend.dtos.input.EmployeeInputDto;
 import nl.novi.beehivebackend.dtos.output.EmployeeOutputDto;
 import nl.novi.beehivebackend.services.EmployeeService;
 import org.springframework.http.HttpStatus;
@@ -24,5 +25,11 @@ public class EmployeeController {
     @GetMapping("/{id}")
     public ResponseEntity<EmployeeOutputDto> getEmployee(@PathVariable Long id)  {
         return new ResponseEntity<>(this.employeeService.getEmployee(id), HttpStatus.OK);
+    }
+
+    @PostMapping
+    public ResponseEntity<Object> createEmployee(@RequestBody EmployeeInputDto employeeInputDto) {
+        return new ResponseEntity<>(this.employeeService.createEmployee(employeeInputDto), HttpStatus.CREATED);
+
     }
 }

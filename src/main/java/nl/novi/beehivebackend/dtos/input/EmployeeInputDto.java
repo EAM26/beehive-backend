@@ -17,6 +17,7 @@ public class EmployeeInputDto {
     public LocalDate dob;
     public String phoneNumber;
     public String email;
+    public String socialSecurityNumber;
 
 
     public LocalDate hireDate;
