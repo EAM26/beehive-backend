@@ -1,11 +1,10 @@
 package nl.novi.beehivebackend.dtos.input;
 
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import jakarta.validation.constraints.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.web.bind.annotation.PostMapping;
 
 import java.time.LocalDate;
 
@@ -13,27 +12,21 @@ import java.time.LocalDate;
 @Setter
 public class EmployeeInputDto {
 
-    @NotBlank(message = " is required.")
-    @Size(min=2, max = 20)
+    @NotBlank(message = "First name is required.")
     public String firstName;
-    @NotBlank(message = " is required.")
-    @Size(min=1, max = 10)
-    public String initials;
     public String preposition;
-    @NotBlank(message = " is required.")
-    @Size(min=2, max = 100)
+
+    @NotBlank(message = "Last name is required.")
     public String lastName;
 
-    public String address;
+    @Past(message = "Dob should be in the past.")
     public LocalDate dob;
     public String phoneNumber;
 
-    @NotBlank
-    @Email(message = " is required")
+    @NotBlank(message = "Email is required.")
+    @Email(message = "Valid email is required.")
     public String email;
-    public String socialSecurityNumber;
 
-
-    public LocalDate hireDate;
+    @NotNull(message="Employed is required.")
     public Boolean isEmployed;
 }

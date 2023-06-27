@@ -7,7 +7,4 @@ import java.util.Optional;
 
 public interface EmployeeRepository extends JpaRepository<Employee, Long> {
 
-    Optional<Employee> findBySocialSecurityNumber(String socialSecurityNumber);
-    Boolean existsBySocialSecurityNumber(String s);
-
 }

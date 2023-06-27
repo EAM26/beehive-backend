@@ -16,7 +16,7 @@ import java.util.List;
 @Service
 public class EmployeeService {
 
-    private ModelMapper modelMapper;
+    private final ModelMapper modelMapper;
     private final EmployeeRepository employeeRepository;
 
     public EmployeeService(EmployeeRepository employeeRepository) {

@@ -5,12 +5,12 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 
 @Component
-public class ValidationUtils {
+public class ValidationUtil {
 
     public StringBuilder validationMessage(BindingResult br) {
         StringBuilder sb = new StringBuilder();
         for (FieldError fe : br.getFieldErrors()) {
-            sb.append(fe.getField() + " ");
+//            sb.append(fe.getField()).append(" ");
             sb.append(fe.getDefaultMessage());
             sb.append("\n");
         }
