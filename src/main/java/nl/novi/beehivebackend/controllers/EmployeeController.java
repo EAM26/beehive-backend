@@ -44,8 +44,16 @@ public class EmployeeController {
         EmployeeOutputDto employeeOutputDto = employeeService.createEmployee(employeeInputDto);
         URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentRequest().path("/" + employeeOutputDto.id).toUriString());
         return ResponseEntity.created(uri).body(employeeOutputDto);
-
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Object> updateEmployee(@PathVariable Long id, @Valid @RequestBody EmployeeInputDto employeeInputDto, BindingResult bindingResult) {
+        if (bindingResult.hasFieldErrors()) {
+            return ResponseEntity.badRequest().body(this.validationUtil.validationMessage(bindingResult).toString());
+        }
+//        this.employeeService.updateEmployee(id, employeeInputDto);
+    }
+
 
 
 }

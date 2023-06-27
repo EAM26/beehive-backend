@@ -42,16 +42,12 @@ public class EmployeeService {
             return this.convertEmployeeToDto(employee);
     }
 
-    //    To do: Add validation double BSN check
-
-//    private Boolean checkEmployeeDto(EmployeeInputDto employeeInputDto) {
-//        if (this.employeeRepository.findBySocSecNum(employeeInputDto.socSecNum)) {
-//            throw new IllegalValueException("Social security number already exists");
-//        } else if(employeeInputDto.socSecNum.length() < 8 || employeeInputDto.socSecNum.length() > 9) {
-//            throw new IllegalValueException("Social security number has illegal length");
-//        }
-//        return true;
+//    public EmployeeService updateEmployee(Long id, EmployeeInputDto employeeInputDto) {
+//        Employee existingEmployee = this.employeeRepository.findById(id).orElseThrow(() -> new RecordNotFoundException("No employee found with id: " + id));
+//
 //    }
+
+
 
 //    Conversion modelmapper methods
     private EmployeeOutputDto convertEmployeeToDto(Employee employee) {
