@@ -18,18 +18,10 @@ public class Employee {
 
     // Personal details
     private String firstName;
-    private String initials;
     private String preposition;
     private String lastName;
-    private String address;
     private LocalDate dob;
     private String phoneNumber;
     private String email;
-    private String socialSecurityNumber;
-
-
-
-    // Employment details
-    private LocalDate hireDate;
     private Boolean isEmployed;
 }
