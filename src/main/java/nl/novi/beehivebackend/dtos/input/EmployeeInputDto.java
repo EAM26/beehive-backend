@@ -37,5 +37,4 @@ public class EmployeeInputDto {
 
     @NotNull(message="Employed field is required.")
     public Boolean isEmployed;
-
 }
