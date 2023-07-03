@@ -35,7 +35,7 @@ public class EmployeeInputDto {
             "5. Password must contain a length of at least 8 characters and a maximum of 20 characters.")
     public String password;
 
-    @NotNull(message="Employed is required.")
+    @NotNull(message="Employed field is required.")
     public Boolean isEmployed;
 
 }

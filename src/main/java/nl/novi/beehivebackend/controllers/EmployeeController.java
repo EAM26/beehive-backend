@@ -26,15 +26,19 @@ public class EmployeeController {
         this.validationUtil = validationUtil;
     }
 
+
     @GetMapping
     public ResponseEntity<Iterable<EmployeeOutputDto>> getAllEmployees() {
         return new ResponseEntity<>(this.employeeService.getAllEmployees(), HttpStatus.OK);
     }
 
+    // TODO: 28-6-2023 Add check to only see self
     @GetMapping("/{id}")
     public ResponseEntity<EmployeeOutputDto> getEmployee(@PathVariable Long id) {
         return new ResponseEntity<>(this.employeeService.getEmployee(id), HttpStatus.OK);
     }
+
+
 
     @PostMapping
     public ResponseEntity<Object> createEmployee(@Valid @RequestBody EmployeeInputDto employeeInputDto, BindingResult bindingResult) {
@@ -51,7 +55,7 @@ public class EmployeeController {
         if (bindingResult.hasFieldErrors()) {
             return ResponseEntity.badRequest().body(this.validationUtil.validationMessage(bindingResult).toString());
         }
-//        this.employeeService.updateEmployee(id, employeeInputDto);
+        return new ResponseEntity<>(this.employeeService.updateEmployee(id, employeeInputDto), HttpStatus.ACCEPTED);
     }
 
 
