@@ -24,22 +24,39 @@ public class ShiftService {
 
     public Iterable<ShiftOutputDto> getAllShifts() {
         ArrayList<ShiftOutputDto> shiftOutputDtos = new ArrayList<>();
-        for (Shift shift: this.shiftRepository.findAll()) {
-            shiftOutputDtos.add(this.convertShiftToDto(shift));
+        for (Shift shift: shiftRepository.findAll()) {
+            shiftOutputDtos.add(convertShiftToDto(shift));
         }
         return shiftOutputDtos;
     }
 
     public ShiftOutputDto getShift(Long id) {
-        Shift shift = this.shiftRepository.findById(id).orElseThrow(() -> new RecordNotFoundException("No shift found with id: " + id));
-        return this.convertShiftToDto(shift);
+        Shift shift = shiftRepository.findById(id).orElseThrow(() -> new RecordNotFoundException("No shift found with id: " + id));
+        return convertShiftToDto(shift);
     }
 
     public ShiftOutputDto createShift(ShiftInputDto shiftInputDto) {
-        Shift shift = this.shiftRepository.save(this.convertDtoToShift(shiftInputDto));
-        return this.convertShiftToDto(shift);
-
+        Shift shift = shiftRepository.save(convertDtoToShift(shiftInputDto));
+        return convertShiftToDto(shift);
     }
+
+    public ShiftOutputDto updateShift(Long id, ShiftInputDto shiftInputDto) {
+        shiftRepository.findById(id).orElseThrow(() -> new RecordNotFoundException("No shift found with id: " + id));
+        Shift shift = convertDtoToShift(shiftInputDto);
+        shift.setId(id);
+        shiftRepository.save(shift);
+        return convertShiftToDto(shift);
+    }
+
+    public void deleteShift(Long id) {
+        try {
+            shiftRepository.deleteById(id);
+        } catch (Exception e) {
+            throw new RecordNotFoundException("No shift found with id: " + id);
+        }
+    }
+
+
 
 
 //    Conversion modelmapper methods
