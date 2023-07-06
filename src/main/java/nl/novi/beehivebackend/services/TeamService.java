@@ -34,7 +34,26 @@ public class TeamService {
         return convertTeamToDto(team);
     }
 
+    public TeamOutputDto createTeam(TeamInputDto teamInputDto) {
+        Team team = teamRepository.save(convertDtoToTeam(teamInputDto));
+        return convertTeamToDto(team);
+    }
 
+    public TeamOutputDto updateTeam(Long id, TeamInputDto teamInputDto) {
+        teamRepository.findById(id).orElseThrow(()-> new RecordNotFoundException("No team found with id: " + id));
+        Team team = convertDtoToTeam(teamInputDto);
+        team.setId(id);
+        teamRepository.save(team);
+        return convertTeamToDto(team);
+    }
+
+    public void deleteTeam(Long id) {
+        try {
+            teamRepository.deleteById(id);
+        } catch (Exception e) {
+            throw new RecordNotFoundException("No team found with id: " + id);
+        }
+    }
 
     private TeamOutputDto convertTeamToDto(Team team) {
         return modelMapper.map(team, TeamOutputDto.class);

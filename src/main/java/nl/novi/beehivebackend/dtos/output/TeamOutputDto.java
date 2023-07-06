@@ -7,6 +7,6 @@ import lombok.Setter;
 @Setter
 public class TeamOutputDto {
 
-    private Long id;
-    private String name;
+    public Long id;
+    public String name;
 }
