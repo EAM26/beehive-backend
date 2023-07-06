@@ -29,13 +29,13 @@ public class EmployeeController {
 
     @GetMapping
     public ResponseEntity<Iterable<EmployeeOutputDto>> getAllEmployees() {
-        return new ResponseEntity<>(this.employeeService.getAllEmployees(), HttpStatus.OK);
+        return new ResponseEntity<>(employeeService.getAllEmployees(), HttpStatus.OK);
     }
 
     // TODO: 28-6-2023 Add check to only see self
     @GetMapping("/{id}")
     public ResponseEntity<EmployeeOutputDto> getEmployee(@PathVariable Long id) {
-        return new ResponseEntity<>(this.employeeService.getEmployee(id), HttpStatus.OK);
+        return new ResponseEntity<>(employeeService.getEmployee(id), HttpStatus.OK);
     }
 
 
@@ -43,7 +43,7 @@ public class EmployeeController {
     @PostMapping
     public ResponseEntity<Object> createEmployee(@Valid @RequestBody EmployeeInputDto employeeInputDto, BindingResult bindingResult) {
         if (bindingResult.hasFieldErrors()) {
-            return ResponseEntity.badRequest().body(this.validationUtil.validationMessage(bindingResult).toString());
+            return ResponseEntity.badRequest().body(validationUtil.validationMessage(bindingResult).toString());
         }
         EmployeeOutputDto employeeOutputDto = employeeService.createEmployee(employeeInputDto);
         URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentRequest().path("/" + employeeOutputDto.id).toUriString());
@@ -53,9 +53,15 @@ public class EmployeeController {
     @PutMapping("/{id}")
     public ResponseEntity<Object> updateEmployee(@PathVariable Long id, @Valid @RequestBody EmployeeInputDto employeeInputDto, BindingResult bindingResult) {
         if (bindingResult.hasFieldErrors()) {
-            return ResponseEntity.badRequest().body(this.validationUtil.validationMessage(bindingResult).toString());
+            return ResponseEntity.badRequest().body(validationUtil.validationMessage(bindingResult).toString());
         }
-        return new ResponseEntity<>(this.employeeService.updateEmployee(id, employeeInputDto), HttpStatus.ACCEPTED);
+        return new ResponseEntity<>(employeeService.updateEmployee(id, employeeInputDto), HttpStatus.ACCEPTED);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Object> deleteEmployee(@PathVariable Long id) {
+        employeeService.deleteEmployee(id);
+        return ResponseEntity.noContent().build();
     }
 
 

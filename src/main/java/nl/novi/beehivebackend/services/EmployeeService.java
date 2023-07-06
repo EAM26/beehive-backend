@@ -25,30 +25,40 @@ public class EmployeeService {
     }
     public Iterable<EmployeeOutputDto> getAllEmployees() {
         List<EmployeeOutputDto> employeeOutputDtos = new ArrayList<>();
-        for (Employee employee: this.employeeRepository.findAll()) {
+        for (Employee employee: employeeRepository.findAll()) {
             employeeOutputDtos.add(convertEmployeeToOutputDto(employee));
         }
         return employeeOutputDtos;
     }
 
     public EmployeeOutputDto getEmployee(Long id) {
-        Employee employee = this.employeeRepository.findById(id).orElseThrow(() -> new RecordNotFoundException("No employee found with id: " + id));
-        return this.convertEmployeeToOutputDto(employee);
+        Employee employee = employeeRepository.findById(id).orElseThrow(() -> new RecordNotFoundException("No employee found with id: " + id));
+        return convertEmployeeToOutputDto(employee);
     }
 
 
     public EmployeeOutputDto createEmployee(EmployeeInputDto employeeInputDto) {
-            Employee employee = this.employeeRepository.save(this.convertDtoToEmployee(employeeInputDto));
-            return this.convertEmployeeToOutputDto(employee);
+            Employee employee = employeeRepository.save(convertDtoToEmployee(employeeInputDto));
+            return convertEmployeeToOutputDto(employee);
     }
 
     public EmployeeOutputDto updateEmployee(Long id, EmployeeInputDto employeeInputDto) {
-        Employee employee = this.employeeRepository.findById(id).orElseThrow(() -> new RecordNotFoundException("No employee found with id: " + id));
-        employee = this.convertDtoToEmployee(employeeInputDto);
+        employeeRepository.findById(id).orElseThrow(() -> new RecordNotFoundException("No employee found with id: " + id));
+        Employee employee = convertDtoToEmployee(employeeInputDto);
         employee.setId(id);
-        this.employeeRepository.save(employee);
-        return this.convertEmployeeToOutputDto(employee);
+        employeeRepository.save(employee);
+        return convertEmployeeToOutputDto(employee);
     }
+
+    public void deleteEmployee(Long id) {
+        try {
+            employeeRepository.deleteById(id);
+        } catch (Exception e) {
+            throw new RecordNotFoundException("No employee found with id: " + id);
+        }
+    }
+
+
 
 
 
