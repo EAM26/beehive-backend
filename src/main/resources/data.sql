@@ -1,14 +1,31 @@
-INSERT INTO employees (id, first_name, preposition, last_name, dob, phone_number, email, is_employed)
-VALUES (101, 'Jan', 'van', 'Dijk', '1990-01-01', '555-1234', 'jan.vandijk@example.com', true),
-       (102, 'Lotte', 'de', 'Vries', '1992-05-15', '555-5678', 'lotte.devries@example.com', true),
-       (103, 'Pieter', 'van den', 'Berg', '1985-09-30', '555-9876', 'pieter.vandenberg@example.com', true),
-       (104, 'Anna', 'van der', 'Meer', '1988-11-22', '555-4321', 'anna.vandermeer@example.com', true),
-       (105, 'Martijn', 'van', 'Beek', '1991-07-08', '555-8765', 'martijn.vanbeek@example.com', true),
-       (106, 'Eva', 'de', 'Boer', '1987-03-12', '555-2345', 'eva.deboer@example.com', true),
-       (107, 'Thomas', 'van der', 'Linden', '1993-12-18', '555-7654', 'thomas.vanderlinden@example.com', true),
-       (108, 'Sophie', 'ten', 'Hove', '1990-04-25', '555-5432', 'sophie.tenhove@example.com', true),
-       (109, 'Lucas', 'van der', 'Heijden', '1989-06-06', '555-8765', 'lucas.vanderheijden@example.com', true),
-       (110, 'Fleur', 'van', 'Rijn', '1994-02-28', '555-3456', 'fleur.vanrijn@example.com', true);
+
+INSERT INTO employees (id, first_name, preposition, last_name, dob, phone_number, email, password, is_employed)
+VALUES
+    (101, 'Jan', 'de', 'Groot', '1990-01-01', '1234567890', 'jan.degroot@example.com', '$2a$12$24jS/ugGy0ACsLCxPxj3TOqZ.95YgqBezr8yyY7UzQkD/QpuC5VMi!', true),
+    (102, 'Lotte', 'van', 'Beek', '1992-05-15', '9876543210', 'lotte.vanbeek@example.com', '$2a$12$24jS/ugGy0ACsLCxPxj3TOqZ.95YgqBezr8yyY7UzQkD/QpuC5VMi!', true),
+    (103, 'Pieter', 'van', 'Dijk', '1985-07-20', '5555555555', 'pieter.vandijk@example.com', '$2a$12$24jS/ugGy0ACsLCxPxj3TOqZ.95YgqBezr8yyY7UzQkD/QpuC5VMi!', true),
+    (104, 'Emma', 'de', 'Vries', '1998-03-10', '1111111111', 'emma.devries@example.com', '$2a$12$24jS/ugGy0ACsLCxPxj3TOqZ.95YgqBezr8yyY7UzQkD/QpuC5VMi!', true),
+    (105, 'Daan', 'van', 'Leeuwen', '1993-11-27', '9999999999', 'daan.vanleeuwen@example.com', '$2a$12$24jS/ugGy0ACsLCxPxj3TOqZ.95YgqBezr8yyY7UzQkD/QpuC5VMi!', true),
+    (106, 'Lisa', 'van', 'Dijk', '1995-09-03', '4444444444', 'lisa.vandijk@example.com', '$2a$12$24jS/ugGy0ACsLCxPxj3TOqZ.95YgqBezr8yyY7UzQkD/QpuC5VMi!', true),
+    (107, 'Thomas', 'van', 'Houten', '1991-06-08', '7777777777', 'thomas.vanhouten@example.com', '$2a$12$24jS/ugGy0ACsLCxPxj3TOqZ.95YgqBezr8yyY7UzQkD/QpuC5VMi!', true),
+    (108, 'Sophie', 'de', 'Lange', '1997-02-14', '2222222222', 'sophie.delange@example.com', '$2a$12$24jS/ugGy0ACsLCxPxj3TOqZ.95YgqBezr8yyY7UzQkD/QpuC5VMi!', true),
+    (109, 'Ruben', 'van', 'Berg', '1989-12-25', '6666666666', 'ruben.vanberg@example.com', '$2a$12$24jS/ugGy0ACsLCxPxj3TOqZ.95YgqBezr8yyY7UzQkD/QpuC5VMi!', true),
+    (110, 'Eva', 'van', 'Rijn', '1994-04-18', '8888888888', 'eva.vanrijn@example.com', '$2a$12$24jS/ugGy0ACsLCxPxj3TOqZ.95YgqBezr8yyY7UzQkD/QpuC5VMi!', true);
+--
+--
+-- INSERT INTO employees (id, first_name, preposition, last_name, dob, phone_number, email, password, is_employed)
+-- VALUES
+--     (101, 'John', '', 'Doe', '1990-01-01', '1234567890', 'john.doe@example.com', 'Password123!', true),
+--     (102, 'Jane', '', 'Smith', '1992-05-15', '9876543210', 'jane.smith@example.com', 'Password456!', true),
+--     (103, 'Michael', '', 'Johnson', '1985-07-20', '5555555555', 'michael.johnson@example.com', 'Password789!', true),
+--     (104, 'Emily', '', 'Brown', '1998-03-10', '1111111111', 'emily.brown@example.com', 'Password123!', true),
+--     (105, 'David', '', 'Taylor', '1993-11-27', '9999999999', 'david.taylor@example.com', 'Password456!', true),
+--     (106, 'Emma', '', 'Anderson', '1995-09-03', '4444444444', 'emma.anderson@example.com', 'Password789!', true),
+--     (107, 'Christopher', '', 'Wilson', '1991-06-08', '7777777777', 'christopher.wilson@example.com', 'Password123!', true),
+--     (108, 'Olivia', '', 'Martinez', '1997-02-14', '2222222222', 'olivia.martinez@example.com', 'Password456!', true),
+--     (109, 'Daniel', '', 'Thomas', '1989-12-25', '6666666666', 'daniel.thomas@example.com', 'Password789!', true),
+--     (110, 'Sophia', '', 'Lee', '1994-04-18', '8888888888', 'sophia.lee@example.com', 'Password123!', true);
+
 
 INSERT INTO shifts (id, start_time, end_time)
 VALUES (201, '2023-06-12 08:00:00', '2023-06-12 12:00:00'),

@@ -16,5 +16,6 @@ public class EmployeeOutputDto {
     public LocalDate dob;
     public String phoneNumber;
     public String email;
+    public String password;
     public Boolean isEmployed;
 }
