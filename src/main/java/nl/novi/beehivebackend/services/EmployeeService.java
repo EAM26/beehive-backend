@@ -67,11 +67,8 @@ public class EmployeeService {
         return modelMapper.map(employee, EmployeeOutputDto.class);
     }
 
+
     private Employee convertDtoToEmployee(EmployeeInputDto employeeInputDto) {
-        Field[] fields = EmployeeInputDto.class.getFields();
-        for (Field field: fields) {
-            System.out.println(field);
-        }
         return modelMapper.map(employeeInputDto, Employee.class);
     }
 
