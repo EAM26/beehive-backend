@@ -2,6 +2,7 @@ package nl.novi.beehivebackend.dtos.output;
 
 import lombok.Getter;
 import lombok.Setter;
+import nl.novi.beehivebackend.models.Team;
 
 import java.time.LocalDate;
 
@@ -18,4 +19,5 @@ public class EmployeeOutputDto {
     public String email;
     public String password;
     public Boolean isEmployed;
+    public Team team;
 }

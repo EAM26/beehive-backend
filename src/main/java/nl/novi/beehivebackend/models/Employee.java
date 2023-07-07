@@ -1,5 +1,6 @@
 package nl.novi.beehivebackend.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -26,4 +27,7 @@ public class Employee {
     private String password;
     private Boolean isEmployed;
 
+    @ManyToOne
+    @JsonIgnore
+    private Team team;
 }
