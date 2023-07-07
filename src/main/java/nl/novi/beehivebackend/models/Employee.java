@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Getter
 @Setter
@@ -29,5 +30,10 @@ public class Employee {
 
     @ManyToOne
     @JsonIgnore
+    @JoinColumn(name = "team")
     private Team team;
+
+    @OneToMany(mappedBy = "employee")
+    @JsonIgnore
+    private List<Shift> shifts;
 }

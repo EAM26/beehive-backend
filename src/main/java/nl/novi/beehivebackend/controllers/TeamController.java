@@ -32,9 +32,9 @@ public class TeamController {
         return new ResponseEntity<>(teamService.getAllTeams(), HttpStatus.OK);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<TeamOutputDto> getTeam(@PathVariable Long id) {
-        return new ResponseEntity<>(teamService.getTeam(id), HttpStatus.OK);
+    @GetMapping("/{teamName}")
+    public ResponseEntity<TeamOutputDto> getTeam(@PathVariable String teamName) {
+        return new ResponseEntity<>(teamService.getTeam(teamName), HttpStatus.OK);
     }
 
     @PostMapping
@@ -43,21 +43,21 @@ public class TeamController {
             return ResponseEntity.badRequest().body(validationUtil.validationMessage(bindingResult).toString());
         }
         TeamOutputDto teamOutputDto = teamService.createTeam(teamInputDto);
-        URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentRequest().path("/" + teamOutputDto.id).toUriString());
+        URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentRequest().path("/" + teamOutputDto.teamName).toUriString());
         return ResponseEntity.created(uri).body(teamOutputDto);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Object> updateTeam(@PathVariable Long id, @Valid @RequestBody TeamInputDto teamInputDto, BindingResult bindingResult) {
+    @PutMapping("/{teamName}")
+    public ResponseEntity<Object> updateTeam(@PathVariable String teamName, @Valid @RequestBody TeamInputDto teamInputDto, BindingResult bindingResult, @PathVariable String id) {
         if (bindingResult.hasFieldErrors()) {
             return ResponseEntity.badRequest().body(validationUtil.validationMessage(bindingResult).toString());
         }
-        return new ResponseEntity<>(teamService.updateTeam(id, teamInputDto), HttpStatus.ACCEPTED);
+        return new ResponseEntity<>(teamService.updateTeam(teamName, teamInputDto), HttpStatus.ACCEPTED);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Object> deleteTeam(@PathVariable Long id) {
-        teamService.deleteTeam(id);
+    @DeleteMapping("/{teamName}")
+    public ResponseEntity<Object> deleteTeam(@PathVariable String teamName) {
+        teamService.deleteTeam(teamName);
         return ResponseEntity.noContent().build();
     }
 

@@ -10,7 +10,6 @@ import java.util.List;
 @Setter
 public class TeamInputDto {
 
-    public String name;
+    public String teamName;
 
-    public List<Employee> employees;
 }

@@ -1,11 +1,11 @@
 package nl.novi.beehivebackend.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 @Getter
@@ -23,5 +23,10 @@ public class Shift {
 
     private LocalTime startTime;
     private LocalTime endTime;
+
+    @ManyToOne
+    @JsonIgnore
+    @JoinColumn(name = "employee")
+    private Employee employee;
 
 }

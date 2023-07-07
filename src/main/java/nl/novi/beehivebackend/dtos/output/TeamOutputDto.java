@@ -10,7 +10,6 @@ import java.util.List;
 @Setter
 public class TeamOutputDto {
 
-    public Long id;
-    public String name;
+    public String teamName;
     public List<Employee> employees;
 }

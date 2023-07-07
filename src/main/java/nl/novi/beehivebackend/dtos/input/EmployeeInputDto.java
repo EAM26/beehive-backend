@@ -1,11 +1,10 @@
 package nl.novi.beehivebackend.dtos.input;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.*;
 import lombok.Getter;
 import lombok.Setter;
 import nl.novi.beehivebackend.models.Team;
-import org.springframework.web.bind.annotation.PostMapping;
+
 
 import java.time.LocalDate;
 
