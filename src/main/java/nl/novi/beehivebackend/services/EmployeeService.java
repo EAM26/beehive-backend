@@ -43,9 +43,9 @@ public class EmployeeService {
 
     public EmployeeOutputDto createEmployee(EmployeeInputDto employeeInputDto) {
         if(employeeInputDto.getTeam() != null) {
+            // Check if team exists
             teamRepository.findById(employeeInputDto.getTeam().getTeamName()).orElseThrow(() -> new RecordNotFoundException("No team found with name: " + employeeInputDto.getTeam().getTeamName()));
         }
-
             Employee employee = employeeRepository.save(convertDtoToEmployee(employeeInputDto));
             return convertEmployeeToOutputDto(employee);
     }

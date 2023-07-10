@@ -29,4 +29,9 @@ public class Shift {
     @JoinColumn(name = "employee")
     private Employee employee;
 
+    @ManyToOne
+    @JsonIgnore
+    @JoinColumn(name = "team")
+    private Team team;
+
 }
