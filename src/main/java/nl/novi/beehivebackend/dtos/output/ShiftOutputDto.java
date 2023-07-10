@@ -2,9 +2,9 @@ package nl.novi.beehivebackend.dtos.output;
 
 import lombok.Getter;
 import lombok.Setter;
+import nl.novi.beehivebackend.models.Employee;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 @Getter
@@ -18,4 +18,6 @@ public class ShiftOutputDto {
 
     public LocalTime startTime;
     public LocalTime endTime;
+
+    public Employee employee;
 }

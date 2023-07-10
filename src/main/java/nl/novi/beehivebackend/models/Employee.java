@@ -1,10 +1,12 @@
 package nl.novi.beehivebackend.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Getter
 @Setter
@@ -26,4 +28,12 @@ public class Employee {
     private String password;
     private Boolean isEmployed;
 
+    @ManyToOne
+    @JsonIgnore
+    @JoinColumn(name = "team")
+    private Team team;
+
+    @OneToMany(mappedBy = "employee")
+    @JsonIgnore
+    private List<Shift> shifts;
 }

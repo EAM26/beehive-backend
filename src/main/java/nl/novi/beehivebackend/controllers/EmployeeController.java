@@ -26,7 +26,6 @@ public class EmployeeController {
         this.validationUtil = validationUtil;
     }
 
-
     @GetMapping
     public ResponseEntity<Iterable<EmployeeOutputDto>> getAllEmployees() {
         return new ResponseEntity<>(employeeService.getAllEmployees(), HttpStatus.OK);

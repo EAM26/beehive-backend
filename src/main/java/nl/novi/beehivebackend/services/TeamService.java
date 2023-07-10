@@ -2,6 +2,7 @@ package nl.novi.beehivebackend.services;
 
 import nl.novi.beehivebackend.dtos.input.TeamInputDto;
 import nl.novi.beehivebackend.dtos.output.TeamOutputDto;
+import nl.novi.beehivebackend.exceptions.IsNotEmptyException;
 import nl.novi.beehivebackend.exceptions.RecordNotFoundException;
 import nl.novi.beehivebackend.models.Team;
 import nl.novi.beehivebackend.repositories.TeamRepository;
@@ -29,8 +30,8 @@ public class TeamService {
         return teamOutputDtos;
     }
 
-    public TeamOutputDto getTeam(Long id) {
-        Team team = teamRepository.findById(id).orElseThrow(() -> new RecordNotFoundException("No Team found with id: " + id));
+    public TeamOutputDto getTeam(String teamName) {
+        Team team = teamRepository.findById(teamName).orElseThrow(() -> new RecordNotFoundException("No Team found with name: " + teamName));
         return convertTeamToDto(team);
     }
 
@@ -39,20 +40,20 @@ public class TeamService {
         return convertTeamToDto(team);
     }
 
-    public TeamOutputDto updateTeam(Long id, TeamInputDto teamInputDto) {
-        teamRepository.findById(id).orElseThrow(()-> new RecordNotFoundException("No team found with id: " + id));
+    public TeamOutputDto updateTeam(String teamName, TeamInputDto teamInputDto) {
+        teamRepository.findById(teamName).orElseThrow(()-> new RecordNotFoundException("No team found with id: " + teamName));
         Team team = convertDtoToTeam(teamInputDto);
-        team.setId(id);
+        team.setTeamName(teamName);
         teamRepository.save(team);
         return convertTeamToDto(team);
     }
 
-    public void deleteTeam(Long id) {
-        try {
-            teamRepository.deleteById(id);
-        } catch (Exception e) {
-            throw new RecordNotFoundException("No team found with id: " + id);
+    public void deleteTeam(String teamName) {
+        Team team = teamRepository.findById(teamName).orElseThrow(()-> new RecordNotFoundException("No team found with id: " + teamName));
+        if(!team.getEmployees().isEmpty()) {
+            throw new IsNotEmptyException("Team is not empty. First remove all employees");
         }
+        teamRepository.deleteById(teamName);
     }
 
     private TeamOutputDto convertTeamToDto(Team team) {
