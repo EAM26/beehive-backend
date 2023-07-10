@@ -2,6 +2,7 @@ package nl.novi.beehivebackend.services;
 
 import nl.novi.beehivebackend.dtos.input.TeamInputDto;
 import nl.novi.beehivebackend.dtos.output.TeamOutputDto;
+import nl.novi.beehivebackend.exceptions.IsNotEmptyException;
 import nl.novi.beehivebackend.exceptions.RecordNotFoundException;
 import nl.novi.beehivebackend.models.Team;
 import nl.novi.beehivebackend.repositories.TeamRepository;
@@ -48,11 +49,11 @@ public class TeamService {
     }
 
     public void deleteTeam(String teamName) {
-        try {
-            teamRepository.deleteById(teamName);
-        } catch (Exception e) {
-            throw new RecordNotFoundException("No team found with id: " + teamName);
+        Team team = teamRepository.findById(teamName).orElseThrow(()-> new RecordNotFoundException("No team found with id: " + teamName));
+        if(!team.getEmployees().isEmpty()) {
+            throw new IsNotEmptyException("Team is not empty. First remove all employees");
         }
+        teamRepository.deleteById(teamName);
     }
 
     private TeamOutputDto convertTeamToDto(Team team) {
