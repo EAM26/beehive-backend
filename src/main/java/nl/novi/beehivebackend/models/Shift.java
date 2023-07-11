@@ -34,4 +34,9 @@ public class Shift {
     @JoinColumn(name = "team")
     private Team team;
 
+    @ManyToOne
+    @JsonIgnore
+    @JoinColumn(name = "roster")
+    private Roster roster;
+
 }

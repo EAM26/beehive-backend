@@ -2,6 +2,7 @@ package nl.novi.beehivebackend.dtos.input;
 
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,12 +10,14 @@ import lombok.Setter;
 @Getter
 @Setter
 public class RosterInputDto {
-
-    @Min(value = 2023, message = "Value must be greater than or equal to 1")
-    @Max(value = 2040, message = "Value must be less than or equal to 100")
+    @NotNull
+    @Min(value = 2023, message = "Year only from 2023-2040")
+    @Max(value = 2040, message = "Yer only from 2023-2040")
     public int year;
-    @Min(value = 0, message = "No negative week values allowed")
-    @Max(value = 52, message = "Week number must be less than or equal to 52")
+
+    @NotNull
+    @Min(value = 0, message = "Week only from 0-52")
+    @Max(value = 52, message = "Week only from 0-52")
     public int weekNumber;
 
 }

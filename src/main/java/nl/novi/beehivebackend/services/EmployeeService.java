@@ -2,9 +2,11 @@ package nl.novi.beehivebackend.services;
 
 
 import nl.novi.beehivebackend.dtos.input.EmployeeInputDto;
+import nl.novi.beehivebackend.exceptions.IsNotEmptyException;
 import nl.novi.beehivebackend.exceptions.RecordNotFoundException;
 import nl.novi.beehivebackend.dtos.output.EmployeeOutputDto;
 import nl.novi.beehivebackend.models.Employee;
+import nl.novi.beehivebackend.models.Roster;
 import nl.novi.beehivebackend.models.Team;
 import nl.novi.beehivebackend.repositories.EmployeeRepository;
 import nl.novi.beehivebackend.repositories.TeamRepository;
@@ -62,11 +64,11 @@ public class EmployeeService {
     }
 
     public void deleteEmployee(Long id) {
-        try {
-            employeeRepository.deleteById(id);
-        } catch (Exception e) {
-            throw new RecordNotFoundException("No employee found with id: " + id);
+        Employee employee = employeeRepository.findById(id).orElseThrow(() -> new RecordNotFoundException("No employee found with id " + id));
+        if(!employee.getShifts().isEmpty()) {
+            throw new IsNotEmptyException("Employee is not empty. First remove all shifts");
         }
+        employeeRepository.deleteById(id);
     }
 
 

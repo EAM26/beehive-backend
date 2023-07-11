@@ -1,13 +1,14 @@
 package nl.novi.beehivebackend.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
+
 import lombok.Setter;
 
 import java.time.LocalDate;
-import java.time.temporal.TemporalField;
-import java.time.temporal.WeekFields;
+import java.util.List;
+
 
 @Getter
 @Setter
@@ -25,6 +26,9 @@ public class Roster {
     private LocalDate startOfWeek;
     private LocalDate endOfWeek;
 
+    @OneToMany(mappedBy = "roster")
+    @JsonIgnore
+    private List<Shift> shifts;
 
 
 }

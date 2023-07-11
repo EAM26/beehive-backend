@@ -3,6 +3,7 @@ package nl.novi.beehivebackend.dtos.input;
 import jakarta.validation.constraints.*;
 import lombok.Getter;
 import lombok.Setter;
+import nl.novi.beehivebackend.models.Employee;
 import nl.novi.beehivebackend.models.Team;
 
 
@@ -39,4 +40,5 @@ public class EmployeeInputDto {
     public Boolean isEmployed;
 
     public Team team;
+
 }
