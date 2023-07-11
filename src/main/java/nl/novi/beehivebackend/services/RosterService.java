@@ -66,6 +66,7 @@ public class RosterService {
 
         roster.setStartOfWeek(startOfWeek);
         roster.setEndOfWeek(endOfWeek);
+        roster.setId(roster.getWeekNumber() + "-" + roster.getYear());
         return roster;
     }
 

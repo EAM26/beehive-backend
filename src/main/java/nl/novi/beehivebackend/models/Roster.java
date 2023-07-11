@@ -17,8 +17,7 @@ import java.time.temporal.WeekFields;
 public class Roster {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private String id;
 
     private int year;
     private int weekNumber;

@@ -5,18 +5,18 @@ VALUES
     ('Reception'),
     ('RestaurantService');
 
-INSERT INTO rosters (year, week_number)
-VALUES
-    (2023, 1),
-    (2023, 2),
-    (2023, 3),
-    (2023, 4),
-    (2023, 5),
-    (2023, 6),
-    (2023, 7),
-    (2023, 8),
-    (2023, 9),
-    (2023, 10);
+-- INSERT INTO rosters (year, week_number)
+-- VALUES
+--     (2023, 1),
+--     (2023, 2),
+--     (2023, 3),
+--     (2023, 4),
+--     (2023, 5),
+--     (2023, 6),
+--     (2023, 7),
+--     (2023, 8),
+--     (2023, 9),
+--     (2023, 10);
 
 INSERT INTO employees (id, first_name, preposition, last_name, dob, phone_number, email, password, is_employed, team)
 VALUES
