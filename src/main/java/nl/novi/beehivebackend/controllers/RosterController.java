@@ -6,10 +6,7 @@ import nl.novi.beehivebackend.dtos.output.RosterOutputDto;
 import nl.novi.beehivebackend.services.RosterService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
@@ -30,11 +27,7 @@ public class RosterController {
     }
 
     @PostMapping
-    public ResponseEntity<Object> createRoster(RosterInputDto rosterInputDto) {
-//        EmployeeOutputDto employeeOutputDto = employeeService.createEmployee(employeeInputDto);
-//        URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentRequest().path("/" + employeeOutputDto.id).toUriString());
-//        return ResponseEntity.created(uri).body(employeeOutputDto);
-        System.out.println("controller create");
+    public ResponseEntity<Object> createRoster(@RequestBody RosterInputDto rosterInputDto) {
         RosterOutputDto rosterOutputDto = rosterService.createRoster(rosterInputDto);
             URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentRequest().path("/" + rosterOutputDto.id).toUriString());
             return ResponseEntity.created(uri).body(rosterOutputDto);

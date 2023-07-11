@@ -46,23 +46,6 @@ public class RosterService {
         return modelMapper.map(roster, RosterOutputDto.class);
     }
 
-    private Roster convertDtoToRoster(RosterInputDto rosterInputDto) {
-        return modelMapper.map(rosterInputDto, Roster.class);
-    }
-
-//    private Roster transferDtoToRoster(RosterInputDto rosterInputDto) {
-//        Roster roster = new Roster();
-//        roster.setYear(rosterInputDto.getYear());
-//        roster.setWeekNumber(roster.getWeekNumber());
-//
-//        roster.setWeekFields(WeekFields.ISO);
-//        roster.setStartOfWeek(LocalDate.of(roster.getYear(), 1, 1)
-//                .with(roster.getWeekFields().weekOfYear(), roster.getWeekNumber())
-//                .with(roster.getWeekFields().dayOfWeek(), 1));
-//
-//        roster.setEndOfWeek(roster.getStartOfWeek().plusDays(6));  // Add 6 days to get the end of the week (Sunday)
-//        return roster;
-//    }
 
     private Roster transferDtoToRoster(RosterInputDto rosterInputDto) {
         Roster roster = new Roster();
@@ -81,6 +64,7 @@ public class RosterService {
                 .with(java.time.DayOfWeek.MONDAY);
         LocalDate endOfWeek = startOfWeek.plusDays(6);
 
+        roster.setStartOfWeek(startOfWeek);
         roster.setEndOfWeek(endOfWeek);
         return roster;
     }
