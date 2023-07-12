@@ -53,12 +53,13 @@ public class EmployeeService {
     }
 
     public EmployeeOutputDto updateEmployee(Long id, EmployeeInputDto employeeInputDto) {
-        employeeRepository.findById(id).orElseThrow(() -> new RecordNotFoundException("No employee found with id: " + id));
+        Employee employee = employeeRepository.findById(id).orElseThrow(() -> new RecordNotFoundException("No employee found with id: " + id));
         if(employeeInputDto.getTeam() != null) {
             teamRepository.findById(employeeInputDto.getTeam().getTeamName()).orElseThrow(() -> new RecordNotFoundException("No team found with name: " + employeeInputDto.getTeam().getTeamName()));
         }
-        Employee employee = convertDtoToEmployee(employeeInputDto);
-        employee.setId(id);
+//        employee = convertDtoToEmployee(employeeInputDto);
+//        employee.setId(id);
+        modelMapper.map(employeeInputDto, employee);
         employeeRepository.save(employee);
         return convertEmployeeToOutputDto(employee);
     }

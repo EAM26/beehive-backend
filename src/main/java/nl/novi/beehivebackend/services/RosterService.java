@@ -60,25 +60,8 @@ public class RosterService {
 
 
     private Roster transferDtoToRoster(RosterInputDto rosterInputDto) {
-        Roster roster = new Roster();
-        roster.setYear(rosterInputDto.getYear());
-        roster.setWeekNumber(rosterInputDto.getWeekNumber());
-
-        LocalDate firstDayOfYear = LocalDate.of(roster.getYear(), 1, 1);
-
-        // Define the week-based year and week fields
-        TemporalField weekBasedYearField = WeekFields.ISO.weekBasedYear();
-        TemporalField weekOfWeekBasedYearField = WeekFields.ISO.weekOfWeekBasedYear();
-
-        // Calculate the start and end dates of the week
-        LocalDate startOfWeek = firstDayOfYear.with(weekBasedYearField, roster.getYear())
-                .with(weekOfWeekBasedYearField, roster.getWeekNumber())
-                .with(java.time.DayOfWeek.MONDAY);
-        LocalDate endOfWeek = startOfWeek.plusDays(6);
-
-        roster.setStartOfWeek(startOfWeek);
-        roster.setEndOfWeek(endOfWeek);
-        roster.setId(roster.getWeekNumber() + "-" + roster.getYear());
+        Roster roster = new Roster(); // uit DB?
+        modelMapper.map(rosterInputDto, roster);
         return roster;
     }
 
