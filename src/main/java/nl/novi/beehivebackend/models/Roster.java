@@ -12,7 +12,7 @@ import java.time.LocalDate;
 import java.time.temporal.TemporalField;
 import java.time.temporal.WeekFields;
 import java.util.List;
-import java.util.Objects;
+
 
 
 @Getter
@@ -24,7 +24,8 @@ import java.util.Objects;
 public class Roster {
 
     @Id
-    private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     private int year;
     private int weekNumber;

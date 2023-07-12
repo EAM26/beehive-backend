@@ -2,13 +2,9 @@ package nl.novi.beehivebackend;
 
 import nl.novi.beehivebackend.dtos.input.RosterInputDto;
 import nl.novi.beehivebackend.models.Roster;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.modelmapper.ModelMapper;
-
 import java.time.LocalDate;
-import java.time.temporal.TemporalAccessor;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 public class RosterTester {

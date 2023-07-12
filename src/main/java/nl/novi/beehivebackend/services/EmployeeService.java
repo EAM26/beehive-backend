@@ -57,8 +57,7 @@ public class EmployeeService {
         if(employeeInputDto.getTeam() != null) {
             teamRepository.findById(employeeInputDto.getTeam().getTeamName()).orElseThrow(() -> new RecordNotFoundException("No team found with name: " + employeeInputDto.getTeam().getTeamName()));
         }
-//        employee = convertDtoToEmployee(employeeInputDto);
-//        employee.setId(id);
+
         modelMapper.map(employeeInputDto, employee);
         employeeRepository.save(employee);
         return convertEmployeeToOutputDto(employee);

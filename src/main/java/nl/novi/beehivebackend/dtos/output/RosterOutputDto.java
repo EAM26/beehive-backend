@@ -10,7 +10,7 @@ import java.time.LocalDate;
 @Setter
 public class RosterOutputDto {
 
-    public String id;
+    public Long id;
     public int year;
     public int weekNumber;
 

@@ -1,6 +1,7 @@
 package nl.novi.beehivebackend.controllers;
 
 import jakarta.validation.Valid;
+import nl.novi.beehivebackend.dtos.input.EmployeeInputDto;
 import nl.novi.beehivebackend.dtos.input.RosterInputDto;
 import nl.novi.beehivebackend.dtos.output.RosterOutputDto;
 import nl.novi.beehivebackend.services.RosterService;
@@ -32,7 +33,7 @@ public class RosterController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<RosterOutputDto> getRoster(@PathVariable String id) {
+    public ResponseEntity<RosterOutputDto> getRoster(@PathVariable Long id) {
         return new ResponseEntity<>(rosterService.getRoster(id), HttpStatus.OK);
     }
 
@@ -47,13 +48,15 @@ public class RosterController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Object> update(@PathVariable String id) {
-        rosterService.deleteRoster(id);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<Object> updateRoster(@PathVariable Long id, @Valid @RequestBody RosterInputDto rosterInputDto, BindingResult bindingResult) {
+        if (bindingResult.hasFieldErrors()) {
+            return ResponseEntity.badRequest().body(validationUtil.validationMessage(bindingResult).toString());
+        }
+        return new ResponseEntity<>(rosterService.updateRoster(id, rosterInputDto), HttpStatus.ACCEPTED);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Object> deleteRoster(@PathVariable String id) {
+    public ResponseEntity<Object> deleteRoster(@PathVariable Long id) {
         rosterService.deleteRoster(id);
         return ResponseEntity.noContent().build();
     }

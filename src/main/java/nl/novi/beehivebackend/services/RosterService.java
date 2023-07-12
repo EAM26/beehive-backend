@@ -33,7 +33,7 @@ public class RosterService {
         return rosterOutputDtos;
     }
 
-    public RosterOutputDto getRoster(String id) {
+    public RosterOutputDto getRoster(Long id) {
         Roster roster = rosterRepository.findById(id).orElseThrow(() -> new RecordNotFoundException("No roster found with id: " + id));
         return convertRosterToOutputDto(roster);
     }
@@ -45,12 +45,21 @@ public class RosterService {
     }
 
     // TODO: 11-7-2023 Check getShifts, methode geschreven voor relatie met Shift was gelegd
-    public void deleteRoster(String id) {
+    public void deleteRoster(Long id) {
         Roster roster = rosterRepository.findById(id).orElseThrow(() -> new RecordNotFoundException("No roster found with id " + id));
         if(!roster.getShifts().isEmpty()) {
             throw new IsNotEmptyException("Roster is not empty. First remove all shifts");
         }
         rosterRepository.deleteById(id);
+    }
+
+    public RosterOutputDto updateRoster(Long id, RosterInputDto rosterInputDto) {
+        Roster roster = rosterRepository.findById(id).orElseThrow(() -> new RecordNotFoundException("No roster found with id: " + id));
+
+//        modelMapper.map(rosterInputDto, roster);
+        roster = rosterRepository.save(transferDtoToRoster(rosterInputDto, roster));
+//        rosterRepository.save(roster);
+        return convertRosterToOutputDto(roster);
     }
 
 
@@ -60,7 +69,15 @@ public class RosterService {
 
 
     private Roster transferDtoToRoster(RosterInputDto rosterInputDto) {
+        System.out.println("Transfer method");
         Roster roster = new Roster(); // uit DB?
+        modelMapper.map(rosterInputDto, roster);
+        return roster;
+    }
+
+    private Roster transferDtoToRoster(RosterInputDto rosterInputDto, Roster roster) {
+        System.out.println("Transfer method");
+//        Roster roster = new Roster(); // uit DB?
         modelMapper.map(rosterInputDto, roster);
         return roster;
     }
