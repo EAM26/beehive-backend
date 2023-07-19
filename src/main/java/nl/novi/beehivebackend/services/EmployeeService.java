@@ -32,14 +32,14 @@ public class EmployeeService {
     public Iterable<EmployeeOutputDto> getAllEmployees() {
         List<EmployeeOutputDto> employeeOutputDtos = new ArrayList<>();
         for (Employee employee: employeeRepository.findAll()) {
-            employeeOutputDtos.add(convertEmployeeToOutputDto(employee));
+            employeeOutputDtos.add(transferEmployeeToEmployeeOutputDto(employee));
         }
         return employeeOutputDtos;
     }
 
     public EmployeeOutputDto getEmployee(Long id) {
         Employee employee = employeeRepository.findById(id).orElseThrow(() -> new RecordNotFoundException("No employee found with id: " + id));
-        return convertEmployeeToOutputDto(employee);
+        return transferEmployeeToEmployeeOutputDto(employee);
     }
 
 
@@ -48,8 +48,8 @@ public class EmployeeService {
             // Check if team exists
             teamRepository.findById(employeeInputDto.getTeam().getTeamName()).orElseThrow(() -> new RecordNotFoundException("No team found with name: " + employeeInputDto.getTeam().getTeamName()));
         }
-            Employee employee = employeeRepository.save(convertDtoToEmployee(employeeInputDto));
-            return convertEmployeeToOutputDto(employee);
+            Employee employee = employeeRepository.save(transferEmployeeInputDtoToEmployee(employeeInputDto));
+            return transferEmployeeToEmployeeOutputDto(employee);
     }
 
     public EmployeeOutputDto updateEmployee(Long id, EmployeeInputDto employeeInputDto) {
@@ -58,9 +58,10 @@ public class EmployeeService {
             teamRepository.findById(employeeInputDto.getTeam().getTeamName()).orElseThrow(() -> new RecordNotFoundException("No team found with name: " + employeeInputDto.getTeam().getTeamName()));
         }
 
-        modelMapper.map(employeeInputDto, employee);
+//        modelMapper.map(employeeInputDto, employee);
+        employee = transferEmployeeInputDtoToEmployee(employeeInputDto, employee);
         employeeRepository.save(employee);
-        return convertEmployeeToOutputDto(employee);
+        return transferEmployeeToEmployeeOutputDto(employee);
     }
 
     public void deleteEmployee(Long id) {
@@ -74,14 +75,53 @@ public class EmployeeService {
 
 
 //    Conversion modelmapper methods
-    private EmployeeOutputDto convertEmployeeToOutputDto(Employee employee) {
-        return modelMapper.map(employee, EmployeeOutputDto.class);
+//    private EmployeeOutputDto convertEmployeeToOutputDto(Employee employee) {
+//        return modelMapper.map(employee, EmployeeOutputDto.class);
+//    }
+
+    private EmployeeOutputDto transferEmployeeToEmployeeOutputDto(Employee employee) {
+        EmployeeOutputDto employeeOutputDto = new EmployeeOutputDto();
+        employeeOutputDto.setId(employee.getId());
+        employeeOutputDto.setFirstName(employee.getFirstName());
+        employeeOutputDto.setPreposition(employee.getPreposition());
+        employeeOutputDto.setLastName(employee.getLastName());
+        employeeOutputDto.setShortName(employee.getShortName());
+        employeeOutputDto.setDob(employee.getDob());
+        employeeOutputDto.setPhoneNumber(employee.getPhoneNumber());
+        employeeOutputDto.setEmail(employee.getEmail());
+        employeeOutputDto.setPassword(employee.getPassword());
+        employeeOutputDto.setIsEmployed(employee.getIsEmployed());
+        employeeOutputDto.setTeam(employee.getTeam());
+        employeeOutputDto.setShifts(employee.getShifts());
+
+        return employeeOutputDto;
+    }
+
+    private Employee transferEmployeeInputDtoToEmployee(EmployeeInputDto employeeInputDto) {
+        Employee employee = new Employee();
+        transferEmployeeInputDtoToEmployee(employeeInputDto, employee);
+        return employee;
+    }
+
+    private Employee transferEmployeeInputDtoToEmployee(EmployeeInputDto employeeInputDto, Employee employee) {
+        employee.setFirstName(employeeInputDto.getFirstName());
+        employee.setPreposition(employeeInputDto.getPreposition());
+        employee.setLastName(employeeInputDto.getLastName());
+        employee.setShortName(employeeInputDto.getShortName());
+        employee.setDob(employeeInputDto.getDob());
+        employee.setPhoneNumber(employeeInputDto.getPhoneNumber());
+        employee.setEmail(employeeInputDto.getEmail());
+        employee.setPassword(employeeInputDto.getPassword());
+        employee.setIsEmployed(employeeInputDto.getIsEmployed());
+        employee.setTeam(employeeInputDto.getTeam());
+
+        return employee;
     }
 
 
-    private Employee convertDtoToEmployee(EmployeeInputDto employeeInputDto) {
-        return modelMapper.map(employeeInputDto, Employee.class);
-    }
+//    private Employee convertDtoToEmployee(EmployeeInputDto employeeInputDto) {
+//        return modelMapper.map(employeeInputDto, Employee.class);
+//    }
 
     // TODO: 7-7-2023 Check of deze methode handig is 
     private Boolean checkTeamExist(Team teamName) {

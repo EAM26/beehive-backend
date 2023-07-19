@@ -22,6 +22,9 @@ public class Employee {
     private String firstName;
     private String preposition;
     private String lastName;
+
+    @Column(unique=true)
+    private String shortName;
     private LocalDate dob;
     private String phoneNumber;
     private String email;
