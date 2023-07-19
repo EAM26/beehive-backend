@@ -3,6 +3,7 @@ package nl.novi.beehivebackend.services;
 
 import nl.novi.beehivebackend.dtos.input.EmployeeInputDto;
 import nl.novi.beehivebackend.exceptions.IsNotEmptyException;
+import nl.novi.beehivebackend.exceptions.IsNotUniqueException;
 import nl.novi.beehivebackend.exceptions.RecordNotFoundException;
 import nl.novi.beehivebackend.dtos.output.EmployeeOutputDto;
 import nl.novi.beehivebackend.models.Employee;
@@ -18,12 +19,10 @@ import java.util.List;
 @Service
 public class EmployeeService {
 
-    private final ModelMapper modelMapper;
     private final EmployeeRepository employeeRepository;
     private final TeamRepository teamRepository;
 
     public EmployeeService(EmployeeRepository employeeRepository, TeamRepository teamRepository) {
-        this.modelMapper = new ModelMapper();
         this.employeeRepository = employeeRepository;
         this.teamRepository = teamRepository;
     }
@@ -44,6 +43,9 @@ public class EmployeeService {
 
 
     public EmployeeOutputDto createEmployee(EmployeeInputDto employeeInputDto) {
+        if(employeeRepository.existsByShortNameIgnoreCase(employeeInputDto.getShortName())) {
+            throw new IsNotUniqueException("Short name already exists.");
+        }
         if(employeeInputDto.getTeam() != null) {
             // Check if team exists
             teamRepository.findById(employeeInputDto.getTeam().getTeamName()).orElseThrow(() -> new RecordNotFoundException("No team found with name: " + employeeInputDto.getTeam().getTeamName()));
@@ -54,11 +56,17 @@ public class EmployeeService {
 
     public EmployeeOutputDto updateEmployee(Long id, EmployeeInputDto employeeInputDto) {
         Employee employee = employeeRepository.findById(id).orElseThrow(() -> new RecordNotFoundException("No employee found with id: " + id));
+        if(!employee.getShortName().equals(employeeInputDto.getShortName())) {
+            System.out.println(employee.getShortName());
+            System.out.println(employeeInputDto.getShortName());
+            if(employeeRepository.existsByShortNameIgnoreCase(employeeInputDto.getShortName())) {
+                throw new IsNotUniqueException("Short name already exists.");
+            }
+        }
         if(employeeInputDto.getTeam() != null) {
             teamRepository.findById(employeeInputDto.getTeam().getTeamName()).orElseThrow(() -> new RecordNotFoundException("No team found with name: " + employeeInputDto.getTeam().getTeamName()));
         }
 
-//        modelMapper.map(employeeInputDto, employee);
         employee = transferEmployeeInputDtoToEmployee(employeeInputDto, employee);
         employeeRepository.save(employee);
         return transferEmployeeToEmployeeOutputDto(employee);
@@ -72,12 +80,6 @@ public class EmployeeService {
         employeeRepository.deleteById(id);
     }
 
-
-
-//    Conversion modelmapper methods
-//    private EmployeeOutputDto convertEmployeeToOutputDto(Employee employee) {
-//        return modelMapper.map(employee, EmployeeOutputDto.class);
-//    }
 
     private EmployeeOutputDto transferEmployeeToEmployeeOutputDto(Employee employee) {
         EmployeeOutputDto employeeOutputDto = new EmployeeOutputDto();
@@ -96,6 +98,7 @@ public class EmployeeService {
 
         return employeeOutputDto;
     }
+
 
     private Employee transferEmployeeInputDtoToEmployee(EmployeeInputDto employeeInputDto) {
         Employee employee = new Employee();
