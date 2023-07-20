@@ -13,6 +13,7 @@ import nl.novi.beehivebackend.repositories.EmployeeRepository;
 import nl.novi.beehivebackend.repositories.TeamRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,7 +31,7 @@ public class EmployeeService {
 
     public Iterable<EmployeeOutputDto> getAllEmployees() {
         List<EmployeeOutputDto> employeeOutputDtos = new ArrayList<>();
-        for (Employee employee: employeeRepository.findAll()) {
+        for (Employee employee : employeeRepository.findAll()) {
             employeeOutputDtos.add(transferEmployeeToEmployeeOutputDto(employee));
         }
         return employeeOutputDtos;
@@ -38,8 +39,8 @@ public class EmployeeService {
 
     public Iterable<EmployeeOutputDto> getAllEmployees(boolean isEmployed) {
         List<EmployeeOutputDto> employeeOutputDtos = new ArrayList<>();
-        for (Employee employee: employeeRepository.findAll()) {
-            if(isEmployed == employee.getIsEmployed()) {
+        for (Employee employee : employeeRepository.findAll()) {
+            if (isEmployed == employee.getIsEmployed()) {
                 employeeOutputDtos.add(transferEmployeeToEmployeeOutputDto(employee));
             }
         }
@@ -52,29 +53,26 @@ public class EmployeeService {
     }
 
     public EmployeeOutputDto createEmployee(EmployeeInputDto employeeInputDto) {
-        if(employeeRepository.existsByShortNameIgnoreCase(employeeInputDto.getShortName())) {
+        if (employeeRepository.existsByShortNameIgnoreCase(employeeInputDto.getShortName())) {
             throw new IsNotUniqueException("Short name already exists.");
         }
-        if(employeeInputDto.getTeam() != null) {
-            // Check if team exists
-            teamRepository.findById(employeeInputDto.getTeam().getTeamName()).orElseThrow(() -> new RecordNotFoundException("No team found with name: " + employeeInputDto.getTeam().getTeamName()));
-        }
-            Employee employee = employeeRepository.save(transferEmployeeInputDtoToEmployee(employeeInputDto));
-            return transferEmployeeToEmployeeOutputDto(employee);
+
+        teamRepository.findById(employeeInputDto.getTeam().getTeamName()).orElseThrow(() -> new RecordNotFoundException("No team found with name: " + employeeInputDto.getTeam().getTeamName()));
+
+        Employee employee = employeeRepository.save(transferEmployeeInputDtoToEmployee(employeeInputDto));
+        return transferEmployeeToEmployeeOutputDto(employee);
     }
 
     public EmployeeOutputDto updateEmployee(Long id, EmployeeInputDto employeeInputDto) {
         Employee employee = employeeRepository.findById(id).orElseThrow(() -> new RecordNotFoundException("No employee found with id: " + id));
-        if(!employee.getShortName().equals(employeeInputDto.getShortName())) {
-            System.out.println(employee.getShortName());
-            System.out.println(employeeInputDto.getShortName());
-            if(employeeRepository.existsByShortNameIgnoreCase(employeeInputDto.getShortName())) {
+        if (!employee.getShortName().equalsIgnoreCase(employeeInputDto.getShortName())) {
+            if (employeeRepository.existsByShortNameIgnoreCase(employeeInputDto.getShortName())) {
                 throw new IsNotUniqueException("Short name already exists.");
             }
         }
-        if(employeeInputDto.getTeam() != null) {
-            teamRepository.findById(employeeInputDto.getTeam().getTeamName()).orElseThrow(() -> new RecordNotFoundException("No team found with name: " + employeeInputDto.getTeam().getTeamName()));
-        }
+
+        teamRepository.findById(employeeInputDto.getTeam().getTeamName()).orElseThrow(() -> new RecordNotFoundException("No team found with name: " + employeeInputDto.getTeam().getTeamName()));
+
 
         employee = transferEmployeeInputDtoToEmployee(employeeInputDto, employee);
         employeeRepository.save(employee);
@@ -83,7 +81,7 @@ public class EmployeeService {
 
     public void deleteEmployee(Long id) {
         Employee employee = employeeRepository.findById(id).orElseThrow(() -> new RecordNotFoundException("No employee found with id " + id));
-        if(!employee.getShifts().isEmpty()) {
+        if (!employee.getShifts().isEmpty()) {
             throw new IsNotEmptyException("Employee is not empty. First remove all shifts");
         }
         employeeRepository.deleteById(id);
@@ -136,9 +134,9 @@ public class EmployeeService {
 //    }
 
     // TODO: 7-7-2023 Check of deze methode handig is 
-    private Boolean checkTeamExist(Team teamName) {
-        if(teamRepository.findById(teamName.getTeamName()).isEmpty()) {
-            return false;
+    private Boolean checkTeamExist(EmployeeInputDto employeeInputDto) {
+        if (!teamRepository.existsById(employeeInputDto.getTeam().getTeamName())) {
+            throw new RecordNotFoundException("No team found with name: " + employeeInputDto.getTeam().getTeamName());
         }
         return true;
     }

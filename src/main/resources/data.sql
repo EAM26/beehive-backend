@@ -19,8 +19,8 @@ INSERT INTO rosters (id, year, week_number, start_of_week, end_of_week) VALUES
 
 INSERT INTO employees (id, first_name, preposition, last_name, short_name, dob, phone_number, email, password, is_employed, team)
 VALUES
-    (101, 'Jan', 'de', 'Groot', 'Jan' ,'1990-01-01', '1234567890', 'jan.degroot@example.com', '$2a$12$Z.Ry7lVOSASMcJ38fEX.VemDL6F6uYZWxA1PWRax0ExfNte4l1fxi', true, 'Kitchen'),
-    (102, 'Lotte', 'van', 'Beek','Lotte' ,'1992-05-15', '9876543210', 'lotte.vanbeek@example.com', '$2a$12$Z.Ry7lVOSASMcJ38fEX.VemDL6F6uYZWxA1PWRax0ExfNte4l1fxi', true, 'Bar'),
+    (101, 'Jan', 'de', 'Groot', 'Jan' ,'1990-01-01', '1234567890', 'jan.degroot@example.com', '$2a$12$Z.Ry7lVOSASMcJ38fEX.VemDL6F6uYZWxA1PWRax0ExfNte4l1fxi', false, 'Kitchen'),
+    (102, 'Lotte', 'van', 'Beek','Lotte' ,'1992-05-15', '9876543210', 'lotte.vanbeek@example.com', '$2a$12$Z.Ry7lVOSASMcJ38fEX.VemDL6F6uYZWxA1PWRax0ExfNte4l1fxi', false, 'Bar'),
     (103, 'Pieter', 'van', 'Dijk','Pieter vD' ,'1985-07-20', '5555555555', 'pieter.vandijk@example.com', '$2a$12$Z.Ry7lVOSASMcJ38fEX.VemDL6F6uYZWxA1PWRax0ExfNte4l1fxi', true, 'Kitchen'),
     (104, 'Emma', 'de', 'Vries','Emma' ,'1998-03-10', '1111111111', 'emma.devries@example.com', '$2a$12$Z.Ry7lVOSASMcJ38fEX.VemDL6F6uYZWxA1PWRax0ExfNte4l1fxi', true, 'Bar'),
     (105, 'Daan', 'van', 'Leeuwen','Daan2' ,'1993-11-27', '9999999999', 'daan.vanleeuwen@example.com', '$2a$12$Z.Ry7lVOSASMcJ38fEX.VemDL6F6uYZWxA1PWRax0ExfNte4l1fxi', true, 'Reception'),
