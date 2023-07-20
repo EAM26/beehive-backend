@@ -2,6 +2,7 @@ package nl.novi.beehivebackend.dtos.output;
 
 import lombok.Getter;
 import lombok.Setter;
+import nl.novi.beehivebackend.models.Team;
 
 import java.time.LocalDate;
 
@@ -16,4 +17,6 @@ public class RosterOutputDto {
 
     public LocalDate startOfWeek;
     public LocalDate endOfWeek;
+
+    public Team team;
 }
