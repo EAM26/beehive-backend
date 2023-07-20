@@ -24,7 +24,7 @@ VALUES
     (103, 'Pieter', 'van', 'Dijk','Pieter vD' ,'1985-07-20', '5555555555', 'pieter.vandijk@example.com', '$2a$12$Z.Ry7lVOSASMcJ38fEX.VemDL6F6uYZWxA1PWRax0ExfNte4l1fxi', true, 'Kitchen'),
     (104, 'Emma', 'de', 'Vries','Emma' ,'1998-03-10', '1111111111', 'emma.devries@example.com', '$2a$12$Z.Ry7lVOSASMcJ38fEX.VemDL6F6uYZWxA1PWRax0ExfNte4l1fxi', true, 'Bar'),
     (105, 'Daan', 'van', 'Leeuwen','Daan2' ,'1993-11-27', '9999999999', 'daan.vanleeuwen@example.com', '$2a$12$Z.Ry7lVOSASMcJ38fEX.VemDL6F6uYZWxA1PWRax0ExfNte4l1fxi', true, 'Reception'),
-    (106, 'Lisa', 'van', 'Dijk','' ,'1995-09-03', '4444444444', 'lisa.vandijk@example.com', '$2a$12$Z.Ry7lVOSASMcJ38fEX.VemDL6F6uYZWxA1PWRax0ExfNte4l1fxi', true, 'Kitchen'),
+    (106, 'Lisa', 'van', 'Dijk','Lies' ,'1995-09-03', '4444444444', 'lisa.vandijk@example.com', '$2a$12$Z.Ry7lVOSASMcJ38fEX.VemDL6F6uYZWxA1PWRax0ExfNte4l1fxi', true, 'Kitchen'),
     (107, 'Thomas', 'van', 'Houten','Thomas van H' ,'1991-06-08', '7777777777', 'thomas.vanhouten@example.com', '$2a$12$Z.Ry7lVOSASMcJ38fEX.VemDL6F6uYZWxA1PWRax0ExfNte4l1fxi', true, 'Bar'),
     (108, 'Sophie', 'de', 'Lange','Sophie' ,'1997-02-14', '2222222222', 'sophie.delange@example.com', '$2a$12$Z.Ry7lVOSASMcJ38fEX.VemDL6F6uYZWxA1PWRax0ExfNte4l1fxi', true, 'RestaurantService'),
     (109, 'Ruben', 'van', 'Berg','Ruben' ,'1989-12-25', '6666666666', 'ruben.vanberg@example.com', '$2a$12$Z.Ry7lVOSASMcJ38fEX.VemDL6F6uYZWxA1PWRax0ExfNte4l1fxi', true, 'RestaurantService'),

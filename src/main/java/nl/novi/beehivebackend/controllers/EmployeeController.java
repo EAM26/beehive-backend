@@ -26,17 +26,23 @@ public class EmployeeController {
         this.validationUtil = validationUtil;
     }
 
+
+
     @GetMapping
-    public ResponseEntity<Iterable<EmployeeOutputDto>> getAllEmployees() {
+    public ResponseEntity<Iterable<EmployeeOutputDto>> getAllEmployees(@RequestParam(required = false) Boolean isEmployed) {
+        if (isEmployed != null) {
+            return new ResponseEntity<>(employeeService.getAllEmployees(isEmployed), HttpStatus.OK);
+        }
         return new ResponseEntity<>(employeeService.getAllEmployees(), HttpStatus.OK);
+
     }
+
 
     // TODO: 28-6-2023 Add check to only see self
     @GetMapping("/{id}")
     public ResponseEntity<EmployeeOutputDto> getEmployee(@PathVariable Long id) {
         return new ResponseEntity<>(employeeService.getEmployee(id), HttpStatus.OK);
     }
-
 
 
     @PostMapping
@@ -62,7 +68,6 @@ public class EmployeeController {
         employeeService.deleteEmployee(id);
         return ResponseEntity.noContent().build();
     }
-
 
 
 }

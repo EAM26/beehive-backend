@@ -36,11 +36,20 @@ public class EmployeeService {
         return employeeOutputDtos;
     }
 
+    public Iterable<EmployeeOutputDto> getAllEmployees(boolean isEmployed) {
+        List<EmployeeOutputDto> employeeOutputDtos = new ArrayList<>();
+        for (Employee employee: employeeRepository.findAll()) {
+            if(isEmployed == employee.getIsEmployed()) {
+                employeeOutputDtos.add(transferEmployeeToEmployeeOutputDto(employee));
+            }
+        }
+        return employeeOutputDtos;
+    }
+
     public EmployeeOutputDto getEmployee(Long id) {
         Employee employee = employeeRepository.findById(id).orElseThrow(() -> new RecordNotFoundException("No employee found with id: " + id));
         return transferEmployeeToEmployeeOutputDto(employee);
     }
-
 
     public EmployeeOutputDto createEmployee(EmployeeInputDto employeeInputDto) {
         if(employeeRepository.existsByShortNameIgnoreCase(employeeInputDto.getShortName())) {
