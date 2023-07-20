@@ -56,7 +56,7 @@ public class EmployeeService {
         if (employeeRepository.existsByShortNameIgnoreCase(employeeInputDto.getShortName())) {
             throw new IsNotUniqueException("Short name already exists.");
         }
-
+//        check if team exists
         teamRepository.findById(employeeInputDto.getTeam().getTeamName()).orElseThrow(() -> new RecordNotFoundException("No team found with name: " + employeeInputDto.getTeam().getTeamName()));
 
         Employee employee = employeeRepository.save(transferEmployeeInputDtoToEmployee(employeeInputDto));
