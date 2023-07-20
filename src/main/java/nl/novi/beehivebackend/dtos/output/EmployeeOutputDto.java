@@ -16,6 +16,7 @@ public class EmployeeOutputDto {
     public String firstName;
     public String preposition;
     public String lastName;
+    public String shortName;
     public LocalDate dob;
     public String phoneNumber;
     public String email;

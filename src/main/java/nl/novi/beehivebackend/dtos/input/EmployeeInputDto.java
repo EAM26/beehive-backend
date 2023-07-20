@@ -19,6 +19,10 @@ public class EmployeeInputDto {
     @NotBlank(message = "Last name is required.")
     public String lastName;
 
+
+    @NotBlank(message = "Short name is required")
+    public String shortName;
+
     @Past(message = "Dob should be in the past.")
     public LocalDate dob;
     public String phoneNumber;
@@ -38,5 +42,7 @@ public class EmployeeInputDto {
     @NotNull(message="Employed field is required.")
     public Boolean isEmployed;
 
+    @NotNull(message="Team field is required.")
     public Team team;
+
 }

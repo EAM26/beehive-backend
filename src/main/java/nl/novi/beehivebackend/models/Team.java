@@ -19,6 +19,4 @@ public class Team {
     @OneToMany(mappedBy = "team")
     @JsonIgnore
     private List<Employee> employees;
-
-
 }

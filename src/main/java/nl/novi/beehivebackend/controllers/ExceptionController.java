@@ -2,6 +2,7 @@ package nl.novi.beehivebackend.controllers;
 
 import nl.novi.beehivebackend.exceptions.IllegalValueException;
 import nl.novi.beehivebackend.exceptions.IsNotEmptyException;
+import nl.novi.beehivebackend.exceptions.IsNotUniqueException;
 import nl.novi.beehivebackend.exceptions.RecordNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +25,11 @@ public class ExceptionController {
     @ExceptionHandler(value = IsNotEmptyException.class)
     public ResponseEntity<Object> handleIsNotEmptyException(IsNotEmptyException exception) {
         return new ResponseEntity<>(exception.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(value = IsNotUniqueException.class)
+    public ResponseEntity<Object> handleIsNotUniqueException(IsNotUniqueException exception) {
+        return new ResponseEntity<>(exception.getMessage(), HttpStatus.CONFLICT);
     }
 
 
