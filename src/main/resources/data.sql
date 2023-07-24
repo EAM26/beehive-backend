@@ -1,9 +1,9 @@
-INSERT INTO teams (team_name)
+INSERT INTO teams (id, team_name)
 VALUES
-    ('Kitchen'),
-    ('Bar'),
-    ('Reception'),
-    ('RestaurantService');
+    (401, 'Kitchen'),
+    (402, 'Bar'),
+    (403, 'Reception'),
+    (404, 'RestaurantService');
 
 INSERT INTO rosters (id, year, week_number, start_of_week, end_of_week) VALUES
 (301, 2023, 1, '2023-01-02', '2023-01-08'),
@@ -19,16 +19,16 @@ INSERT INTO rosters (id, year, week_number, start_of_week, end_of_week) VALUES
 
 INSERT INTO employees (id, first_name, preposition, last_name, short_name, dob, phone_number, email, password, is_employed, team)
 VALUES
-    (101, 'Jan', 'de', 'Groot', 'Jan' ,'1990-01-01', '1234567890', 'jan.degroot@example.com', '$2a$12$Z.Ry7lVOSASMcJ38fEX.VemDL6F6uYZWxA1PWRax0ExfNte4l1fxi', false, 'Kitchen'),
-    (102, 'Lotte', 'van', 'Beek','Lotte' ,'1992-05-15', '9876543210', 'lotte.vanbeek@example.com', '$2a$12$Z.Ry7lVOSASMcJ38fEX.VemDL6F6uYZWxA1PWRax0ExfNte4l1fxi', false, 'Bar'),
-    (103, 'Pieter', 'van', 'Dijk','Pieter vD' ,'1985-07-20', '5555555555', 'pieter.vandijk@example.com', '$2a$12$Z.Ry7lVOSASMcJ38fEX.VemDL6F6uYZWxA1PWRax0ExfNte4l1fxi', true, 'Kitchen'),
-    (104, 'Emma', 'de', 'Vries','Emma' ,'1998-03-10', '1111111111', 'emma.devries@example.com', '$2a$12$Z.Ry7lVOSASMcJ38fEX.VemDL6F6uYZWxA1PWRax0ExfNte4l1fxi', true, 'Bar'),
-    (105, 'Daan', 'van', 'Leeuwen','Daan2' ,'1993-11-27', '9999999999', 'daan.vanleeuwen@example.com', '$2a$12$Z.Ry7lVOSASMcJ38fEX.VemDL6F6uYZWxA1PWRax0ExfNte4l1fxi', true, 'Reception'),
-    (106, 'Lisa', 'van', 'Dijk','Lies' ,'1995-09-03', '4444444444', 'lisa.vandijk@example.com', '$2a$12$Z.Ry7lVOSASMcJ38fEX.VemDL6F6uYZWxA1PWRax0ExfNte4l1fxi', true, 'Kitchen'),
-    (107, 'Thomas', 'van', 'Houten','Thomas van H' ,'1991-06-08', '7777777777', 'thomas.vanhouten@example.com', '$2a$12$Z.Ry7lVOSASMcJ38fEX.VemDL6F6uYZWxA1PWRax0ExfNte4l1fxi', true, 'Bar'),
-    (108, 'Sophie', 'de', 'Lange','Sophie' ,'1997-02-14', '2222222222', 'sophie.delange@example.com', '$2a$12$Z.Ry7lVOSASMcJ38fEX.VemDL6F6uYZWxA1PWRax0ExfNte4l1fxi', true, 'RestaurantService'),
-    (109, 'Ruben', 'van', 'Berg','Ruben' ,'1989-12-25', '6666666666', 'ruben.vanberg@example.com', '$2a$12$Z.Ry7lVOSASMcJ38fEX.VemDL6F6uYZWxA1PWRax0ExfNte4l1fxi', true, 'RestaurantService'),
-    (110, 'Eva', 'van', 'Rijn','Eef' ,'1994-04-18', '8888888888', 'eva.vanrijn@example.com', '$2a$12$Z.Ry7lVOSASMcJ38fEX.VemDL6F6uYZWxA1PWRax0ExfNte4l1fxi', true, 'RestaurantService');
+    (101, 'Jan', 'de', 'Groot', 'Jan' ,'1990-01-01', '1234567890', 'jan.degroot@example.com', '$2a$12$Z.Ry7lVOSASMcJ38fEX.VemDL6F6uYZWxA1PWRax0ExfNte4l1fxi', false, 401),
+    (102, 'Lotte', 'van', 'Beek','Lotte' ,'1992-05-15', '9876543210', 'lotte.vanbeek@example.com', '$2a$12$Z.Ry7lVOSASMcJ38fEX.VemDL6F6uYZWxA1PWRax0ExfNte4l1fxi', false, 402),
+    (103, 'Pieter', 'van', 'Dijk','Pieter vD' ,'1985-07-20', '5555555555', 'pieter.vandijk@example.com', '$2a$12$Z.Ry7lVOSASMcJ38fEX.VemDL6F6uYZWxA1PWRax0ExfNte4l1fxi', true, 401),
+    (104, 'Emma', 'de', 'Vries','Emma' ,'1998-03-10', '1111111111', 'emma.devries@example.com', '$2a$12$Z.Ry7lVOSASMcJ38fEX.VemDL6F6uYZWxA1PWRax0ExfNte4l1fxi', true, 402),
+    (105, 'Daan', 'van', 'Leeuwen','Daan2' ,'1993-11-27', '9999999999', 'daan.vanleeuwen@example.com', '$2a$12$Z.Ry7lVOSASMcJ38fEX.VemDL6F6uYZWxA1PWRax0ExfNte4l1fxi', true, 403),
+    (106, 'Lisa', 'van', 'Dijk','Lies' ,'1995-09-03', '4444444444', 'lisa.vandijk@example.com', '$2a$12$Z.Ry7lVOSASMcJ38fEX.VemDL6F6uYZWxA1PWRax0ExfNte4l1fxi', true, 401),
+    (107, 'Thomas', 'van', 'Houten','Thomas van H' ,'1991-06-08', '7777777777', 'thomas.vanhouten@example.com', '$2a$12$Z.Ry7lVOSASMcJ38fEX.VemDL6F6uYZWxA1PWRax0ExfNte4l1fxi', true, 402),
+    (108, 'Sophie', 'de', 'Lange','Sophie' ,'1997-02-14', '2222222222', 'sophie.delange@example.com', '$2a$12$Z.Ry7lVOSASMcJ38fEX.VemDL6F6uYZWxA1PWRax0ExfNte4l1fxi', true, 404),
+    (109, 'Ruben', 'van', 'Berg','Ruben' ,'1989-12-25', '6666666666', 'ruben.vanberg@example.com', '$2a$12$Z.Ry7lVOSASMcJ38fEX.VemDL6F6uYZWxA1PWRax0ExfNte4l1fxi', true, 404),
+    (110, 'Eva', 'van', 'Rijn','Eef' ,'1994-04-18', '8888888888', 'eva.vanrijn@example.com', '$2a$12$Z.Ry7lVOSASMcJ38fEX.VemDL6F6uYZWxA1PWRax0ExfNte4l1fxi', true, 401);
 
 INSERT INTO shifts (id, start_date, end_date, start_time, end_time)
 VALUES

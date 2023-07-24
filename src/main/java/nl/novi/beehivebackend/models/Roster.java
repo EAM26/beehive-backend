@@ -39,6 +39,11 @@ public class Roster {
     @JsonIgnore
     private List<Shift> shifts;
 
+    @ManyToOne
+    @JsonIgnore
+    @JoinColumn(name = "team")
+    private Team team;
+
     public void setYear(int year) {
         this.year = year;
         resetCalculations();

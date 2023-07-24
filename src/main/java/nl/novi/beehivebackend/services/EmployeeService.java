@@ -57,9 +57,9 @@ public class EmployeeService {
             throw new IsNotUniqueException("Short name already exists.");
         }
 //        check if team exists
-        teamRepository.findById(employeeInputDto.getTeam().getTeamName()).orElseThrow(() -> new RecordNotFoundException("No team found with name: " + employeeInputDto.getTeam().getTeamName()));
+        Team team = teamRepository.findById(employeeInputDto.getTeamId()).orElseThrow(() -> new RecordNotFoundException("No team found with name: " + employeeInputDto.getTeamId()));
 
-        Employee employee = employeeRepository.save(transferEmployeeInputDtoToEmployee(employeeInputDto));
+        Employee employee = employeeRepository.save(transferEmployeeInputDtoToEmployee(employeeInputDto, team));
         return transferEmployeeToEmployeeOutputDto(employee);
     }
 
@@ -71,10 +71,11 @@ public class EmployeeService {
             }
         }
 
-        teamRepository.findById(employeeInputDto.getTeam().getTeamName()).orElseThrow(() -> new RecordNotFoundException("No team found with name: " + employeeInputDto.getTeam().getTeamName()));
+//        check if team exists
+        Team team = teamRepository.findById(employeeInputDto.getTeamId()).orElseThrow(() -> new RecordNotFoundException("No team found with name: " + employeeInputDto.getTeamId()));
 
 
-        employee = transferEmployeeInputDtoToEmployee(employeeInputDto, employee);
+        transferEmployeeInputDtoToEmployee(employeeInputDto, employee, team);
         employeeRepository.save(employee);
         return transferEmployeeToEmployeeOutputDto(employee);
     }
@@ -106,14 +107,17 @@ public class EmployeeService {
         return employeeOutputDto;
     }
 
+//    transer for postmapping, overload
 
-    private Employee transferEmployeeInputDtoToEmployee(EmployeeInputDto employeeInputDto) {
+    private Employee transferEmployeeInputDtoToEmployee(EmployeeInputDto employeeInputDto, Team team) {
         Employee employee = new Employee();
-        transferEmployeeInputDtoToEmployee(employeeInputDto, employee);
+        transferEmployeeInputDtoToEmployee(employeeInputDto, employee, team);
         return employee;
     }
 
-    private Employee transferEmployeeInputDtoToEmployee(EmployeeInputDto employeeInputDto, Employee employee) {
+
+// transfer for putmapping
+    private Employee transferEmployeeInputDtoToEmployee(EmployeeInputDto employeeInputDto, Employee employee, Team team) {
         employee.setFirstName(employeeInputDto.getFirstName());
         employee.setPreposition(employeeInputDto.getPreposition());
         employee.setLastName(employeeInputDto.getLastName());
@@ -123,7 +127,7 @@ public class EmployeeService {
         employee.setEmail(employeeInputDto.getEmail());
         employee.setPassword(employeeInputDto.getPassword());
         employee.setIsEmployed(employeeInputDto.getIsEmployed());
-        employee.setTeam(employeeInputDto.getTeam());
+        employee.setTeam(team);
 
         return employee;
     }
@@ -134,10 +138,10 @@ public class EmployeeService {
 //    }
 
     // TODO: 7-7-2023 Check of deze methode handig is 
-    private Boolean checkTeamExist(EmployeeInputDto employeeInputDto) {
-        if (!teamRepository.existsById(employeeInputDto.getTeam().getTeamName())) {
-            throw new RecordNotFoundException("No team found with name: " + employeeInputDto.getTeam().getTeamName());
-        }
-        return true;
-    }
+//    private Boolean checkTeamExist(EmployeeInputDto employeeInputDto) {
+//        if (!teamRepository.existsById(employeeInputDto.getTeam().getTeamName())) {
+//            throw new RecordNotFoundException("No team found with name: " + employeeInputDto.getTeam().getTeamName());
+//        }
+//        return true;
+//    }
 }

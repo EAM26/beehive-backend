@@ -5,6 +5,7 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
+import nl.novi.beehivebackend.models.Team;
 
 
 @Getter
@@ -19,5 +20,8 @@ public class RosterInputDto {
     @Min(value = 0, message = "Week only from 0-52")
     @Max(value = 52, message = "Week only from 0-52")
     public int weekNumber;
+
+    @NotNull(message="Team field is required.")
+    public Team team;
 
 }

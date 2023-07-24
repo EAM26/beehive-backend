@@ -35,6 +35,7 @@ public class Employee {
     @JoinColumn(name = "team")
     private Team team;
 
+
     @OneToMany(mappedBy = "employee")
     @JsonIgnore
     private List<Shift> shifts;
