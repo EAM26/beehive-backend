@@ -43,6 +43,6 @@ public class EmployeeInputDto {
     public Boolean isEmployed;
 
     @NotNull(message="Team field is required.")
-    public Team team;
+    public Long teamId;
 
 }

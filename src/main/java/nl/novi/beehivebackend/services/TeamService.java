@@ -1,9 +1,11 @@
 package nl.novi.beehivebackend.services;
 
+import nl.novi.beehivebackend.dtos.input.EmployeeInputDto;
 import nl.novi.beehivebackend.dtos.input.TeamInputDto;
 import nl.novi.beehivebackend.dtos.output.TeamOutputDto;
 import nl.novi.beehivebackend.exceptions.IsNotEmptyException;
 import nl.novi.beehivebackend.exceptions.RecordNotFoundException;
+import nl.novi.beehivebackend.models.Employee;
 import nl.novi.beehivebackend.models.Team;
 import nl.novi.beehivebackend.repositories.TeamRepository;
 import org.modelmapper.ModelMapper;
@@ -25,35 +27,55 @@ public class TeamService {
     public Iterable<TeamOutputDto> getAllTeams() {
         List<TeamOutputDto> teamOutputDtos = new ArrayList<>();
         for(Team team: teamRepository.findAll()) {
-            teamOutputDtos.add(convertTeamToDto(team));
+            teamOutputDtos.add(transferTeamToTeamOutputDto(team));
         }
         return teamOutputDtos;
     }
 
-    public TeamOutputDto getTeam(String teamName) {
-        Team team = teamRepository.findById(teamName).orElseThrow(() -> new RecordNotFoundException("No Team found with name: " + teamName));
-        return convertTeamToDto(team);
+    public TeamOutputDto getTeam(Long id) {
+        Team team = teamRepository.findById(id).orElseThrow(() -> new RecordNotFoundException("No Team found with name: " + id));
+        return transferTeamToTeamOutputDto(team);
     }
 
     public TeamOutputDto createTeam(TeamInputDto teamInputDto) {
-        Team team = teamRepository.save(convertDtoToTeam(teamInputDto));
-        return convertTeamToDto(team);
+        Team team = teamRepository.save(transferTeamInputDtoToTeam(teamInputDto));
+        return transferTeamToTeamOutputDto(team);
     }
 
-    public TeamOutputDto updateTeam(String teamName, TeamInputDto teamInputDto) {
-        teamRepository.findById(teamName).orElseThrow(()-> new RecordNotFoundException("No team found with id: " + teamName));
-        Team team = convertDtoToTeam(teamInputDto);
-        team.setTeamName(teamName);
+    public TeamOutputDto updateTeam(Long id, TeamInputDto teamInputDto) {
+        Team team = teamRepository.findById(id).orElseThrow(()-> new RecordNotFoundException("No team found with id: " + id));
+        transferTeamInputDtoToTeam(teamInputDto, team);
         teamRepository.save(team);
-        return convertTeamToDto(team);
+        return transferTeamToTeamOutputDto(team);
     }
 
-    public void deleteTeam(String teamName) {
-        Team team = teamRepository.findById(teamName).orElseThrow(()-> new RecordNotFoundException("No team found with id: " + teamName));
+    public void deleteTeam(Long id) {
+        Team team = teamRepository.findById(id).orElseThrow(()-> new RecordNotFoundException("No team found with id: " + id));
         if(!team.getEmployees().isEmpty()) {
             throw new IsNotEmptyException("Team is not empty. First remove all employees");
         }
-        teamRepository.deleteById(teamName);
+        teamRepository.deleteById(id);
+    }
+
+    // transfer for postmapping, overload
+    private Team transferTeamInputDtoToTeam(TeamInputDto teamInputDto) {
+        return transferTeamInputDtoToTeam(teamInputDto, new Team());
+    }
+
+    // transfer for putmapping
+    private Team transferTeamInputDtoToTeam(TeamInputDto teamInputDto, Team team) {
+        team.setTeamName(teamInputDto.getTeamName());
+        return team;
+    }
+
+    private TeamOutputDto transferTeamToTeamOutputDto(Team team) {
+        TeamOutputDto teamOutputDto = new TeamOutputDto();
+        teamOutputDto.setId(team.getId());
+        teamOutputDto.setTeamName(team.getTeamName());
+        teamOutputDto.setEmployees(team.getEmployees());
+        teamOutputDto.setRosters(team.getRosters());
+
+        return teamOutputDto;
     }
 
     private TeamOutputDto convertTeamToDto(Team team) {

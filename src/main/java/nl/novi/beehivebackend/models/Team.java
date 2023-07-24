@@ -14,6 +14,10 @@ import java.util.List;
 public class Team {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(unique = true)
     private String teamName;
 
     @OneToMany(mappedBy = "team")
@@ -22,5 +26,5 @@ public class Team {
 
     @OneToMany(mappedBy = "team")
     @JsonIgnore
-    private List<Roster> roster;
+    private List<Roster> rosters;
 }

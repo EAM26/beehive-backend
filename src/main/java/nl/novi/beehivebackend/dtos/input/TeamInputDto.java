@@ -1,15 +1,15 @@
 package nl.novi.beehivebackend.dtos.input;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
-import nl.novi.beehivebackend.models.Employee;
 
-import java.util.List;
 
 @Getter
 @Setter
 public class TeamInputDto {
 
+    @NotBlank
     public String teamName;
 
 }
