@@ -17,11 +17,11 @@ public class RosterInputDto {
     public int year;
 
     @NotNull
-    @Min(value = 0, message = "Week only from 0-52")
+    @Min(value = 1, message = "Week only from 0-52")
     @Max(value = 52, message = "Week only from 0-52")
     public int weekNumber;
 
     @NotNull(message="Team field is required.")
-    public Team team;
+    public Long teamId;
 
 }

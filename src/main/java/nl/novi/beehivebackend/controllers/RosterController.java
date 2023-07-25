@@ -32,10 +32,10 @@ public class RosterController {
         return new ResponseEntity<>(rosterService.getAllRosters(), HttpStatus.OK);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<RosterOutputDto> getRoster(@PathVariable Long id) {
-        return new ResponseEntity<>(rosterService.getRoster(id), HttpStatus.OK);
-    }
+//    @GetMapping("/{id}")
+//    public ResponseEntity<RosterOutputDto> getRoster(@PathVariable String id) {
+//        return new ResponseEntity<>(rosterService.getRoster(id), HttpStatus.OK);
+//    }
 
     @PostMapping
     public ResponseEntity<Object> createRoster(@Valid @RequestBody RosterInputDto rosterInputDto, BindingResult bindingResult) {
@@ -47,19 +47,19 @@ public class RosterController {
             return ResponseEntity.created(uri).body(rosterOutputDto);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Object> updateRoster(@PathVariable Long id, @Valid @RequestBody RosterInputDto rosterInputDto, BindingResult bindingResult) {
-        if (bindingResult.hasFieldErrors()) {
-            return ResponseEntity.badRequest().body(validationUtil.validationMessage(bindingResult).toString());
-        }
-        return new ResponseEntity<>(rosterService.updateRoster(id, rosterInputDto), HttpStatus.ACCEPTED);
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Object> deleteRoster(@PathVariable Long id) {
-        rosterService.deleteRoster(id);
-        return ResponseEntity.noContent().build();
-    }
+//    @PutMapping("/{id}")
+//    public ResponseEntity<Object> updateRoster(@PathVariable Long id, @Valid @RequestBody RosterInputDto rosterInputDto, BindingResult bindingResult) {
+//        if (bindingResult.hasFieldErrors()) {
+//            return ResponseEntity.badRequest().body(validationUtil.validationMessage(bindingResult).toString());
+//        }
+//        return new ResponseEntity<>(rosterService.updateRoster(id, rosterInputDto), HttpStatus.ACCEPTED);
+//    }
+//
+//    @DeleteMapping("/{id}")
+//    public ResponseEntity<Object> deleteRoster(@PathVariable Long id) {
+//        rosterService.deleteRoster(id);
+//        return ResponseEntity.noContent().build();
+//    }
 
 
 
