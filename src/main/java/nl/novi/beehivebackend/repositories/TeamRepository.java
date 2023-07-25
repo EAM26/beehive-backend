@@ -4,5 +4,6 @@ import nl.novi.beehivebackend.models.Team;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface TeamRepository extends JpaRepository<Team, Long> {
+    Boolean existsByTeamNameIgnoreCase(String teamName);
 
 }

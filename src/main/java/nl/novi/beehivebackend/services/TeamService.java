@@ -4,6 +4,7 @@ import nl.novi.beehivebackend.dtos.input.EmployeeInputDto;
 import nl.novi.beehivebackend.dtos.input.TeamInputDto;
 import nl.novi.beehivebackend.dtos.output.TeamOutputDto;
 import nl.novi.beehivebackend.exceptions.IsNotEmptyException;
+import nl.novi.beehivebackend.exceptions.IsNotUniqueException;
 import nl.novi.beehivebackend.exceptions.RecordNotFoundException;
 import nl.novi.beehivebackend.models.Employee;
 import nl.novi.beehivebackend.models.Team;
@@ -38,11 +39,17 @@ public class TeamService {
     }
 
     public TeamOutputDto createTeam(TeamInputDto teamInputDto) {
+        if (teamRepository.existsByTeamNameIgnoreCase(teamInputDto.getTeamName())) {
+            throw new IsNotUniqueException("A team with that name already exists.");
+        }
         Team team = teamRepository.save(transferTeamInputDtoToTeam(teamInputDto));
         return transferTeamToTeamOutputDto(team);
     }
 
     public TeamOutputDto updateTeam(Long id, TeamInputDto teamInputDto) {
+        if (teamRepository.existsByTeamNameIgnoreCase(teamInputDto.getTeamName())) {
+            throw new IsNotUniqueException("A team with that name already exists.");
+        }
         Team team = teamRepository.findById(id).orElseThrow(()-> new RecordNotFoundException("No team found with id: " + id));
         transferTeamInputDtoToTeam(teamInputDto, team);
         teamRepository.save(team);
