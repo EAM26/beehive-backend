@@ -10,7 +10,7 @@
     </parent>
     <groupId>nl.novi</groupId>
     <artifactId>beehive-backend</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1.0.0</version>
     <name>beehive-backend</name>
     <description>beehive-backend</description>
     <properties>
