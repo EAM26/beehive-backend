@@ -12,8 +12,8 @@ import nl.novi.beehivebackend.models.Team;
 @Setter
 public class RosterInputDto {
     @NotNull
-    @Min(value = 2023, message = "Year only from 2023-2040")
-    @Max(value = 2040, message = "Yer only from 2023-2040")
+    @Min(value = 2022, message = "Year only from 2022-2040")
+    @Max(value = 2040, message = "Yer only from 2022-2040")
     public int year;
 
     @NotNull

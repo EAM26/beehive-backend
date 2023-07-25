@@ -38,6 +38,11 @@ public class RosterService {
         return rosterOutputDtos;
     }
 
+    public RosterOutputDto getRoster(String id) {
+        Roster roster = rosterRepository.findById(id).orElseThrow(()-> new RecordNotFoundException("No roster found with id: " + id));
+        return transferRostertoRosterOutputDto(roster);
+    }
+
 
 
     public RosterOutputDto createRoster(RosterInputDto rosterInputDto) {

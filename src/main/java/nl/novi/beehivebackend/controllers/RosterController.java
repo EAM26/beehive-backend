@@ -32,10 +32,10 @@ public class RosterController {
         return new ResponseEntity<>(rosterService.getAllRosters(), HttpStatus.OK);
     }
 
-//    @GetMapping("/{id}")
-//    public ResponseEntity<RosterOutputDto> getRoster(@PathVariable String id) {
-//        return new ResponseEntity<>(rosterService.getRoster(id), HttpStatus.OK);
-//    }
+    @GetMapping("/{id}")
+    public ResponseEntity<RosterOutputDto> getRoster(@PathVariable String id) {
+        return new ResponseEntity<>(rosterService.getRoster(id), HttpStatus.OK);
+    }
 
     @PostMapping
     public ResponseEntity<Object> createRoster(@Valid @RequestBody RosterInputDto rosterInputDto, BindingResult bindingResult) {
