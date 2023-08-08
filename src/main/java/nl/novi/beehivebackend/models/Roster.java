@@ -36,34 +36,8 @@ public class Roster {
 
     @ManyToOne
     @JsonIgnore
-    @JoinColumn(name = "team")
     private Team team;
 
-//
 
-
-//    public void setYear(int year) {
-//        this.year = year;
-//    }
-//
-//    public void setWeekNumber(int weekNumber) {
-//        this.weekNumber = weekNumber;
-//    }
-
-
-//    private void calculateDates() {
-//
-//        LocalDate firstDayOfYear = LocalDate.of(year, 1, 1);
-//
-//        // Define the week-based year and week fields
-//        TemporalField weekBasedYearField = WeekFields.ISO.weekBasedYear();
-//        TemporalField weekOfWeekBasedYearField = WeekFields.ISO.weekOfWeekBasedYear();
-//
-//        // Calculate the start and end dates of the week
-//        this.startOfWeek = firstDayOfYear.with(weekBasedYearField, year)
-//                .with(weekOfWeekBasedYearField, weekNumber)
-//                .with(java.time.DayOfWeek.MONDAY);
-//        this.endOfWeek = startOfWeek.plusDays(6);
-//    }
 
 }

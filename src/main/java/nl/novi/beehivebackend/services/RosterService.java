@@ -76,11 +76,14 @@ public class RosterService {
         Roster roster = new Roster();
         roster.setYear(rosterInputDto.getYear());
         roster.setWeekNumber(rosterInputDto.getWeekNumber());
-        String tempId = roster.getWeekNumber() + "-" + roster.getYear();
+
+//       check if team exists
+        Team team = teamRepository.findById(rosterInputDto.getTeamId()).orElseThrow(() -> new RecordNotFoundException("No team found with id: " + rosterInputDto.getTeamId()));
+        String tempId = roster.getWeekNumber() + "-" + roster.getYear() + "-" + team.getTeamName();
         if(rosterRepository.existsById(tempId)) {
-            throw new IsNotUniqueException("This week already exists.");
+            throw new IsNotUniqueException("This roster already exists.");
         }
-        roster.setId(roster.getWeekNumber() + "-" + roster.getYear());
+        roster.setId(tempId);
 
         LocalDate firstDayOfYear = LocalDate.of(roster.getYear(), 1, 1);
 
@@ -95,7 +98,7 @@ public class RosterService {
         roster.setEndOfWeek(roster.getStartOfWeek().plusDays(6));
 
 //        Get and set team
-        roster.setTeam(teamRepository.findById(rosterInputDto.getTeamId()).orElseThrow(()-> new RecordNotFoundException("No team found with id: " + rosterInputDto.getTeamId())));
+        roster.setTeam(team);
 
         return roster;
     }

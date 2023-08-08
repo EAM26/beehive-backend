@@ -8,7 +8,7 @@ import nl.novi.beehivebackend.repositories.EmployeeRepository;
 import nl.novi.beehivebackend.repositories.ShiftRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
+
 
 import java.util.ArrayList;
 
