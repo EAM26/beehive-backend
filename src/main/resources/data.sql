@@ -5,19 +5,19 @@ VALUES
     (403, 'Reception'),
     (404, 'RestaurantService');
 
-INSERT INTO rosters (id, year, week_number, start_of_week, end_of_week) VALUES
-('1-2023', 2023, 1, '2023-01-02', '2023-01-08'),
-('2-2023', 2023, 2, '2023-01-09', '2023-01-15'),
-('3-2023', 2023, 3, '2023-01-16', '2023-01-22'),
-('4-2023', 2023, 4, '2023-01-23', '2023-01-29'),
-('5-2023', 2023, 5, '2023-01-30', '2023-02-05'),
-('6-2023', 2023, 6, '2023-02-06', '2023-02-12'),
-('7-2023', 2023, 7, '2023-02-13', '2023-02-19'),
-('8-2023', 2023, 8, '2023-02-20', '2023-02-26'),
-('9-2023', 2023, 9, '2023-02-27', '2023-03-05'),
-('10-2023', 2023, 10, '2023-03-06', '2023-03-12');
+INSERT INTO rosters (id, year, week_number, start_of_week, end_of_week, team_id) VALUES
+('1-2023-Kitchen', 2023, 1, '2023-01-02', '2023-01-08', 401),
+('2-2023-Kitchen', 2023, 2, '2023-01-09', '2023-01-15', 401),
+('3-2023-Kitchen', 2023, 3, '2023-01-16', '2023-01-22', 401),
+('4-2023-Kitchen', 2023, 4, '2023-01-23', '2023-01-29', 401),
+('1-2023-Bar', 2023, 1, '2023-01-02', '2023-01-08', 402),
+('2-2023-Bar', 2023, 2, '2023-01-09', '2023-01-15', 402),
+('3-2023-Bar', 2023, 3, '2023-01-16', '2023-01-22', 402),
+('4-2023-Bar', 2023, 4, '2023-01-23', '2023-01-29', 402),
+('1-2023-Reception', 2023, 1, '2023-01-02', '2023-01-08', 403),
+('1-2023-RestaurantService', 2023, 1, '2023-01-02', '2023-01-08', 404);
 
-INSERT INTO employees (id, first_name, preposition, last_name, short_name, dob, phone_number, email, password, is_employed, team)
+INSERT INTO employees (id, first_name, preposition, last_name, short_name, dob, phone_number, email, password, is_employed, team_id)
 VALUES
     (101, 'Jan', 'de', 'Groot', 'Jan' ,'1990-01-01', '1234567890', 'jan.degroot@example.com', '$2a$12$Z.Ry7lVOSASMcJ38fEX.VemDL6F6uYZWxA1PWRax0ExfNte4l1fxi', false, 401),
     (102, 'Lotte', 'van', 'Beek','Lotte' ,'1992-05-15', '9876543210', 'lotte.vanbeek@example.com', '$2a$12$Z.Ry7lVOSASMcJ38fEX.VemDL6F6uYZWxA1PWRax0ExfNte4l1fxi', false, 402),

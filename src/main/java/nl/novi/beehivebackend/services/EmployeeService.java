@@ -57,7 +57,7 @@ public class EmployeeService {
             throw new IsNotUniqueException("Short name already exists.");
         }
 //        check if team exists
-        Team team = teamRepository.findById(employeeInputDto.getTeamId()).orElseThrow(() -> new RecordNotFoundException("No team found with name: " + employeeInputDto.getTeamId()));
+        Team team = teamRepository.findById(employeeInputDto.getTeamId()).orElseThrow(() -> new RecordNotFoundException("No team found with id: " + employeeInputDto.getTeamId()));
 
         Employee employee = employeeRepository.save(transferEmployeeInputDtoToEmployee(employeeInputDto, team));
         return transferEmployeeToEmployeeOutputDto(employee);
@@ -72,7 +72,7 @@ public class EmployeeService {
         }
 
 //        check if team exists
-        Team team = teamRepository.findById(employeeInputDto.getTeamId()).orElseThrow(() -> new RecordNotFoundException("No team found with name: " + employeeInputDto.getTeamId()));
+        Team team = teamRepository.findById(employeeInputDto.getTeamId()).orElseThrow(() -> new RecordNotFoundException("No team found with id: " + employeeInputDto.getTeamId()));
 
 
         transferEmployeeInputDtoToEmployee(employeeInputDto, employee, team);
