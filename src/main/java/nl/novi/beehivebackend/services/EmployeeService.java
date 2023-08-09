@@ -107,7 +107,7 @@ public class EmployeeService {
         return employeeOutputDto;
     }
 
-//    transer for postmapping, overload
+//    transfer for postmapping, overload
 
     private Employee transferEmployeeInputDtoToEmployee(EmployeeInputDto employeeInputDto, Team team) {
         Employee employee = new Employee();
