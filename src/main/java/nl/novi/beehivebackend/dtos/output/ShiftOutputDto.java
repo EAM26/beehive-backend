@@ -22,6 +22,5 @@ public class ShiftOutputDto {
     public LocalTime endTime;
 
     public Employee employee;
-    public Team team;
     public Roster roster;
 }

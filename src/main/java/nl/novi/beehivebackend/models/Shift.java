@@ -28,9 +28,6 @@ public class Shift {
     @JsonIgnore
     private Employee employee;
 
-    @ManyToOne
-    @JsonIgnore
-    private Team team;
 
     @ManyToOne
     @JsonIgnore
