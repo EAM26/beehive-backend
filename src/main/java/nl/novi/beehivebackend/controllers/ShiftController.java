@@ -41,6 +41,7 @@ public class ShiftController {
         if (bindingResult.hasFieldErrors()) {
             return ResponseEntity.badRequest().body(validationUtil.validationMessage(bindingResult).toString());
         }
+
         ShiftOutputDto shiftOutputDto = shiftService.createShift(shiftInputDto);
         URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentRequest().path("/" + shiftOutputDto.id).toUriString());
         return ResponseEntity.created(uri).body(shiftOutputDto);

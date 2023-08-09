@@ -10,7 +10,6 @@ public class ValidationUtil {
     public StringBuilder validationMessage(BindingResult br) {
         StringBuilder sb = new StringBuilder();
         for (FieldError fe : br.getFieldErrors()) {
-//            sb.append(fe.getField()).append(" ");
             sb.append(fe.getDefaultMessage());
             sb.append("\n");
         }
