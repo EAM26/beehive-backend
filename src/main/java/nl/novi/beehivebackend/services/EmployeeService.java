@@ -107,7 +107,7 @@ public class EmployeeService {
         return employeeOutputDto;
     }
 
-//    transfer for postmapping, overload
+//    Overload transfer for postmapping
 
     private Employee transferEmployeeInputDtoToEmployee(EmployeeInputDto employeeInputDto, Team team) {
         Employee employee = new Employee();
@@ -116,7 +116,7 @@ public class EmployeeService {
     }
 
 
-// transfer for putmapping
+// Overload transfer for putmapping
     private Employee transferEmployeeInputDtoToEmployee(EmployeeInputDto employeeInputDto, Employee employee, Team team) {
         employee.setFirstName(employeeInputDto.getFirstName());
         employee.setPreposition(employeeInputDto.getPreposition());
