@@ -119,14 +119,14 @@ public class ShiftService {
         return employee;
     }
 
-//    Transfer overload postmapping
+//    Overload transfer postmapping
     private Shift transferShiftInputDtoToShift(ShiftInputDto shiftInputDto, Employee employee, Roster roster) {
         Shift shift = new Shift();
         return transferShiftInputDtoToShift(shift, shiftInputDto, employee, roster);
     }
 
 
-//     Transfer overload putmapping
+//     Overload transfer putmapping
     private Shift transferShiftInputDtoToShift(Shift shift, ShiftInputDto shiftInputDto, Employee employee, Roster roster) {
         shift.setStartDate(shiftInputDto.getStartDate());
         shift.setEndDate(shiftInputDto.getEndDate());

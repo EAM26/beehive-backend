@@ -64,12 +64,12 @@ public class TeamService {
         teamRepository.deleteById(id);
     }
 
-    // transfer for postmapping, overload
+    // Overload transfer for postmapping
     private Team transferTeamInputDtoToTeam(TeamInputDto teamInputDto) {
         return transferTeamInputDtoToTeam(teamInputDto, new Team());
     }
 
-    // transfer for putmapping
+    // Overload transfer for putmapping
     private Team transferTeamInputDtoToTeam(TeamInputDto teamInputDto, Team team) {
         team.setTeamName(teamInputDto.getTeamName());
         return team;
