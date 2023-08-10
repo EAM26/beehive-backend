@@ -62,10 +62,11 @@ public class SpringSecurityConfig {
                 .authorizeHttpRequests()
                 // Wanneer je deze uncomments, staat je hele security open. Je hebt dan alleen nog een jwt nodig.
 //                .requestMatchers("/**").permitAll()
-//                .requestMatchers(HttpMethod.POST, "/users").permitAll()
-//                .requestMatchers(HttpMethod.GET,"/users").hasRole("ADMIN")
-//                .requestMatchers(HttpMethod.POST,"/users/**").hasRole("ADMIN")
-//                .requestMatchers(HttpMethod.DELETE, "/users/**").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.POST, "/users").permitAll()
+                .requestMatchers(HttpMethod.GET,"/users").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.POST,"/users/**").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.DELETE, "/users/**").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.GET,"/employees").hasRole("ADMIN")
 //                .requestMatchers(HttpMethod.POST, "/cimodules").hasRole("ADMIN")
 //                .requestMatchers(HttpMethod.DELETE, "/cimodules/**").hasRole("ADMIN")
 //                .requestMatchers(HttpMethod.POST, "/remotecontrollers").hasRole("ADMIN")
@@ -76,8 +77,8 @@ public class SpringSecurityConfig {
 //                .requestMatchers(HttpMethod.DELETE, "/wallbrackets/**").hasRole("ADMIN")
 //                // Je mag meerdere paths tegelijk definieren
 //                .requestMatchers("/cimodules", "/remotecontrollers", "/televisions", "/wallbrackets").hasAnyRole("ADMIN", "USER")
-//                .requestMatchers("/authenticated").authenticated()
-//                .requestMatchers("/authenticate").permitAll()
+                .requestMatchers("/authenticated").authenticated()
+                .requestMatchers("/authenticate").permitAll()
                 .anyRequest().denyAll()
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);

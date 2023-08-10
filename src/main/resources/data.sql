@@ -78,8 +78,20 @@ VALUES (201, '2023-01-02', '2023-01-02', '09:00:00', '17:00:00', 101, '1-2023-Ki
        (215, '2023-01-04', '2023-01-04', '10:00:00', '17:00:00', 102, '1-2023-Kitchen'),
        (216, '2023-01-04', '2023-01-04', '17:00:00', '23:00:00', 103, '1-2023-Kitchen'),
        (217, '2023-01-04', '2023-01-04', '17:00:00', '23:00:00', null, '1-2023-Kitchen'),
-       (218, '2023-01-04', '2023-01-05', '17:00:00', '02:00:00', null, '1-2023-Kitchen')
-;
+       (218, '2023-01-04', '2023-01-05', '17:00:00', '02:00:00', null, '1-2023-Kitchen');
+
+INSERT INTO users (username, password, email, enabled)
+VALUES ('user', '$2a$12$2a3BQNbqV4QtisHaL13H3OsmrZ9XFJHnF4qVpdxz8bfm/5HI4ISMW', 'user@test.nl', TRUE);
+INSERT INTO users (username, password, email, enabled)
+VALUES ('admin', '$2a$12$KyAjYsNTAMJGoilLkotEo.XhGqG2F2IWDGjjX2khTXKY4J9kj1Rfm', 'admin@test.nl', TRUE);
+-- wachtwoord van admin is admin
+
+INSERT INTO authorities (username, authority)
+VALUES ('user', 'ROLE_USER');
+INSERT INTO authorities (username, authority)
+VALUES ('admin', 'ROLE_USER');
+INSERT INTO authorities (username, authority)
+VALUES ('admin', 'ROLE_ADMIN');
 
 
 
