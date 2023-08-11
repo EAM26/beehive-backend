@@ -80,18 +80,20 @@ VALUES (201, '2023-01-02', '2023-01-02', '09:00:00', '17:00:00', 101, '1-2023-Ki
        (217, '2023-01-04', '2023-01-04', '17:00:00', '23:00:00', null, '1-2023-Kitchen'),
        (218, '2023-01-04', '2023-01-05', '17:00:00', '02:00:00', null, '1-2023-Kitchen');
 
+-- Wachtwoorden zijn username van user
 INSERT INTO users (username, password, email, enabled)
-VALUES ('user', '$2a$12$2a3BQNbqV4QtisHaL13H3OsmrZ9XFJHnF4qVpdxz8bfm/5HI4ISMW', 'user@test.nl', TRUE);
-INSERT INTO users (username, password, email, enabled)
-VALUES ('admin', '$2a$12$KyAjYsNTAMJGoilLkotEo.XhGqG2F2IWDGjjX2khTXKY4J9kj1Rfm', 'admin@test.nl', TRUE);
--- wachtwoord van admin is admin
+VALUES ('droneOne', '$2a$12$kXehSOg1pjplDThnp6Wiw.ckLvEwZZUJh0KSb2pnKIXzhvJmWNTAO', 'droneOne@test.nl', TRUE),
+       ('beeOne', '$2a$12$7gLXZZkR6T8uVYjio4Xm4OIWh0Zi.6X94mr67eGGczTqhhU2pEaBy', 'beeOne@test.nl', TRUE),
+       ('queen', '$2a$12$m2474RWG2d6NfKWIfBWOTun4DySP9ilW8sDqoSOL6ub3EpEYkA1XC', 'queen@test.nl', TRUE);
+
 
 INSERT INTO authorities (username, authority)
-VALUES ('user', 'ROLE_USER');
-INSERT INTO authorities (username, authority)
-VALUES ('admin', 'ROLE_USER');
-INSERT INTO authorities (username, authority)
-VALUES ('admin', 'ROLE_ADMIN');
+VALUES ('droneOne', 'ROLE_USER'),
+       ('beeOne', 'ROLE_USER'),
+       ('beeOne', 'ROLE_MANAGER'),
+       ('queen', 'ROLE_USER'),
+       ('queen', 'ROLE_MANAGER'),
+       ('queen', 'ROLE_ADMIN');
 
 
 
