@@ -64,6 +64,7 @@ public class SpringSecurityConfig {
 //                .requestMatchers("/**").permitAll()
                 .requestMatchers(HttpMethod.POST, "/users").permitAll()
                 .requestMatchers(HttpMethod.GET,"/users").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.GET,"/users/{username}").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.POST,"/users/**").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.DELETE, "/users/**").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.GET,"/employees").hasRole("ADMIN")
@@ -77,8 +78,8 @@ public class SpringSecurityConfig {
 //                .requestMatchers(HttpMethod.DELETE, "/wallbrackets/**").hasRole("ADMIN")
 //                // Je mag meerdere paths tegelijk definieren
 //                .requestMatchers("/cimodules", "/remotecontrollers", "/televisions", "/wallbrackets").hasAnyRole("ADMIN", "USER")
-                .requestMatchers("/authenticated").authenticated()
-                .requestMatchers("/authenticate").permitAll()
+//                .requestMatchers("/authenticated").authenticated()
+//                .requestMatchers("/authenticate").permitAll()
                 .anyRequest().denyAll()
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
