@@ -1,9 +1,6 @@
 package nl.novi.beehivebackend.controllers;
 
-import nl.novi.beehivebackend.exceptions.IllegalValueException;
-import nl.novi.beehivebackend.exceptions.IsNotEmptyException;
-import nl.novi.beehivebackend.exceptions.IsNotUniqueException;
-import nl.novi.beehivebackend.exceptions.RecordNotFoundException;
+import nl.novi.beehivebackend.exceptions.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -30,6 +27,16 @@ public class ExceptionController {
     @ExceptionHandler(value = IsNotUniqueException.class)
     public ResponseEntity<Object> handleIsNotUniqueException(IsNotUniqueException exception) {
         return new ResponseEntity<>(exception.getMessage(), HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(value = BadRequestException.class)
+    public ResponseEntity<String> exception(BadRequestException exception) {
+        return new ResponseEntity<>(exception.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(value = UsernameNotFoundException.class)
+    public ResponseEntity<String> exception(UsernameNotFoundException exception) {
+        return new ResponseEntity<>(exception.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
 
