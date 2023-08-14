@@ -1,6 +1,7 @@
 package nl.novi.beehivebackend.dtos.input;
 
 import nl.novi.beehivebackend.models.Authority;
+import nl.novi.beehivebackend.models.Employee;
 
 import java.util.Set;
 
@@ -11,6 +12,7 @@ public class UserDto {
     public Boolean enabled;
     public String apikey;
     public String email;
+
     public Set<Authority> authorities;
 
     public String getUsername() {
@@ -60,4 +62,6 @@ public class UserDto {
     public void setAuthorities(Set<Authority> authorities) {
         this.authorities = authorities;
     }
+
+
 }
