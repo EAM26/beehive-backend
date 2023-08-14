@@ -23,18 +23,14 @@ import java.util.ArrayList;
 @Service
 public class ShiftService {
 
-    private final ModelMapper modelMapper;
     private final ShiftRepository shiftRepository;
     private final EmployeeRepository employeeRepository;
-    private final TeamRepository teamRepository;
     private final RosterRepository rosterRepository;
 
 
     public ShiftService(ShiftRepository shiftRepository, EmployeeRepository employeeRepository, TeamRepository teamRepository, RosterRepository rosterRepository) {
         this.shiftRepository = shiftRepository;
-        this.modelMapper = new ModelMapper();
         this.employeeRepository = employeeRepository;
-        this.teamRepository = teamRepository;
         this.rosterRepository = rosterRepository;
     }
 

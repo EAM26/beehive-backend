@@ -2,6 +2,7 @@ package nl.novi.beehivebackend.controllers;
 
 import nl.novi.beehivebackend.dtos.input.UserDto;
 import nl.novi.beehivebackend.exceptions.BadRequestException;
+import nl.novi.beehivebackend.models.UserRole;
 import nl.novi.beehivebackend.services.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -40,11 +41,12 @@ public class UserController {
 
     }
 
+    // TODO: 14-8-2023 Wijzg userRole in String, zodat de Param gestest kan worden en evt Exception kan gooien als het geen UserRole is.
     @PostMapping(value = "")
-    public ResponseEntity<UserDto> createKlant(@RequestBody UserDto dto) {;
+    public ResponseEntity<UserDto> createNewUser(@RequestBody UserDto dto, @RequestParam(value = "userRole", required = false) UserRole userRole) {;
 
-        String newUsername = userService.createUser(dto);
-        userService.addAuthority(newUsername, "ROLE_USER");
+        String newUsername = userService.createUserName(dto);
+        userService.addAuthority(newUsername, userRole);
 
         URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{username}")
                 .buildAndExpand(newUsername).toUri();
@@ -52,8 +54,10 @@ public class UserController {
         return ResponseEntity.created(location).build();
     }
 
+
+
     @PutMapping(value = "/{username}")
-    public ResponseEntity<UserDto> updateKlant(@PathVariable("username") String username, @RequestBody UserDto dto) {
+    public ResponseEntity<UserDto> updateExistingUser(@PathVariable("username") String username, @RequestBody UserDto dto) {
 
         userService.updateUser(username, dto);
 
@@ -61,7 +65,7 @@ public class UserController {
     }
 
     @DeleteMapping(value = "/{username}")
-    public ResponseEntity<Object> deleteKlant(@PathVariable("username") String username) {
+    public ResponseEntity<Object> deleteExistingUser(@PathVariable("username") String username) {
         userService.deleteUser(username);
         return ResponseEntity.noContent().build();
     }
@@ -71,17 +75,29 @@ public class UserController {
         return ResponseEntity.ok().body(userService.getAuthorities(username));
     }
 
-    @PostMapping(value = "/{username}/authorities")
-    public ResponseEntity<Object> addUserAuthority(@PathVariable("username") String username, @RequestBody Map<String, Object> fields) {
+//    @PostMapping(value = "/{username}/authorities")
+//    public ResponseEntity<Object> addUserAuthority(@PathVariable("username") String username, @RequestBody Map<String, Object> fields) {
+//        try {
+//            UserRole authorityName = (UserRole) fields.get("authority");
+//            userService.addAuthority(username, authorityName);
+//            return ResponseEntity.noContent().build();
+//        }
+//        catch (Exception ex) {
+//            throw new BadRequestException();
+//        }
+//    }
+     @PostMapping(value = "/{username}/{userrole}/authorities")
+    public ResponseEntity<Object> addUserAuthority(@PathVariable("username") String username, @PathVariable("userrole") UserRole userRole) {
         try {
-            String authorityName = (String) fields.get("authority");
-            userService.addAuthority(username, authorityName);
+            userService.addAuthority(username, userRole);
             return ResponseEntity.noContent().build();
         }
         catch (Exception ex) {
             throw new BadRequestException();
         }
     }
+
+
 
     @DeleteMapping(value = "/{username}/authorities/{authority}")
     public ResponseEntity<Object> deleteUserAuthority(@PathVariable("username") String username, @PathVariable("authority") String authority) {
