@@ -41,12 +41,10 @@ public class UserController {
 
     }
 
+    // TODO: 14-8-2023 Wijzg userRole in String, zodat de Param gestest kan worden en evt Exception kan gooien als het geen UserRole is.
     @PostMapping(value = "")
-    public ResponseEntity<UserDto> createUser(@RequestBody UserDto dto, @RequestParam(value = "userRole", required = false) UserRole userRole) {;
+    public ResponseEntity<UserDto> createNewUser(@RequestBody UserDto dto, @RequestParam(value = "userRole", required = false) UserRole userRole) {;
 
-        if(!(userRole instanceof UserRole)) {
-            throw new BadRequestException("Not a legal Authority");
-        }
         String newUsername = userService.createUserName(dto);
         userService.addAuthority(newUsername, userRole);
 
@@ -59,7 +57,7 @@ public class UserController {
 
 
     @PutMapping(value = "/{username}")
-    public ResponseEntity<UserDto> updateKlant(@PathVariable("username") String username, @RequestBody UserDto dto) {
+    public ResponseEntity<UserDto> updateExistingUser(@PathVariable("username") String username, @RequestBody UserDto dto) {
 
         userService.updateUser(username, dto);
 
@@ -67,7 +65,7 @@ public class UserController {
     }
 
     @DeleteMapping(value = "/{username}")
-    public ResponseEntity<Object> deleteKlant(@PathVariable("username") String username) {
+    public ResponseEntity<Object> deleteExistingUser(@PathVariable("username") String username) {
         userService.deleteUser(username);
         return ResponseEntity.noContent().build();
     }
@@ -80,7 +78,7 @@ public class UserController {
 //    @PostMapping(value = "/{username}/authorities")
 //    public ResponseEntity<Object> addUserAuthority(@PathVariable("username") String username, @RequestBody Map<String, Object> fields) {
 //        try {
-//            String authorityName = (String) fields.get("authority");
+//            UserRole authorityName = (UserRole) fields.get("authority");
 //            userService.addAuthority(username, authorityName);
 //            return ResponseEntity.noContent().build();
 //        }
@@ -88,6 +86,18 @@ public class UserController {
 //            throw new BadRequestException();
 //        }
 //    }
+     @PostMapping(value = "/{username}/{userrole}/authorities")
+    public ResponseEntity<Object> addUserAuthority(@PathVariable("username") String username, @PathVariable("userrole") UserRole userRole) {
+        try {
+            userService.addAuthority(username, userRole);
+            return ResponseEntity.noContent().build();
+        }
+        catch (Exception ex) {
+            throw new BadRequestException();
+        }
+    }
+
+
 
     @DeleteMapping(value = "/{username}/authorities/{authority}")
     public ResponseEntity<Object> deleteUserAuthority(@PathVariable("username") String username, @PathVariable("authority") String authority) {

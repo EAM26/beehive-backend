@@ -32,12 +32,7 @@ public class SpringSecurityConfig {
         this.customPasswordEncoder = customPasswordEncoder;
     }
 
-    // PasswordEncoderBean. Deze kun je overal in je applicatie injecteren waar nodig.
-    // Je kunt dit ook in een aparte configuratie klasse zetten.
-//    @Bean
-//    public PasswordEncoder passwordEncoder() {
-//        return new BCryptPasswordEncoder();
-//    }
+
 
 
     // Authenticatie met customUserDetailsService en passwordEncoder
@@ -64,9 +59,11 @@ public class SpringSecurityConfig {
                 // Wanneer je deze uncomments, staat je hele security open. Je hebt dan alleen nog een jwt nodig.
 //                .requestMatchers("/**").permitAll()
                 .requestMatchers(HttpMethod.POST, "/authenticate").permitAll()
+                .requestMatchers(HttpMethod.GET, "/authenticated").authenticated()
                 .requestMatchers(HttpMethod.POST, "/users").permitAll()
                 .requestMatchers(HttpMethod.GET,"/users").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.GET,"/users/{username}").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.POST,"/users/{username}/{userrole}/authorities").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.POST,"/users/**").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.GET,"/users/**").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.DELETE, "/users/**").hasRole("ADMIN")
