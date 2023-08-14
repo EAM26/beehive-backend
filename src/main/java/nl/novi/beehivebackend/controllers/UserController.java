@@ -2,6 +2,7 @@ package nl.novi.beehivebackend.controllers;
 
 import nl.novi.beehivebackend.dtos.input.UserDto;
 import nl.novi.beehivebackend.exceptions.BadRequestException;
+import nl.novi.beehivebackend.models.UserRole;
 import nl.novi.beehivebackend.services.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -41,16 +42,21 @@ public class UserController {
     }
 
     @PostMapping(value = "")
-    public ResponseEntity<UserDto> createKlant(@RequestBody UserDto dto) {;
+    public ResponseEntity<UserDto> createUser(@RequestBody UserDto dto, @RequestParam(value = "userRole", required = false) UserRole userRole) {;
 
-        String newUsername = userService.createUser(dto);
-        userService.addAuthority(newUsername, "ROLE_USER");
+        if(!(userRole instanceof UserRole)) {
+            throw new BadRequestException("Not a legal Authority");
+        }
+        String newUsername = userService.createUserName(dto);
+        userService.addAuthority(newUsername, userRole);
 
         URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{username}")
                 .buildAndExpand(newUsername).toUri();
 
         return ResponseEntity.created(location).build();
     }
+
+
 
     @PutMapping(value = "/{username}")
     public ResponseEntity<UserDto> updateKlant(@PathVariable("username") String username, @RequestBody UserDto dto) {
@@ -71,17 +77,17 @@ public class UserController {
         return ResponseEntity.ok().body(userService.getAuthorities(username));
     }
 
-    @PostMapping(value = "/{username}/authorities")
-    public ResponseEntity<Object> addUserAuthority(@PathVariable("username") String username, @RequestBody Map<String, Object> fields) {
-        try {
-            String authorityName = (String) fields.get("authority");
-            userService.addAuthority(username, authorityName);
-            return ResponseEntity.noContent().build();
-        }
-        catch (Exception ex) {
-            throw new BadRequestException();
-        }
-    }
+//    @PostMapping(value = "/{username}/authorities")
+//    public ResponseEntity<Object> addUserAuthority(@PathVariable("username") String username, @RequestBody Map<String, Object> fields) {
+//        try {
+//            String authorityName = (String) fields.get("authority");
+//            userService.addAuthority(username, authorityName);
+//            return ResponseEntity.noContent().build();
+//        }
+//        catch (Exception ex) {
+//            throw new BadRequestException();
+//        }
+//    }
 
     @DeleteMapping(value = "/{username}/authorities/{authority}")
     public ResponseEntity<Object> deleteUserAuthority(@PathVariable("username") String username, @PathVariable("authority") String authority) {

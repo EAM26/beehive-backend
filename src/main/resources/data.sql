@@ -84,7 +84,8 @@ VALUES (201, '2023-01-02', '2023-01-02', '09:00:00', '17:00:00', 101, '1-2023-Ki
 INSERT INTO users (username, password, email, enabled)
 VALUES ('droneOne', '$2a$12$kXehSOg1pjplDThnp6Wiw.ckLvEwZZUJh0KSb2pnKIXzhvJmWNTAO', 'droneOne@test.nl', TRUE),
        ('beeOne', '$2a$12$7gLXZZkR6T8uVYjio4Xm4OIWh0Zi.6X94mr67eGGczTqhhU2pEaBy', 'beeOne@test.nl', TRUE),
-       ('queen', '$2a$12$m2474RWG2d6NfKWIfBWOTun4DySP9ilW8sDqoSOL6ub3EpEYkA1XC', 'queen@test.nl', TRUE);
+       ('queen', '$2a$12$m2474RWG2d6NfKWIfBWOTun4DySP9ilW8sDqoSOL6ub3EpEYkA1XC', 'queen@test.nl', TRUE),
+       ('testBee', '$2a$12$/4ogvHAfDNwHEMZDRWy6OuIENTfo/b0qM9f0wYYQB17k8dI00Zy.S', 'testBee@test.nl', TRUE);
 
 
 INSERT INTO authorities (username, authority)

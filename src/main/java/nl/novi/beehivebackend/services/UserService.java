@@ -5,6 +5,7 @@ import nl.novi.beehivebackend.dtos.input.UserDto;
 import nl.novi.beehivebackend.exceptions.RecordNotFoundException;
 import nl.novi.beehivebackend.models.Authority;
 import nl.novi.beehivebackend.models.User;
+import nl.novi.beehivebackend.models.UserRole;
 import nl.novi.beehivebackend.repositories.UserRepository;
 import nl.novi.beehivebackend.utils.RandomStringGenerator;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -51,7 +52,7 @@ public class UserService {
         return userRepository.existsById(username);
     }
 
-    public String createUser(UserDto userDto) {
+    public String createUserName(UserDto userDto) {
         String randomString = RandomStringGenerator.generateAlphaNumeric(20);
         userDto.setApikey(randomString);
         User newUser = userRepository.save(toUser(userDto));
@@ -76,11 +77,11 @@ public class UserService {
         return userDto.getAuthorities();
     }
 
-    public void addAuthority(String username, String authority) {
+    public void addAuthority(String username, UserRole userRole) {
 
         if (!userRepository.existsById(username)) throw new UsernameNotFoundException(username);
         User user = userRepository.findById(username).get();
-        user.addAuthority(new Authority(username, authority));
+        user.addAuthority(new Authority(username, userRole));
         userRepository.save(user);
     }
 
