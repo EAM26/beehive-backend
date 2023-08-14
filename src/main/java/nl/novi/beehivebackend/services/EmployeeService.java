@@ -102,6 +102,7 @@ public class EmployeeService {
         employeeOutputDto.setPassword(employee.getPassword());
         employeeOutputDto.setIsEmployed(employee.getIsEmployed());
         employeeOutputDto.setTeam(employee.getTeam());
+        employeeOutputDto.setUser(employee.getUser());
         employeeOutputDto.setShifts(employee.getShifts());
 
         return employeeOutputDto;

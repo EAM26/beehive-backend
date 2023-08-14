@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import nl.novi.beehivebackend.models.Shift;
 import nl.novi.beehivebackend.models.Team;
+import nl.novi.beehivebackend.models.User;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -24,4 +25,5 @@ public class EmployeeOutputDto {
     public Boolean isEmployed;
     public Team team;
     public List<Shift> shifts;
+    public User user;
 }
