@@ -1,5 +1,6 @@
 package nl.novi.beehivebackend.services;
 
+import nl.novi.beehivebackend.config.CustomPasswordEncoder;
 import nl.novi.beehivebackend.dtos.input.UserDto;
 import nl.novi.beehivebackend.exceptions.RecordNotFoundException;
 import nl.novi.beehivebackend.models.Authority;
@@ -7,6 +8,7 @@ import nl.novi.beehivebackend.models.User;
 import nl.novi.beehivebackend.repositories.UserRepository;
 import nl.novi.beehivebackend.utils.RandomStringGenerator;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -17,9 +19,11 @@ import java.util.Set;
 @Service
 public class UserService {
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
 
@@ -105,10 +109,11 @@ public class UserService {
     public User toUser(UserDto userDto) {
 
         var user = new User();
-
         user.setUsername(userDto.getUsername());
-        user.setPassword(userDto.getPassword());
+//        user.setPassword(userDto.getPassword());
+        user.setPassword(passwordEncoder.encode(userDto.getPassword()));
         user.setEnabled(userDto.getEnabled());
+
         user.setApikey(userDto.getApikey());
         user.setEmail(userDto.getEmail());
 

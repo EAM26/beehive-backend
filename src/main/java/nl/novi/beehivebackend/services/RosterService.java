@@ -76,7 +76,6 @@ public class RosterService {
         Roster roster = new Roster();
         roster.setYear(rosterInputDto.getYear());
         roster.setWeekNumber(rosterInputDto.getWeekNumber());
-
 //       check if team exists
         Team team = teamRepository.findById(rosterInputDto.getTeamId()).orElseThrow(() -> new RecordNotFoundException("No team found with id: " + rosterInputDto.getTeamId()));
         String tempId = roster.getWeekNumber() + "-" + roster.getYear() + "-" + team.getTeamName();
