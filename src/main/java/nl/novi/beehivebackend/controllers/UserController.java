@@ -44,18 +44,18 @@ public class UserController {
 
     // TODO: 14-8-2023 Wijzg userRole in String, zodat de Param gestest kan worden en evt Exception kan gooien als het geen UserRole is.
     @PostMapping(value = "")
-    public ResponseEntity<UserOutputDto> createNewUser(@RequestBody UserInputDto userInputDto, @RequestParam(value = "userrole", required = false) UserRole userRole) {;
+    public ResponseEntity<UserOutputDto> createNewUser(@RequestBody UserInputDto userInputDto, @RequestParam(value = "userrole", required = false) String roleName) {;
         String newUsername = userService.createUserName(userInputDto);
-        userService.addAuthority(newUsername, userRole);
+        userService.addAuthority(newUsername, roleName);
         URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{username}")
                 .buildAndExpand(newUsername).toUri();
         return ResponseEntity.created(location).build();
     }
 
     @PostMapping(value = "/{username}/{userrole}/authorities")
-    public ResponseEntity<Object> addUserAuthority(@PathVariable("username") String username, @PathVariable("userrole") UserRole userRole) {
+    public ResponseEntity<Object> addUserAuthority(@PathVariable("username") String username, @PathVariable("userrole") String roleName) {
         try {
-            userService.addAuthority(username, userRole);
+            userService.addAuthority(username, roleName);
             return ResponseEntity.noContent().build();
         }
         catch (Exception ex) {
@@ -76,24 +76,10 @@ public class UserController {
     }
 
     @DeleteMapping(value = "/{username}/authorities/{authority}")
-    public ResponseEntity<Object> deleteUserAuthority(@PathVariable("username") String username, @PathVariable("authority") String authority) {
-        userService.removeAuthority(username, authority);
+    public ResponseEntity<Object> deleteUserAuthority(@PathVariable("username") String username, @PathVariable("authority") String role) {
+        userService.removeAuthority(username, role);
         return ResponseEntity.noContent().build();
     }
-
-
-//    @PostMapping(value = "/{username}/authorities")
-//    public ResponseEntity<Object> addUserAuthority(@PathVariable("username") String username, @RequestBody Map<String, Object> fields) {
-//        try {
-//            UserRole authorityName = (UserRole) fields.get("authority");
-//            userService.addAuthority(username, authorityName);
-//            return ResponseEntity.noContent().build();
-//        }
-//        catch (Exception ex) {
-//            throw new BadRequestException();
-//        }
-
-//    }
 
 
 

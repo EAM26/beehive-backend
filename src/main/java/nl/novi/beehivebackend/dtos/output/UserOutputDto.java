@@ -8,8 +8,6 @@ public class UserOutputDto {
 
     public String username;
     public String password;
-    public Boolean enabled;
-    public String apikey;
     public String email;
     public Long employeeId;
 
@@ -23,13 +21,6 @@ public class UserOutputDto {
         return password;
     }
 
-    public Boolean getEnabled() {
-        return enabled;
-    }
-
-    public String getApikey() {
-        return apikey;
-    }
 
     public String getEmail() {
         return email;
@@ -47,13 +38,6 @@ public class UserOutputDto {
         this.password = password;
     }
 
-    public void setEnabled(Boolean enabled) {
-        this.enabled = enabled;
-    }
-
-    public void setApikey(String apikey) {
-        this.apikey = apikey;
-    }
 
     public void setEmail(String email) {
         this.email = email;
