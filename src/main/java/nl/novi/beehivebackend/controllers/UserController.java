@@ -1,6 +1,8 @@
 package nl.novi.beehivebackend.controllers;
 
-import nl.novi.beehivebackend.dtos.input.UserDto;
+
+import nl.novi.beehivebackend.dtos.input.UserInputDto;
+import nl.novi.beehivebackend.dtos.output.UserOutputDto;
 import nl.novi.beehivebackend.exceptions.BadRequestException;
 import nl.novi.beehivebackend.models.UserRole;
 import nl.novi.beehivebackend.services.UserService;
@@ -10,7 +12,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
-import java.util.Map;
+
 
 @CrossOrigin
 @RestController
@@ -24,43 +26,46 @@ public class UserController {
     }
 
     @GetMapping(value = "")
-    public ResponseEntity<List<UserDto>> getUsers() {
-
-        List<UserDto> userDtos = userService.getUsers();
-
+    public ResponseEntity<List<UserOutputDto>> getUsers() {
+        List<UserOutputDto> userDtos = userService.getUsers();
         return ResponseEntity.ok().body(userDtos);
     }
 
     @GetMapping(value = "/{username}")
-    public ResponseEntity<UserDto> getUser(@PathVariable("username") String username) {
-
-        UserDto optionalUser = userService.getUser(username);
-
-
+    public ResponseEntity<UserOutputDto> getUser(@PathVariable("username") String username) {
+        UserOutputDto optionalUser = userService.getUser(username);
         return ResponseEntity.ok().body(optionalUser);
+    }
 
+    @GetMapping(value = "/{username}/authorities")
+    public ResponseEntity<Object> getUserAuthorities(@PathVariable("username") String username) {
+        return ResponseEntity.ok().body(userService.getAuthorities(username));
     }
 
     // TODO: 14-8-2023 Wijzg userRole in String, zodat de Param gestest kan worden en evt Exception kan gooien als het geen UserRole is.
     @PostMapping(value = "")
-    public ResponseEntity<UserDto> createNewUser(@RequestBody UserDto dto, @RequestParam(value = "userRole", required = false) UserRole userRole) {;
-
-        String newUsername = userService.createUserName(dto);
+    public ResponseEntity<UserOutputDto> createNewUser(@RequestBody UserInputDto userInputDto, @RequestParam(value = "userrole", required = false) UserRole userRole) {;
+        String newUsername = userService.createUserName(userInputDto);
         userService.addAuthority(newUsername, userRole);
-
         URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{username}")
                 .buildAndExpand(newUsername).toUri();
-
         return ResponseEntity.created(location).build();
     }
 
-
+    @PostMapping(value = "/{username}/{userrole}/authorities")
+    public ResponseEntity<Object> addUserAuthority(@PathVariable("username") String username, @PathVariable("userrole") UserRole userRole) {
+        try {
+            userService.addAuthority(username, userRole);
+            return ResponseEntity.noContent().build();
+        }
+        catch (Exception ex) {
+            throw new BadRequestException();
+        }
+    }
 
     @PutMapping(value = "/{username}")
-    public ResponseEntity<UserDto> updateExistingUser(@PathVariable("username") String username, @RequestBody UserDto dto) {
-
-        userService.updateUser(username, dto);
-
+    public ResponseEntity<UserOutputDto> updateExistingUser(@PathVariable("username") String username, @RequestBody UserInputDto userInputDto) {
+        userService.updateUser(username, userInputDto);
         return ResponseEntity.noContent().build();
     }
 
@@ -70,10 +75,12 @@ public class UserController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping(value = "/{username}/authorities")
-    public ResponseEntity<Object> getUserAuthorities(@PathVariable("username") String username) {
-        return ResponseEntity.ok().body(userService.getAuthorities(username));
+    @DeleteMapping(value = "/{username}/authorities/{authority}")
+    public ResponseEntity<Object> deleteUserAuthority(@PathVariable("username") String username, @PathVariable("authority") String authority) {
+        userService.removeAuthority(username, authority);
+        return ResponseEntity.noContent().build();
     }
+
 
 //    @PostMapping(value = "/{username}/authorities")
 //    public ResponseEntity<Object> addUserAuthority(@PathVariable("username") String username, @RequestBody Map<String, Object> fields) {
@@ -85,24 +92,9 @@ public class UserController {
 //        catch (Exception ex) {
 //            throw new BadRequestException();
 //        }
+
 //    }
-     @PostMapping(value = "/{username}/{userrole}/authorities")
-    public ResponseEntity<Object> addUserAuthority(@PathVariable("username") String username, @PathVariable("userrole") UserRole userRole) {
-        try {
-            userService.addAuthority(username, userRole);
-            return ResponseEntity.noContent().build();
-        }
-        catch (Exception ex) {
-            throw new BadRequestException();
-        }
-    }
 
 
-
-    @DeleteMapping(value = "/{username}/authorities/{authority}")
-    public ResponseEntity<Object> deleteUserAuthority(@PathVariable("username") String username, @PathVariable("authority") String authority) {
-        userService.removeAuthority(username, authority);
-        return ResponseEntity.noContent().build();
-    }
 
 }

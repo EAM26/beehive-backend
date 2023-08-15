@@ -58,16 +58,31 @@ public class SpringSecurityConfig {
                 .authorizeHttpRequests()
                 // Wanneer je deze uncomments, staat je hele security open. Je hebt dan alleen nog een jwt nodig.
 //                .requestMatchers("/**").permitAll()
-                .requestMatchers(HttpMethod.POST, "/authenticate").permitAll()
+
+//                Authentication requests
                 .requestMatchers(HttpMethod.GET, "/authenticated").authenticated()
-                .requestMatchers(HttpMethod.POST, "/users").permitAll()
+                .requestMatchers(HttpMethod.POST, "/authenticate").permitAll()
+
+//                User requests
                 .requestMatchers(HttpMethod.GET,"/users").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.GET,"/users/{username}").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.GET,"/users/{username}/authorities").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.GET,"/users/**").hasRole("ADMIN")
+
+                .requestMatchers(HttpMethod.POST, "/users").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.POST,"/users/{username}/{userrole}/authorities").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.POST,"/users/**").hasRole("ADMIN")
-                .requestMatchers(HttpMethod.GET,"/users/**").hasRole("ADMIN")
+
+                .requestMatchers(HttpMethod.PUT,"/users/{username}").hasRole("ADMIN")
+
+
+                .requestMatchers(HttpMethod.DELETE, "/users/{username}").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.DELETE, "/users/**").hasRole("ADMIN")
+
+//                Employee requests
                 .requestMatchers(HttpMethod.GET,"/employees").hasAnyRole("ADMIN", "MANAGER")
+
+//                Roster requests
                 .requestMatchers(HttpMethod.GET,"/rosters").hasAnyRole("ADMIN", "MANAGER", "USER")
 //                .requestMatchers(HttpMethod.POST, "/cimodules").hasRole("ADMIN")
 //                .requestMatchers(HttpMethod.DELETE, "/cimodules/**").hasRole("ADMIN")

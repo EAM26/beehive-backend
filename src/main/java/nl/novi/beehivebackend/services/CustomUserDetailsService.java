@@ -1,6 +1,7 @@
 package nl.novi.beehivebackend.services;
 
-import nl.novi.beehivebackend.dtos.input.UserDto;
+
+import nl.novi.beehivebackend.dtos.output.UserOutputDto;
 import nl.novi.beehivebackend.models.Authority;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -27,12 +28,12 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) {
-        UserDto userDto = userService.getUser(username);
+        UserOutputDto userOutputDto = userService.getUser(username);
 
 
-        String password = userDto.getPassword();
+        String password = userOutputDto.getPassword();
 
-        Set<Authority> authorities = userDto.getAuthorities();
+        Set<Authority> authorities = userOutputDto.getAuthorities();
         List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
         for (Authority authority: authorities) {
             grantedAuthorities.add(new SimpleGrantedAuthority(authority.getAuthority()));
