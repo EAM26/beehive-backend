@@ -30,12 +30,12 @@ public class UserService {
 
 
     public List<UserOutputDto> getUsers() {
-        List<UserOutputDto> collection = new ArrayList<>();
+        List<UserOutputDto> allUsersList = new ArrayList<>();
         List<User> list = userRepository.findAll();
         for (User user : list) {
-            collection.add(transferUserToUserOutputDto(user));
+            allUsersList.add(transferUserToUserOutputDto(user));
         }
-        return collection;
+        return allUsersList;
     }
 
     public UserOutputDto getUser(String username) {
@@ -66,6 +66,7 @@ public class UserService {
         }
         User user = userRepository.findById(username).get();
         user.setEmail(newUser.getEmail());
+        // TODO: 16-8-2023 Encode password 
         user.setPassword(newUser.getPassword());
         userRepository.save(user);
     }
