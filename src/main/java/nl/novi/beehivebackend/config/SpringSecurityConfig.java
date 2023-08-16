@@ -56,7 +56,7 @@ public class SpringSecurityConfig {
                 .httpBasic().disable()
                 .cors().and()
                 .authorizeHttpRequests()
-                // Wanneer je deze uncomments, staat je hele security open. Je hebt dan alleen nog een jwt nodig.
+
 //                .requestMatchers("/**").permitAll()
 
 //                Authentication requests
@@ -74,6 +74,7 @@ public class SpringSecurityConfig {
                 .requestMatchers(HttpMethod.POST,"/users/**").hasRole("ADMIN")
 
                 .requestMatchers(HttpMethod.PUT,"/users/{username}").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.PUT,"/users/**").hasRole("ADMIN")
 
 
                 .requestMatchers(HttpMethod.DELETE, "/users/{username}").hasRole("ADMIN")
@@ -81,6 +82,7 @@ public class SpringSecurityConfig {
 
 //                Employee requests
                 .requestMatchers(HttpMethod.GET,"/employees").hasAnyRole("ADMIN", "MANAGER")
+                .requestMatchers(HttpMethod.POST,"/employees").hasAnyRole("ADMIN", "MANAGER")
 
 //                Roster requests
                 .requestMatchers(HttpMethod.GET,"/rosters").hasAnyRole("ADMIN", "MANAGER", "USER")
