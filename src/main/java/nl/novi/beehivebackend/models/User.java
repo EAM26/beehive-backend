@@ -21,7 +21,7 @@ public class User {
     @Column(nullable = false, length = 255)
     private String password;
 
-    @Column
+    @Column(nullable = false, unique = true)
     private String email;
 
     @OneToMany(

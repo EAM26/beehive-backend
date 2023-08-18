@@ -11,6 +11,8 @@ import nl.novi.beehivebackend.models.Authority;
 import nl.novi.beehivebackend.models.User;
 import nl.novi.beehivebackend.models.UserRole;
 import nl.novi.beehivebackend.repositories.UserRepository;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -47,27 +49,41 @@ public class UserService {
         return userRepository.existsById(username);
     }
 
-    public String createUserName(UserInputDto userInputDto) {
+    public UserOutputDto createUser(UserInputDto userInputDto, String roleName) {
         if(userExists(userInputDto.getUsername())) {
             throw new IsNotUniqueException("Username is not unique");
         }
-        User newUser = userRepository.save(transerUserInputDtoToUser(userInputDto));
-        return newUser.getUsername();
+        if(roleName == null || !checkUserRoleExists(roleName)){
+            throw new RecordNotFoundException("Role does not exist.");
+        }
+        User user = transferUserInputDtoToUser(userInputDto);
+        UserRole userRole = UserRole.valueOf(roleName.toUpperCase());
+        user.addAuthority(new Authority(user.getUsername(), userRole));
+        userRepository.save(user);
+        return transferUserToUserOutputDto(user);
     }
 
     public void deleteUser(String username) {
         userRepository.deleteById(username);
     }
 
-    public void updateUser(String username, UserInputDto newUser) {
-        if (!userRepository.existsById(username)) throw new RecordNotFoundException();
-        if(userExists((newUser.getUsername())) && (!username.equalsIgnoreCase(newUser.getUsername()))) {
-            throw new IsNotUniqueException("Username is not unique");
+    public void updateUser(String username, UserInputDto userInputDto) {
+        User user = userRepository.findById(username).orElseThrow(()-> new RecordNotFoundException("User with name " + username + " doesn't exist."));
+        if(!(user.getUsername().equals(userInputDto.getUsername()))) {
+            throw new BadRequestException("Not allowed to change user name.");
         }
-        User user = userRepository.findById(username).get();
-        user.setEmail(newUser.getEmail());
-        // TODO: 16-8-2023 Encode password 
-        user.setPassword(newUser.getPassword());
+        // TODO: 18-8-2023 is dit nodig? 
+//        if(userExists((newUser.getUsername())) && (!username.equalsIgnoreCase(newUser.getUsername()))) {
+//            throw new IsNotUniqueException("Username is not unique");
+//        }
+
+        // TODO: 18-8-2023 check of ingelogde user gelijk is aan de te wijzigen user
+        String authUserName = SecurityContextHolder.getContext().getAuthentication().getName();
+        if(!(user.getUsername().equals(authUserName))) {
+            throw new BadRequestException("Not allowed to change other user");
+        }
+        user.setEmail(userInputDto.getEmail());
+        user.setPassword(passwordEncoder.encode(userInputDto.getPassword()));
         userRepository.save(user);
     }
 
@@ -79,14 +95,20 @@ public class UserService {
     }
 
     public void addAuthority(String username, String  roleName) {
-        if (!userRepository.existsById(username)) throw new UsernameNotFoundException(username);
-        User user = userRepository.findById(username).get();
-        try {
-            UserRole userRole = UserRole.valueOf(roleName.toUpperCase());
-            user.addAuthority(new Authority(username, userRole));
-        } catch (Exception e) {
-            throw new RecordNotFoundException("No role found with name: " + roleName);
+        User user = userRepository.findById(username).orElseThrow(()-> new UsernameNotFoundException(username));
+//        if (!userRepository.existsById(username)) throw new UsernameNotFoundException(username);
+//        User user = userRepository.findById(username).get();
+        if(roleName == null || !checkUserRoleExists(roleName)){
+            throw new RecordNotFoundException("Role does not exist.");
         }
+        UserRole userRole = UserRole.valueOf(roleName.toUpperCase());
+        user.addAuthority(new Authority(username, userRole));
+//        try {
+//            UserRole userRole = UserRole.valueOf(roleName.toUpperCase());
+//            user.addAuthority(new Authority(username, userRole));
+//        } catch (Exception e) {
+//            throw new RecordNotFoundException("No role found with name: " + roleName);
+//        }
         userRepository.save(user);
     }
 
@@ -94,12 +116,14 @@ public class UserService {
     public void removeAuthority(String username, String role) {
         if (!userRepository.existsById(username)) throw new UsernameNotFoundException(username);
         User user = userRepository.findById(username).get();
-        for (Authority authority: user.getAuthorities()) {
-            if(authority.getAuthority().equalsIgnoreCase("ROLE_" + checkUserRoleExists(role))) {
-                user.removeAuthority(authority);
+        if(checkUserRoleExists(role)) {
+            for (Authority authority: user.getAuthorities()) {
+                if(authority.getAuthority().equalsIgnoreCase("ROLE_" + checkUserRoleExists(role))) {
+                    user.removeAuthority(authority);
+                }
             }
+            userRepository.save(user);
         }
-        userRepository.save(user);
     }
 
     public  UserOutputDto transferUserToUserOutputDto(User user){
@@ -114,7 +138,7 @@ public class UserService {
         return outputDto;
     }
 
-    public User transerUserInputDtoToUser(UserInputDto userInputDto) {
+    public User transferUserInputDtoToUser(UserInputDto userInputDto) {
         var user = new User();
         user.setUsername(userInputDto.getUsername());
         user.setPassword(passwordEncoder.encode(userInputDto.getPassword()));
@@ -123,7 +147,7 @@ public class UserService {
 
     }
 
-    private String checkUserRoleExists(String roleName) {
+    private boolean checkUserRoleExists(String roleName) {
         boolean isMatch = false;
         for (UserRole userRole: UserRole.values()) {
             if(roleName.equalsIgnoreCase(userRole.name())) {
@@ -134,7 +158,7 @@ public class UserService {
         if(!isMatch) {
             throw new BadRequestException("No role found with name: " + roleName);
         }
-        return roleName.toUpperCase();
+        return true;
     }
 
 

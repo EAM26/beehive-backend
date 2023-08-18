@@ -73,7 +73,7 @@ public class SpringSecurityConfig {
                 .requestMatchers(HttpMethod.POST,"/users/{username}/{userrole}/authorities").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.POST,"/users/**").hasRole("ADMIN")
 
-                .requestMatchers(HttpMethod.PUT,"/users/{username}").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.PUT,"/users/{username}").hasAnyRole("ADMIN", "MANAGER", "USER")
                 .requestMatchers(HttpMethod.PUT,"/users/**").hasRole("ADMIN")
 
 

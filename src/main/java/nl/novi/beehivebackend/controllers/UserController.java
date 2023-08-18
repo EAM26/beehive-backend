@@ -24,7 +24,7 @@ public class UserController {
     private final UserService userService;
     private final ValidationUtil validationUtil;
 
-    public UserController(UserService userService,  ValidationUtil validationUtil) {
+    public UserController(UserService userService, ValidationUtil validationUtil) {
         this.validationUtil = validationUtil;
         this.userService = userService;
     }
@@ -52,22 +52,16 @@ public class UserController {
         if (bindingResult.hasFieldErrors()) {
             return ResponseEntity.badRequest().body(validationUtil.validationMessage(bindingResult).toString());
         }
-        String newUsername = userService.createUserName(userInputDto);
-        userService.addAuthority(newUsername, roleName);
+        UserOutputDto userOutputDto = userService.createUser(userInputDto, roleName);
         URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{username}")
-                .buildAndExpand(newUsername).toUri();
+                .buildAndExpand(userOutputDto.getUsername()).toUri();
         return ResponseEntity.created(location).build();
     }
 
     @PostMapping(value = "/{username}/{userrole}/authorities")
     public ResponseEntity<Object> addUserAuthority(@PathVariable("username") String username, @PathVariable("userrole") String roleName) {
-        try {
-            userService.addAuthority(username, roleName);
-            return ResponseEntity.noContent().build();
-        }
-        catch (Exception ex) {
-            throw new BadRequestException();
-        }
+        userService.addAuthority(username, roleName);
+        return ResponseEntity.noContent().build();
     }
 
     @PutMapping(value = "/{username}")
@@ -90,7 +84,6 @@ public class UserController {
         userService.removeAuthority(username, role);
         return ResponseEntity.noContent().build();
     }
-
 
 
 }
