@@ -59,6 +59,11 @@ public class SpringSecurityConfig {
 
 //                .requestMatchers("/**").permitAll()
 
+//                Tijdelijke test connectie frontend
+                .requestMatchers(HttpMethod.GET,"/employees").permitAll()
+
+
+
 //                Authentication requests
                 .requestMatchers(HttpMethod.GET, "/authenticated").authenticated()
                 .requestMatchers(HttpMethod.POST, "/authenticate").permitAll()
@@ -81,23 +86,13 @@ public class SpringSecurityConfig {
                 .requestMatchers(HttpMethod.DELETE, "/users/**").hasRole("ADMIN")
 
 //                Employee requests
-                .requestMatchers(HttpMethod.GET,"/employees").hasAnyRole("ADMIN", "MANAGER")
+//                Tijdelijk uitgezet ivm controle connectie frontend
+//                .requestMatchers(HttpMethod.GET,"/employees").hasAnyRole("ADMIN", "MANAGER")
                 .requestMatchers(HttpMethod.POST,"/employees").hasAnyRole("ADMIN", "MANAGER")
 
 //                Roster requests
                 .requestMatchers(HttpMethod.GET,"/rosters").hasAnyRole("ADMIN", "MANAGER", "USER")
-//                .requestMatchers(HttpMethod.POST, "/cimodules").hasRole("ADMIN")
-//                .requestMatchers(HttpMethod.DELETE, "/cimodules/**").hasRole("ADMIN")
-//                .requestMatchers(HttpMethod.POST, "/remotecontrollers").hasRole("ADMIN")
-//                .requestMatchers(HttpMethod.DELETE, "/remotecontrollers/**").hasRole("ADMIN")
-//                .requestMatchers(HttpMethod.POST, "/televisions").hasRole("ADMIN")
-//                .requestMatchers(HttpMethod.DELETE, "/televisions/**").hasRole("ADMIN")
-//                .requestMatchers(HttpMethod.POST, "/wallbrackets").hasRole("ADMIN")
-//                .requestMatchers(HttpMethod.DELETE, "/wallbrackets/**").hasRole("ADMIN")
-//                // Je mag meerdere paths tegelijk definieren
-//                .requestMatchers("/cimodules", "/remotecontrollers", "/televisions", "/wallbrackets").hasAnyRole("ADMIN", "USER")
-//                .requestMatchers("/authenticated").authenticated()
-//                .requestMatchers("/authenticate").permitAll()
+//
                 .anyRequest().denyAll()
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
