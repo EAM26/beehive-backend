@@ -1,4 +1,3 @@
-
 INSERT INTO teams (id, team_name)
 VALUES (401, 'Kitchen'),
        (402, 'Bar'),
@@ -91,11 +90,11 @@ VALUES ('droneOne', '$2a$12$kXehSOg1pjplDThnp6Wiw.ckLvEwZZUJh0KSb2pnKIXzhvJmWNTA
 
 INSERT INTO authorities (username, authority)
 VALUES ('droneOne', 'ROLE_USER'),
-    ('beeOne', 'ROLE_USER'),
-    ('beeOne', 'ROLE_MANAGER'),
-    ('queen', 'ROLE_USER'),
-    ('queen', 'ROLE_MANAGER'),
-    ('queen', 'ROLE_ADMIN');
+       ('beeOne', 'ROLE_USER'),
+       ('beeOne', 'ROLE_MANAGER'),
+       ('queen', 'ROLE_USER'),
+       ('queen', 'ROLE_MANAGER'),
+       ('queen', 'ROLE_ADMIN');
 
 
 

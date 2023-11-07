@@ -19,6 +19,7 @@ public class Employee {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+
     // Personal details
     private String firstName;
     private String preposition;

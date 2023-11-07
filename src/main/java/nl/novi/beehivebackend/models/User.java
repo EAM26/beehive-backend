@@ -22,7 +22,7 @@ public class User {
     private String password;
 
     @Column(nullable = false, unique = true)
-    private String email;
+    private String email ;
 
     @OneToMany(
             targetEntity = Authority.class,
