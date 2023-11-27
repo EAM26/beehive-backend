@@ -43,7 +43,7 @@ public class AuthenticationController {
     Deze methode geeft het JWT token terug wanneer de gebruiker de juiste inloggegevens op geeft.
      */
     @PostMapping(value = "/authenticate")
-    public ResponseEntity<?> createAuthenticationToken(@RequestBody AuthenticationRequest authenticationRequest) throws Exception {
+    public ResponseEntity<?> createAuthenticationToken(@RequestBody AuthenticationRequest authenticationRequest)  {
 
         String username = authenticationRequest.getUsername();
         String password = authenticationRequest.getPassword();
@@ -53,8 +53,8 @@ public class AuthenticationController {
                     new UsernamePasswordAuthenticationToken(username, password)
             );
         }
-        catch (BadCredentialsException ex) {
-            throw new Exception("Incorrect username or password", ex);
+        catch (Exception e) {
+            throw new BadCredentialsException("Incorrect username or password", e);
         }
 
         final UserDetails userDetails = userDetailsService

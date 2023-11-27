@@ -29,7 +29,7 @@ public class EmployeeController {
 
 
     @GetMapping
-    public ResponseEntity<Iterable<EmployeeOutputDto>> getAllEmployees(@RequestParam(required = true) Boolean isEmployed) {
+    public ResponseEntity<Iterable<EmployeeOutputDto>> getAllEmployees(@RequestParam(required = false) Boolean isEmployed) {
         if (isEmployed != null) {
             return new ResponseEntity<>(employeeService.getAllEmployees(isEmployed), HttpStatus.OK);
         }
