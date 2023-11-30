@@ -57,11 +57,6 @@ public class SpringSecurityConfig {
                 .cors().and()
                 .authorizeHttpRequests()
 
-//                .requestMatchers("/**").permitAll()
-
-//                Tijdelijke test connectie frontend
-                .requestMatchers(HttpMethod.GET,"/employees").permitAll()
-
 
 
 //                Authentication requests
@@ -86,8 +81,8 @@ public class SpringSecurityConfig {
                 .requestMatchers(HttpMethod.DELETE, "/users/**").hasRole("ADMIN")
 
 //                Employee requests
-//                Tijdelijk uitgezet ivm controle connectie frontend
-//                .requestMatchers(HttpMethod.GET,"/employees").hasAnyRole("ADMIN", "MANAGER")
+                .requestMatchers(HttpMethod.GET,"/employees").hasAnyRole("ADMIN", "MANAGER")
+                .requestMatchers(HttpMethod.GET,"/employees/{id}").hasAnyRole("ADMIN", "MANAGER", "USER")
                 .requestMatchers(HttpMethod.POST,"/employees").hasAnyRole("ADMIN", "MANAGER")
 
 //                Roster requests
