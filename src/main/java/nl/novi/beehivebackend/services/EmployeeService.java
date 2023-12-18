@@ -9,8 +9,10 @@ import nl.novi.beehivebackend.dtos.output.EmployeeOutputDto;
 import nl.novi.beehivebackend.models.Employee;
 import nl.novi.beehivebackend.models.Roster;
 import nl.novi.beehivebackend.models.Team;
+import nl.novi.beehivebackend.models.User;
 import nl.novi.beehivebackend.repositories.EmployeeRepository;
 import nl.novi.beehivebackend.repositories.TeamRepository;
+import nl.novi.beehivebackend.repositories.UserRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
@@ -22,10 +24,12 @@ public class EmployeeService {
 
     private final EmployeeRepository employeeRepository;
     private final TeamRepository teamRepository;
+    private final UserRepository userRepository;
 
-    public EmployeeService(EmployeeRepository employeeRepository, TeamRepository teamRepository) {
+    public EmployeeService(EmployeeRepository employeeRepository, TeamRepository teamRepository, UserRepository userRepository) {
         this.employeeRepository = employeeRepository;
         this.teamRepository = teamRepository;
+        this.userRepository = userRepository;
     }
 
 
@@ -98,7 +102,7 @@ public class EmployeeService {
         employeeOutputDto.setShortName(employee.getShortName());
         employeeOutputDto.setDob(employee.getDob());
         employeeOutputDto.setPhoneNumber(employee.getPhoneNumber());
-        employeeOutputDto.setEmail(employee.getEmail());
+        employeeOutputDto.setEmail(employee.getUser().getEmail());
         employeeOutputDto.setPassword(employee.getPassword());
         employeeOutputDto.setIsEmployed(employee.getIsEmployed());
         employeeOutputDto.setTeam(employee.getTeam());
@@ -119,17 +123,18 @@ public class EmployeeService {
 
 // Overload transfer for putmapping
     private Employee transferEmployeeInputDtoToEmployee(EmployeeInputDto employeeInputDto, Employee employee, Team team) {
+        User user = userRepository.findById(employeeInputDto.getUsername()).orElseThrow(() -> new RecordNotFoundException("No user found with username: " + employeeInputDto.getUsername()));
         employee.setFirstName(employeeInputDto.getFirstName());
         employee.setPreposition(employeeInputDto.getPreposition());
         employee.setLastName(employeeInputDto.getLastName());
         employee.setShortName(employeeInputDto.getShortName());
         employee.setDob(employeeInputDto.getDob());
         employee.setPhoneNumber(employeeInputDto.getPhoneNumber());
-        employee.setEmail(employeeInputDto.getEmail());
+        employee.setUser(user);
         employee.setPassword(employeeInputDto.getPassword());
         employee.setIsEmployed(employeeInputDto.getIsEmployed());
         employee.setTeam(team);
-
+        user.setEmployee(employee);
         return employee;
     }
 

@@ -27,9 +27,12 @@ public class EmployeeInputDto {
     public LocalDate dob;
     public String phoneNumber;
 
-    @NotBlank(message = "Email is required.")
-    @Email(message = "Valid email is required.")
-    public String email;
+//    @NotBlank(message = "Email is required.")
+//    @Email(message = "Valid email is required.")
+//    public String email;
+
+    @NotNull(message="username field is required.")
+    public String username;
 
     @NotBlank (message = "Password is required.")
     @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#&()–[{}]:;',?/*~$^+=<>]).{8,20}$", message = "1. Password must contain at least one digit [0-9].\n" +
