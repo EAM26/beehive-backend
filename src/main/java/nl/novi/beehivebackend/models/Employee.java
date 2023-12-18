@@ -25,11 +25,8 @@ public class Employee {
     private String preposition;
     private String lastName;
     private String shortName;
-
     private LocalDate dob;
     private String phoneNumber;
-    private String email;
-    private String password;
     private Boolean isEmployed;
 
     @ManyToOne

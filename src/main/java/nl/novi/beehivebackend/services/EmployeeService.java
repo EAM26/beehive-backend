@@ -103,7 +103,7 @@ public class EmployeeService {
         employeeOutputDto.setDob(employee.getDob());
         employeeOutputDto.setPhoneNumber(employee.getPhoneNumber());
         employeeOutputDto.setEmail(employee.getUser().getEmail());
-        employeeOutputDto.setPassword(employee.getPassword());
+        employeeOutputDto.setPassword(employee.getUser().getPassword());
         employeeOutputDto.setIsEmployed(employee.getIsEmployed());
         employeeOutputDto.setTeam(employee.getTeam());
         employeeOutputDto.setUser(employee.getUser());
@@ -131,7 +131,6 @@ public class EmployeeService {
         employee.setDob(employeeInputDto.getDob());
         employee.setPhoneNumber(employeeInputDto.getPhoneNumber());
         employee.setUser(user);
-        employee.setPassword(employeeInputDto.getPassword());
         employee.setIsEmployed(employeeInputDto.getIsEmployed());
         employee.setTeam(team);
         user.setEmployee(employee);
