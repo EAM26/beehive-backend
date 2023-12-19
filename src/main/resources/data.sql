@@ -86,9 +86,9 @@ VALUES ('drone', '$2a$12$6VTVyOxi3R7rvm.3QgVVtOB33FePKmA4ZHWyvu3C8AM9Xuvo.nKdK',
 
 
 INSERT INTO authorities (username, authority)
-VALUES ('droneOne', 'ROLE_USER'),
-       ('beeOne', 'ROLE_USER'),
-       ('beeOne', 'ROLE_MANAGER'),
+VALUES ('drone', 'ROLE_USER'),
+       ('bee', 'ROLE_USER'),
+       ('bee', 'ROLE_MANAGER'),
        ('queen', 'ROLE_USER'),
        ('queen', 'ROLE_MANAGER'),
        ('queen', 'ROLE_ADMIN');
