@@ -54,12 +54,15 @@ public class EmployeeService {
         return employeeOutputDtos;
     }
 
-    public EmployeeOutputDto getSingleEmployee(Long id) {;
+    public EmployeeOutputDto getSingleEmployee(Long id) {
         Employee employee = employeeRepository.findById(id).orElseThrow(() -> new RecordNotFoundException("No employee found with id: " + id));
         return transferEmployeeToEmployeeOutputDto(employee);
     }
     public EmployeeOutputDto getOwnProfile() {
         Long empId =  userData.getLoggedInUser().getEmployeeId();
+        if(empId == null) {
+            throw new RecordNotFoundException("No employee found with that user");
+        }
         return getSingleEmployee(empId);
     }
 
@@ -110,11 +113,11 @@ public class EmployeeService {
         employeeOutputDto.setDob(employee.getDob());
         employeeOutputDto.setPhoneNumber(employee.getPhoneNumber());
         employeeOutputDto.setEmail(employee.getUser().getEmail());
-//        employeeOutputDto.setPassword(employee.getUser().getPassword());
         employeeOutputDto.setIsEmployed(employee.getIsEmployed());
         employeeOutputDto.setTeam(employee.getTeam());
-//        employeeOutputDto.setUser(employee.getUser());
         employeeOutputDto.setShifts(employee.getShifts());
+        employeeOutputDto.setUsername(employee.getUser().getUsername());
+        employeeOutputDto.setAuthorities(employee.getUser().getAuthorities());
 
         return employeeOutputDto;
     }
@@ -145,15 +148,4 @@ public class EmployeeService {
     }
 
 
-//    private Employee convertDtoToEmployee(EmployeeInputDto employeeInputDto) {
-//        return modelMapper.map(employeeInputDto, Employee.class);
-//    }
-
-    // TODO: 7-7-2023 Check of deze methode handig is
-//    private Boolean checkTeamExist(EmployeeInputDto employeeInputDto) {
-//        if (!teamRepository.existsById(employeeInputDto.getTeam().getTeamName())) {
-//            throw new RecordNotFoundException("No team found with name: " + employeeInputDto.getTeam().getTeamName());
-//        }
-//        return true;
-//    }
 }
