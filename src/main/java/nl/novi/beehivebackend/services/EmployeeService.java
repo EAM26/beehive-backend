@@ -7,17 +7,18 @@ import nl.novi.beehivebackend.exceptions.IsNotUniqueException;
 import nl.novi.beehivebackend.exceptions.RecordNotFoundException;
 import nl.novi.beehivebackend.dtos.output.EmployeeOutputDto;
 import nl.novi.beehivebackend.models.Employee;
-import nl.novi.beehivebackend.models.Roster;
 import nl.novi.beehivebackend.models.Team;
 import nl.novi.beehivebackend.models.User;
 import nl.novi.beehivebackend.repositories.EmployeeRepository;
 import nl.novi.beehivebackend.repositories.TeamRepository;
 import nl.novi.beehivebackend.repositories.UserRepository;
-import org.modelmapper.ModelMapper;
+import nl.novi.beehivebackend.utils.UserData;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+
+
 
 @Service
 public class EmployeeService {
@@ -25,11 +26,13 @@ public class EmployeeService {
     private final EmployeeRepository employeeRepository;
     private final TeamRepository teamRepository;
     private final UserRepository userRepository;
+    private final UserData userData;
 
-    public EmployeeService(EmployeeRepository employeeRepository, TeamRepository teamRepository, UserRepository userRepository) {
+    public EmployeeService(EmployeeRepository employeeRepository, TeamRepository teamRepository, UserRepository userRepository, UserData userData) {
         this.employeeRepository = employeeRepository;
         this.teamRepository = teamRepository;
         this.userRepository = userRepository;
+        this.userData = userData;
     }
 
 
@@ -51,9 +54,13 @@ public class EmployeeService {
         return employeeOutputDtos;
     }
 
-    public EmployeeOutputDto getEmployee(Long id) {
+    public EmployeeOutputDto getSingleEmployee(Long id) {;
         Employee employee = employeeRepository.findById(id).orElseThrow(() -> new RecordNotFoundException("No employee found with id: " + id));
         return transferEmployeeToEmployeeOutputDto(employee);
+    }
+    public EmployeeOutputDto getOwnProfile() {
+        Long empId =  userData.getLoggedInUser().getEmployeeId();
+        return getSingleEmployee(empId);
     }
 
     public EmployeeOutputDto createEmployee(EmployeeInputDto employeeInputDto) {
@@ -103,10 +110,10 @@ public class EmployeeService {
         employeeOutputDto.setDob(employee.getDob());
         employeeOutputDto.setPhoneNumber(employee.getPhoneNumber());
         employeeOutputDto.setEmail(employee.getUser().getEmail());
-        employeeOutputDto.setPassword(employee.getUser().getPassword());
+//        employeeOutputDto.setPassword(employee.getUser().getPassword());
         employeeOutputDto.setIsEmployed(employee.getIsEmployed());
         employeeOutputDto.setTeam(employee.getTeam());
-        employeeOutputDto.setUser(employee.getUser());
+//        employeeOutputDto.setUser(employee.getUser());
         employeeOutputDto.setShifts(employee.getShifts());
 
         return employeeOutputDto;
@@ -142,7 +149,7 @@ public class EmployeeService {
 //        return modelMapper.map(employeeInputDto, Employee.class);
 //    }
 
-    // TODO: 7-7-2023 Check of deze methode handig is 
+    // TODO: 7-7-2023 Check of deze methode handig is
 //    private Boolean checkTeamExist(EmployeeInputDto employeeInputDto) {
 //        if (!teamRepository.existsById(employeeInputDto.getTeam().getTeamName())) {
 //            throw new RecordNotFoundException("No team found with name: " + employeeInputDto.getTeam().getTeamName());
