@@ -129,7 +129,7 @@ public class UserService {
     public  UserOutputDto transferUserToUserOutputDto(User user){
         var outputDto = new UserOutputDto();
         outputDto.username = user.getUsername();
-        outputDto.password = user.getPassword();
+//        outputDto.password = user.getPassword();
         outputDto.email = user.getEmail();
         outputDto.authorities = user.getAuthorities();
         if(user.getEmployee() != null) {

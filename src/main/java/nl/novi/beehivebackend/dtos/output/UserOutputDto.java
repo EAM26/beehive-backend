@@ -7,7 +7,6 @@ import java.util.Set;
 public class UserOutputDto {
 
     public String username;
-    public String password;
     public String email;
     public Long employeeId;
 
@@ -17,9 +16,6 @@ public class UserOutputDto {
         return username;
     }
 
-    public String getPassword() {
-        return password;
-    }
 
 
     public String getEmail() {
@@ -34,9 +30,6 @@ public class UserOutputDto {
         this.username = username;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
 
 
     public void setEmail(String email) {
