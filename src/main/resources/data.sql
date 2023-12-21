@@ -62,16 +62,33 @@ VALUES (201, '2023-01-02', '2023-01-02', '09:00:00', '17:00:00', 101, '1-2023-Ki
 
 -- Wachtwoorden zijn username van user
 INSERT INTO users (username, password, email, employee_id)
-VALUES ('droneOne', '$2a$12$kXehSOg1pjplDThnp6Wiw.ckLvEwZZUJh0KSb2pnKIXzhvJmWNTAO', 'droneOne@test.nl', 101),
-       ('beeOne', '$2a$12$7gLXZZkR6T8uVYjio4Xm4OIWh0Zi.6X94mr67eGGczTqhhU2pEaBy', 'beeOne@test.nl', 102),
-       ('queen', '$2a$12$m2474RWG2d6NfKWIfBWOTun4DySP9ilW8sDqoSOL6ub3EpEYkA1XC', 'queen@test.nl', null);
+VALUES ('drone', '$2a$12$6VTVyOxi3R7rvm.3QgVVtOB33FePKmA4ZHWyvu3C8AM9Xuvo.nKdK', 'drone@test.nl', 101),
+       ('bee', '$2a$12$gVMFeZOh9t5IqDnyrUSls.2.at7yQip0HivRy1JDTKpIRqakvQq6e', 'bee@test.nl', 102),
+       ('queen', '$2a$12$m2474RWG2d6NfKWIfBWOTun4DySP9ilW8sDqoSOL6ub3EpEYkA1XC', 'queen@test.nl', 103),
+       ('user104', '$2a$12$8kZ5gsRWK1d1W6NcP6FMPukVQFK.38.fCeSmfoVY3wR7r5D1VBdae', 'user104@test.nl', 104),
+       ('user105', '$2a$12$8kZ5gsRWK1d1W6NcP6FMPukVQFK.38.fCeSmfoVY3wR7r5D1VBdae', 'user105@test.nl', 105),
+       ('user106', '$2a$12$8kZ5gsRWK1d1W6NcP6FMPukVQFK.38.fCeSmfoVY3wR7r5D1VBdae', 'user106@test.nl', 106),
+       ('user107', '$2a$12$8kZ5gsRWK1d1W6NcP6FMPukVQFK.38.fCeSmfoVY3wR7r5D1VBdae', 'user107@test.nl', 107),
+       ('user108', '$2a$12$8kZ5gsRWK1d1W6NcP6FMPukVQFK.38.fCeSmfoVY3wR7r5D1VBdae', 'user108@test.nl', 108),
+       ('user109', '$2a$12$8kZ5gsRWK1d1W6NcP6FMPukVQFK.38.fCeSmfoVY3wR7r5D1VBdae', 'user109@test.nl', 109),
+       ('user110', '$2a$12$8kZ5gsRWK1d1W6NcP6FMPukVQFK.38.fCeSmfoVY3wR7r5D1VBdae', 'user110@test.nl', 110),
+       ('user111', '$2a$12$8kZ5gsRWK1d1W6NcP6FMPukVQFK.38.fCeSmfoVY3wR7r5D1VBdae', 'user111@test.nl', 111),
+       ('user112', '$2a$12$8kZ5gsRWK1d1W6NcP6FMPukVQFK.38.fCeSmfoVY3wR7r5D1VBdae', 'user112@test.nl', 112),
+       ('user113', '$2a$12$8kZ5gsRWK1d1W6NcP6FMPukVQFK.38.fCeSmfoVY3wR7r5D1VBdae', 'user113@test.nl', 113),
+       ('user114', '$2a$12$8kZ5gsRWK1d1W6NcP6FMPukVQFK.38.fCeSmfoVY3wR7r5D1VBdae', 'user114@test.nl', 114),
+       ('user115', '$2a$12$8kZ5gsRWK1d1W6NcP6FMPukVQFK.38.fCeSmfoVY3wR7r5D1VBdae', 'user115@test.nl', 115),
+       ('user116', '$2a$12$8kZ5gsRWK1d1W6NcP6FMPukVQFK.38.fCeSmfoVY3wR7r5D1VBdae', 'user116@test.nl', 116),
+       ('user117', '$2a$12$8kZ5gsRWK1d1W6NcP6FMPukVQFK.38.fCeSmfoVY3wR7r5D1VBdae', 'user117@test.nl', 117),
+       ('user118', '$2a$12$8kZ5gsRWK1d1W6NcP6FMPukVQFK.38.fCeSmfoVY3wR7r5D1VBdae', 'user118@test.nl', 118),
+       ('user119', '$2a$12$8kZ5gsRWK1d1W6NcP6FMPukVQFK.38.fCeSmfoVY3wR7r5D1VBdae', 'user119@test.nl', 119),
+       ('user120', '$2a$12$8kZ5gsRWK1d1W6NcP6FMPukVQFK.38.fCeSmfoVY3wR7r5D1VBdae', 'user120@test.nl', 120);
 
 
 
 INSERT INTO authorities (username, authority)
-VALUES ('droneOne', 'ROLE_USER'),
-       ('beeOne', 'ROLE_USER'),
-       ('beeOne', 'ROLE_MANAGER'),
+VALUES ('drone', 'ROLE_USER'),
+       ('bee', 'ROLE_USER'),
+       ('bee', 'ROLE_MANAGER'),
        ('queen', 'ROLE_USER'),
        ('queen', 'ROLE_MANAGER'),
        ('queen', 'ROLE_ADMIN');

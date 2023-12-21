@@ -39,9 +39,16 @@ public class EmployeeController {
 
 
     // TODO: 28-6-2023 Add check to only see self
-    @GetMapping("/{id}")
-    public ResponseEntity<EmployeeOutputDto> getEmployee(@PathVariable Long id) {
-        return new ResponseEntity<>(employeeService.getEmployee(id), HttpStatus.OK);
+    @GetMapping("/profile/{id}")
+    public ResponseEntity<EmployeeOutputDto> getSingleEmployee(@PathVariable Long id) {
+        return new ResponseEntity<>(employeeService.getSingleEmployee(id), HttpStatus.OK);
+    }
+    @GetMapping("/profile")
+    public ResponseEntity<EmployeeOutputDto> getOwnProfile() {
+        System.out.println("*****************");
+        System.out.println("employee profile controller running");
+        System.out.println("*****************");
+        return new ResponseEntity<>(employeeService.getOwnProfile(), HttpStatus.OK);
     }
 
 

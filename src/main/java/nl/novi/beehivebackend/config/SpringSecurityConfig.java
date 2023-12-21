@@ -80,9 +80,11 @@ public class SpringSecurityConfig {
                 .requestMatchers(HttpMethod.DELETE, "/users/{username}").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.DELETE, "/users/**").hasRole("ADMIN")
 
+//                .requestMatchers(HttpMethod.GET,"/profile").authenticated()
 //                Employee requests
                 .requestMatchers(HttpMethod.GET,"/employees").hasAnyRole("ADMIN", "MANAGER")
-                .requestMatchers(HttpMethod.GET,"/employees/{id}").hasAnyRole("ADMIN", "MANAGER", "USER")
+                .requestMatchers(HttpMethod.GET,"/employees/profile").authenticated()
+                .requestMatchers(HttpMethod.GET,"/employees/profile/{id}").hasAnyRole("ADMIN", "MANAGER")
                 .requestMatchers(HttpMethod.POST,"/employees").hasAnyRole("ADMIN", "MANAGER")
 
 //                Roster requests

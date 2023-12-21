@@ -6,11 +6,11 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import nl.novi.beehivebackend.models.User;
+import nl.novi.beehivebackend.repositories.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.security.Key;
-import java.security.Signature;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -21,6 +21,12 @@ public class JwtUtil {
 
     // De secret key moet minimaal 256 bits lang zijn, of grofweg 45 characters
     private final static String SECRET_KEY = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
+
+    private final UserRepository userRepository;
+
+    public JwtUtil(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     private Key getSigningKey() {
         byte[] keyBytes = Decoders.BASE64.decode(SECRET_KEY);
@@ -51,6 +57,8 @@ public class JwtUtil {
     public String generateToken(UserDetails userDetails) {
         Map<String, Object> claims = new HashMap<>();
         claims.put("authority", userDetails.getAuthorities());
+        User user = userRepository.findByUsername(userDetails.getUsername());
+        claims.put("employeeId", user.getEmployeeId());
         return createToken(claims, userDetails.getUsername());
     }
 
