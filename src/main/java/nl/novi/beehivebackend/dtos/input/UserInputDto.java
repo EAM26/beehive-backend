@@ -28,6 +28,16 @@ public class UserInputDto {
     public Long employeeId;
     public Set<Authority> authorities;
 
+    public String highestRole;
+
+    public String getHighestRole() {
+        return highestRole;
+    }
+
+    public void setHighestRole(String highestRole) {
+        this.highestRole = highestRole;
+    }
+
     public String getUsername() {
         return username;
     }

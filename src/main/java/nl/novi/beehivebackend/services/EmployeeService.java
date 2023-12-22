@@ -58,12 +58,14 @@ public class EmployeeService {
         Employee employee = employeeRepository.findById(id).orElseThrow(() -> new RecordNotFoundException("No employee found with id: " + id));
         return transferEmployeeToEmployeeOutputDto(employee);
     }
+
     public EmployeeOutputDto getOwnProfile() {
-        Long empId =  userData.getLoggedInUser().getEmployeeId();
-        if(empId == null) {
-            throw new RecordNotFoundException("No employee found with that user");
+        try {
+            Long empId = userData.getLoggedInUser().getEmployeeId();
+            return getSingleEmployee(empId);
+        } catch (Exception exception) {
+            throw new RecordNotFoundException("No employee found with that username");
         }
-        return getSingleEmployee(empId);
     }
 
     public EmployeeOutputDto createEmployee(EmployeeInputDto employeeInputDto) {
@@ -131,7 +133,7 @@ public class EmployeeService {
     }
 
 
-// Overload transfer for putmapping
+    // Overload transfer for putmapping
     private Employee transferEmployeeInputDtoToEmployee(EmployeeInputDto employeeInputDto, Employee employee, Team team) {
         User user = userRepository.findById(employeeInputDto.getUsername()).orElseThrow(() -> new RecordNotFoundException("No user found with username: " + employeeInputDto.getUsername()));
         employee.setFirstName(employeeInputDto.getFirstName());
