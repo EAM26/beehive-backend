@@ -58,6 +58,20 @@ public class UserController {
         return ResponseEntity.created(location).build();
     }
 
+    @PostMapping(value = "/test")
+    public ResponseEntity<Object> TestNewUser(@Valid @RequestBody UserInputDto userInputDto, BindingResult bindingResult) {
+        System.out.println("controller test new user");
+        if (bindingResult.hasFieldErrors()) {
+            return ResponseEntity.badRequest().body(validationUtil.validationMessage(bindingResult).toString());
+        }
+        UserOutputDto userOutputDto = userService.testNewUser(userInputDto);
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{username}")
+                .buildAndExpand(userOutputDto.getUsername()).toUri();
+        return ResponseEntity.created(location).build();
+    }
+
+
+
     @PostMapping(value = "/{username}/{userrole}/authorities")
     public ResponseEntity<Object> addUserAuthority(@PathVariable("username") String username, @PathVariable("userrole") String roleName) {
         userService.addAuthority(username, roleName);

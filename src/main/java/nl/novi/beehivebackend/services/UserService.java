@@ -17,6 +17,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -62,6 +63,32 @@ public class UserService {
         userRepository.save(user);
         return transferUserToUserOutputDto(user);
     }
+
+    public UserOutputDto testNewUser(UserInputDto userInputDto) {
+        System.out.println("Service Test new user");
+        if(userExists(userInputDto.getUsername())) {
+            throw new IsNotUniqueException("Username is not unique");
+        }
+        String highestRole = userInputDto.getHighestRole();
+        if(highestRole == null || !checkUserRoleExists(highestRole)){
+            throw new RecordNotFoundException("Role does not exist.");
+        }
+        User user = transferUserInputDtoToUser(userInputDto);
+        UserRole userRole = UserRole.valueOf(highestRole.toUpperCase());
+        user.addAuthority(new Authority(user.getUsername(), userRole));
+        userRepository.save(user);
+        return transferUserToUserOutputDto(user);
+    }
+
+    private Set<Authority> addAuthoritySet(User user, String highestRole) {
+
+
+        Set<Authority> authorities = new HashSet<>();
+
+        return authorities;
+    }
+
+
 
     public void deleteUser(String username) {
         userRepository.deleteById(username);
