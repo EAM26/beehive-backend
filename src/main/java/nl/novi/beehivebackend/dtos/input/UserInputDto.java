@@ -3,10 +3,14 @@ package nl.novi.beehivebackend.dtos.input;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
+import lombok.Getter;
+import lombok.Setter;
 import nl.novi.beehivebackend.models.Authority;
 
 import java.util.Set;
 
+@Getter
+@Setter
 public class UserInputDto {
 
     @NotBlank(message = "User name is required.")
@@ -25,58 +29,9 @@ public class UserInputDto {
     @Email(message = "Valid email is required.")
     public String email;
 
-    public Long employeeId;
     public Set<Authority> authorities;
 
+    @NotBlank(message = "Role is required.")
     public String highestRole;
 
-    public String getHighestRole() {
-        return highestRole;
-    }
-
-    public void setHighestRole(String highestRole) {
-        this.highestRole = highestRole;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-
-    public String getEmail() {
-        return email;
-    }
-
-    public Set<Authority> getAuthorities() {
-        return authorities;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public void setAuthorities(Set<Authority> authorities) {
-        this.authorities = authorities;
-    }
-
-    public Long getEmployeeId() {
-        return employeeId;
-    }
-
-    public void setEmployeeId(Long employeeId) {
-        this.employeeId = employeeId;
-    }
 }
