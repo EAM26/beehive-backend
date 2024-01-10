@@ -11,7 +11,6 @@ import nl.novi.beehivebackend.models.Authority;
 import nl.novi.beehivebackend.models.User;
 import nl.novi.beehivebackend.models.UserRole;
 import nl.novi.beehivebackend.repositories.UserRepository;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -50,25 +49,32 @@ public class UserService {
         return userRepository.existsById(username);
     }
 
-    public UserOutputDto createUser(UserInputDto userInputDto, String roleName) {
-        if(userExists(userInputDto.getUsername())) {
-            throw new IsNotUniqueException("Username is not unique");
-        }
-        if(roleName == null || !checkUserRoleExists(roleName)){
-            throw new RecordNotFoundException("Role does not exist.");
-        }
-        User user = transferUserInputDtoToUser(userInputDto);
-        UserRole userRole = UserRole.valueOf(roleName.toUpperCase());
-        user.addAuthority(new Authority(user.getUsername(), userRole));
-        userRepository.save(user);
-        return transferUserToUserOutputDto(user);
-    }
 
-    public UserOutputDto testNewUser(UserInputDto userInputDto) {
+
+//    public UserOutputDto createUser(UserInputDto userInputDto, String roleName) {
+//        if(userExists(userInputDto.getUsername())) {
+//            throw new IsNotUniqueException("Username is not unique");
+//        }
+//        if(roleName == null || !checkUserRoleExists(roleName)){
+//            throw new RecordNotFoundException("Role does not exist.");
+//        }
+//        User user = transferUserInputDtoToUser(userInputDto);
+//        UserRole userRole = UserRole.valueOf(roleName.toUpperCase());
+//        user.addAuthority(new Authority(user.getUsername(), userRole));
+//        userRepository.save(user);
+//        return transferUserToUserOutputDto(user);
+//    }
+
+    public UserOutputDto createUser(UserInputDto userInputDto) {
         System.out.println("Service Test new user");
         if(userExists(userInputDto.getUsername())) {
             throw new IsNotUniqueException("Username is not unique");
         }
+
+        if (userRepository.existsByEmail(userInputDto.getEmail())) {
+            throw new IsNotUniqueException("Email is not unique");
+        }
+
         String highestRole = userInputDto.getHighestRole();
         if(highestRole == null || !checkUserRoleExists(highestRole)){
             throw new RecordNotFoundException("Role does not exist.");
@@ -81,10 +87,7 @@ public class UserService {
     }
 
     private Set<Authority> addAuthoritySet(User user, String highestRole) {
-
-
         Set<Authority> authorities = new HashSet<>();
-
         return authorities;
     }
 

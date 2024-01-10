@@ -64,13 +64,12 @@ public class SpringSecurityConfig {
                 .requestMatchers(HttpMethod.POST, "/authenticate").permitAll()
 
 //                User requests
-                .requestMatchers(HttpMethod.GET,"/users").hasAnyRole("ADMIN", "MANAGER")
-                .requestMatchers(HttpMethod.GET,"/users/{username}").hasAnyRole("ADMIN", "MANAGER")
-//                .requestMatchers(HttpMethod.GET,"/users/{username}/authorities").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.GET,"/users").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.GET,"/users/{username}").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.GET,"/users/**").hasRole("ADMIN")
 
                 .requestMatchers(HttpMethod.POST, "/users").hasRole("ADMIN")
-                .requestMatchers(HttpMethod.POST, "/users/test").hasRole("ADMIN")
+//                .requestMatchers(HttpMethod.POST, "/users/test").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.POST,"/users/{username}/{userrole}/authorities").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.POST,"/users/**").hasRole("ADMIN")
 
