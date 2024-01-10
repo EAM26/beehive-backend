@@ -4,7 +4,6 @@ package nl.novi.beehivebackend.controllers;
 import jakarta.validation.Valid;
 import nl.novi.beehivebackend.dtos.input.UserInputDto;
 import nl.novi.beehivebackend.dtos.output.UserOutputDto;
-import nl.novi.beehivebackend.exceptions.BadRequestException;
 import nl.novi.beehivebackend.services.UserService;
 import nl.novi.beehivebackend.utils.ValidationUtil;
 import org.springframework.http.ResponseEntity;
@@ -46,25 +45,24 @@ public class UserController {
         return ResponseEntity.ok().body(userService.getAuthorities(username));
     }
 
-    // TODO: 14-8-2023 Wijzg userRole in String, zodat de Param gestest kan worden en evt Exception kan gooien als het geen UserRole is.
-    @PostMapping(value = "")
-    public ResponseEntity<Object> createNewUser(@Valid @RequestBody UserInputDto userInputDto, BindingResult bindingResult, @RequestParam(value = "userrole", required = false) String roleName) {
-        if (bindingResult.hasFieldErrors()) {
-            return ResponseEntity.badRequest().body(validationUtil.validationMessage(bindingResult).toString());
-        }
-        UserOutputDto userOutputDto = userService.createUser(userInputDto, roleName);
-        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{username}")
-                .buildAndExpand(userOutputDto.getUsername()).toUri();
-        return ResponseEntity.created(location).build();
-    }
+//    // TODO: 14-8-2023 Wijzg userRole in String, zodat de Param gestest kan worden en evt Exception kan gooien als het geen UserRole is.
+//    @PostMapping(value = "")
+//    public ResponseEntity<Object> createNewUser(@Valid @RequestBody UserInputDto userInputDto, BindingResult bindingResult, @RequestParam(value = "userrole", required = false) String roleName) {
+//        if (bindingResult.hasFieldErrors()) {
+//            return ResponseEntity.badRequest().body(validationUtil.validationMessage(bindingResult).toString());
+//        }
+//        UserOutputDto userOutputDto = userService.createUser(userInputDto, roleName);
+//        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{username}")
+//                .buildAndExpand(userOutputDto.getUsername()).toUri();
+//        return ResponseEntity.created(location).build();
+//    }
 
-    @PostMapping(value = "/test")
-    public ResponseEntity<Object> TestNewUser(@Valid @RequestBody UserInputDto userInputDto, BindingResult bindingResult) {
-        System.out.println("controller test new user");
+    @PostMapping(value = "")
+    public ResponseEntity<Object> createUser(@Valid @RequestBody UserInputDto userInputDto, BindingResult bindingResult) {
         if (bindingResult.hasFieldErrors()) {
             return ResponseEntity.badRequest().body(validationUtil.validationMessage(bindingResult).toString());
         }
-        UserOutputDto userOutputDto = userService.testNewUser(userInputDto);
+        UserOutputDto userOutputDto = userService.createUser(userInputDto);
         URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{username}")
                 .buildAndExpand(userOutputDto.getUsername()).toUri();
         return ResponseEntity.created(location).build();
