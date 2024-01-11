@@ -70,7 +70,7 @@ public class UserService {
         if(userExists(userInputDto.getUsername())) {
             throw new IsNotUniqueException("Username is not unique");
         }
-
+        userInputDto.setEmail(userInputDto.getEmail().toLowerCase());
         if (userRepository.existsByEmail(userInputDto.getEmail())) {
             throw new IsNotUniqueException("Email is not unique");
         }

@@ -58,14 +58,14 @@ public class UserController {
 //    }
 
     @PostMapping(value = "")
-    public ResponseEntity<Object> createUser(@Valid @RequestBody UserInputDto userInputDto, BindingResult bindingResult) {
+    public ResponseEntity<String> createUser(@Valid @RequestBody UserInputDto userInputDto, BindingResult bindingResult) {
         if (bindingResult.hasFieldErrors()) {
             return ResponseEntity.badRequest().body(validationUtil.validationMessage(bindingResult).toString());
         }
         UserOutputDto userOutputDto = userService.createUser(userInputDto);
         URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{username}")
                 .buildAndExpand(userOutputDto.getUsername()).toUri();
-        return ResponseEntity.created(location).build();
+        return ResponseEntity.created(location).body(userOutputDto.getUsername());
     }
 
 
