@@ -36,6 +36,6 @@ public class UserInputDto {
     private Set<Authority> authorities;
 
     @NotBlank(message = "Role is required.")
-    private String highestRole;
+    private String userRole;
 
 }

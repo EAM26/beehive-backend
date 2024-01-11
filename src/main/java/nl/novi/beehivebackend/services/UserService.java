@@ -43,36 +43,18 @@ public class UserService {
         List<UserOutputDto> allUsersList = new ArrayList<>();
         List<User> list = userRepository.findAll();
         for (User user : list) {
-            if(user.getIsDeleted() == isDeleted)
-            allUsersList.add(transferUserToUserOutputDto(user));
+            if(user.getIsDeleted() == isDeleted) {
+                allUsersList.add(transferUserToUserOutputDto(user));
+            }
         }
         return allUsersList;
     }
 
-    public UserOutputDto getUser(String username) {
+    public UserOutputDto getSingleUser(String username) {
         User user = userRepository.findById(username).orElseThrow(()-> new RecordNotFoundException("No user found with name: " + username));
         return transferUserToUserOutputDto(user);
     }
 
-    public boolean userExists(String username) {
-        return userRepository.existsById(username);
-    }
-
-
-
-//    public UserOutputDto createUser(UserInputDto userInputDto, String roleName) {
-//        if(userExists(userInputDto.getUsername())) {
-//            throw new IsNotUniqueException("Username is not unique");
-//        }
-//        if(roleName == null || !checkUserRoleExists(roleName)){
-//            throw new RecordNotFoundException("Role does not exist.");
-//        }
-//        User user = transferUserInputDtoToUser(userInputDto);
-//        UserRole userRole = UserRole.valueOf(roleName.toUpperCase());
-//        user.addAuthority(new Authority(user.getUsername(), userRole));
-//        userRepository.save(user);
-//        return transferUserToUserOutputDto(user);
-//    }
 
     public UserOutputDto createUser(UserInputDto userInputDto) {
         System.out.println("Service Test new user");
@@ -80,25 +62,35 @@ public class UserService {
             throw new IsNotUniqueException("Username is not unique");
         }
         userInputDto.setEmail(userInputDto.getEmail().toLowerCase());
-        if (userRepository.existsByEmail(userInputDto.getEmail())) {
+        if (emailExists(userInputDto.getEmail())) {
             throw new IsNotUniqueException("Email is not unique");
         }
-
-        String highestRole = userInputDto.getHighestRole();
-        if(highestRole == null || !checkUserRoleExists(highestRole)){
-            throw new RecordNotFoundException("Role does not exist.");
+        if(!checkUserRoleExists(userInputDto.getUserRole())) {
+            throw new BadRequestException("Unknown user role");
         }
         User user = transferUserInputDtoToUser(userInputDto);
-        UserRole userRole = UserRole.valueOf(highestRole.toUpperCase());
+        UserRole userRole = UserRole.valueOf(userInputDto.getUserRole().toUpperCase());
         user.addAuthority(new Authority(user.getUsername(), userRole));
         userRepository.save(user);
         return transferUserToUserOutputDto(user);
     }
 
-    private Set<Authority> addAuthoritySet(User user, String highestRole) {
-        Set<Authority> authorities = new HashSet<>();
-        return authorities;
+    public void addAuthority(String username, String roleName) {
+        User user = userRepository.findById(username).orElseThrow(()-> new RecordNotFoundException("User with name " + username + " doesn't exist."));
+        if(!checkUserRoleExists(roleName)) {
+            throw new RecordNotFoundException("Role doesn't exist");
+        }
+        UserRole userRole = UserRole.valueOf(roleName.toUpperCase());
+        for(Authority auth : user.getAuthorities()) {
+            if(auth.getAuthority().equals(userRole.getRoleAsString())) {
+                throw new BadRequestException("Authority already present");
+            }
+        }
+        user.addAuthority(new Authority(username, userRole));
+        userRepository.save(user);
     }
+
+
 
 
 
@@ -126,30 +118,33 @@ public class UserService {
         userRepository.save(user);
     }
 
-    public Set<Authority> getAuthorities(String username) {
-        if (!userRepository.existsById(username)) throw new UsernameNotFoundException("User not found with name: " + username);
-        User user = userRepository.findById(username).get();
-        UserOutputDto userOutputDto = transferUserToUserOutputDto(user);
-        return userOutputDto.getAuthorities();
-    }
-
-    public void addAuthority(String username, String  roleName) {
-        User user = userRepository.findById(username).orElseThrow(()-> new UsernameNotFoundException(username));
-//        if (!userRepository.existsById(username)) throw new UsernameNotFoundException(username);
+//    public Set<Authority> getAuthorities(String username) {
+//        if (!userRepository.existsById(username)) throw new UsernameNotFoundException("User not found with name: " + username);
 //        User user = userRepository.findById(username).get();
-        if(roleName == null || !checkUserRoleExists(roleName)){
-            throw new RecordNotFoundException("Role does not exist.");
-        }
-        UserRole userRole = UserRole.valueOf(roleName.toUpperCase());
-        user.addAuthority(new Authority(username, userRole));
-//        try {
-//            UserRole userRole = UserRole.valueOf(roleName.toUpperCase());
-//            user.addAuthority(new Authority(username, userRole));
-//        } catch (Exception e) {
-//            throw new RecordNotFoundException("No role found with name: " + roleName);
+//        UserOutputDto userOutputDto = transferUserToUserOutputDto(user);
+//        return userOutputDto.getAuthorities();
+//    }
+
+//    public void addAuthority(String username, String  roleName) {
+//        User user = userRepository.findById(username).orElseThrow(()-> new UsernameNotFoundException(username));
+////        if (!userRepository.existsById(username)) throw new UsernameNotFoundException(username);
+////        User user = userRepository.findById(username).get();
+//        if(!checkUserRoleExists(roleName)){
+//            System.out.println("************");
+//            System.out.println(roleName);
+//            System.out.println("************");
+//            throw new RecordNotFoundException("Role does not exist.");
 //        }
-        userRepository.save(user);
-    }
+//        UserRole userRole = UserRole.valueOf(roleName.toUpperCase());
+//        user.addAuthority(new Authority(username, userRole));
+////        try {
+////            UserRole userRole = UserRole.valueOf(roleName.toUpperCase());
+////            user.addAuthority(new Authority(username, userRole));
+////        } catch (Exception e) {
+////            throw new RecordNotFoundException("No role found with name: " + roleName);
+////        }
+//        userRepository.save(user);
+//    }
 
 
     public void removeAuthority(String username, String role) {
@@ -165,7 +160,17 @@ public class UserService {
         }
     }
 
-    public  UserOutputDto transferUserToUserOutputDto(User user){
+//    Helper methods
+
+    private boolean userExists(String username) {
+        return userRepository.existsById(username);
+    }
+
+    private boolean emailExists(String email) {
+        return userRepository.existsByEmail(email);
+    }
+
+    private UserOutputDto transferUserToUserOutputDto(User user){
         UserOutputDto outputDto = new UserOutputDto();
         outputDto.setUsername(user.getUsername());
         outputDto.setIsDeleted(user.getIsDeleted());
@@ -177,7 +182,7 @@ public class UserService {
         return outputDto;
     }
 
-    public User transferUserInputDtoToUser(UserInputDto userInputDto) {
+    private User transferUserInputDtoToUser(UserInputDto userInputDto) {
         User user = new User();
         user.setUsername(userInputDto.getUsername());
         user.setPassword(passwordEncoder.encode(userInputDto.getPassword()));
@@ -197,12 +202,13 @@ public class UserService {
                 break;
             }
         }
-        if(!isMatch) {
-            throw new BadRequestException("No role found with name: " + roleName);
-        }
-        return true;
+        return isMatch;
     }
 
+    private Set<Authority> addAuthoritySet(User user, String highestRole) {
+        Set<Authority> authorities = new HashSet<>();
+        return authorities;
+    }
 
 }
 
