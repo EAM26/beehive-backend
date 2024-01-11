@@ -29,9 +29,12 @@ public class UserController {
     }
 
     @GetMapping(value = "")
-    public ResponseEntity<List<UserOutputDto>> getUsers() {
-        List<UserOutputDto> userDtos = userService.getUsers();
-        return ResponseEntity.ok().body(userDtos);
+    public ResponseEntity<List<UserOutputDto>> getUsers(@RequestParam(required = false) Boolean isDeleted) {
+        if(isDeleted == null) {
+            return ResponseEntity.ok().body(userService.getUsers());
+        }
+
+        return ResponseEntity.ok().body(userService.getUsers(isDeleted));
     }
 
     @GetMapping(value = "/{username}")

@@ -33,8 +33,17 @@ public class UserService {
 
     public List<UserOutputDto> getUsers() {
         List<UserOutputDto> allUsersList = new ArrayList<>();
+        for (User user : userRepository.findAll()) {
+            allUsersList.add(transferUserToUserOutputDto(user));
+        }
+        return allUsersList;
+    }
+
+    public List<UserOutputDto> getUsers(Boolean isDeleted) {
+        List<UserOutputDto> allUsersList = new ArrayList<>();
         List<User> list = userRepository.findAll();
         for (User user : list) {
+            if(user.getIsDeleted() == isDeleted)
             allUsersList.add(transferUserToUserOutputDto(user));
         }
         return allUsersList;
@@ -159,7 +168,7 @@ public class UserService {
     public  UserOutputDto transferUserToUserOutputDto(User user){
         UserOutputDto outputDto = new UserOutputDto();
         outputDto.setUsername(user.getUsername());
-//        outputDto.password = user.getPassword();
+        outputDto.setIsDeleted(user.getIsDeleted());
         outputDto.setEmail(user.getEmail());
         outputDto.setAuthorities(user.getAuthorities());
         if(user.getEmployee() != null) {
@@ -173,6 +182,9 @@ public class UserService {
         user.setUsername(userInputDto.getUsername());
         user.setPassword(passwordEncoder.encode(userInputDto.getPassword()));
         user.setEmail(userInputDto.getEmail());
+        if(userInputDto.getIsDeleted() != null) {
+            user.setIsDeleted(userInputDto.getIsDeleted());
+        }
         return user;
 
     }
