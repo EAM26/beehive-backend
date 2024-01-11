@@ -157,19 +157,19 @@ public class UserService {
     }
 
     public  UserOutputDto transferUserToUserOutputDto(User user){
-        var outputDto = new UserOutputDto();
-        outputDto.username = user.getUsername();
+        UserOutputDto outputDto = new UserOutputDto();
+        outputDto.setUsername(user.getUsername());
 //        outputDto.password = user.getPassword();
-        outputDto.email = user.getEmail();
-        outputDto.authorities = user.getAuthorities();
+        outputDto.setEmail(user.getEmail());
+        outputDto.setAuthorities(user.getAuthorities());
         if(user.getEmployee() != null) {
-            outputDto.employeeId = user.getEmployee().getId();
+            outputDto.setEmployeeId(user.getEmployee().getId());
         }
         return outputDto;
     }
 
     public User transferUserInputDtoToUser(UserInputDto userInputDto) {
-        var user = new User();
+        User user = new User();
         user.setUsername(userInputDto.getUsername());
         user.setPassword(passwordEncoder.encode(userInputDto.getPassword()));
         user.setEmail(userInputDto.getEmail());

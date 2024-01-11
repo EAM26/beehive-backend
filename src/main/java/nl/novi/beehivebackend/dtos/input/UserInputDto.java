@@ -14,7 +14,7 @@ import java.util.Set;
 public class UserInputDto {
 
     @NotBlank(message = "User name is required.")
-    public String username;
+    private String username;
 
     @NotBlank(message = "Password is required.")
     @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#&()\\[{}\\]:;',?/*~$^+=<>]).{8,20}$", message =
@@ -23,15 +23,19 @@ public class UserInputDto {
             "3. Password must contain at least one uppercase Latin character [A-Z].\n" +
             "4. Password must contain at least one special character.\n" +
             "5. Password must contain a length of at least 8 characters and a maximum of 20 characters.")
-    public String password;
+    private String password;
+
 
     @NotBlank(message = "Email is required.")
     @Email(message = "Valid email is required.")
-    public String email;
+    private String email;
 
-    public Set<Authority> authorities;
+    private Boolean isDeleted;
+
+
+    private Set<Authority> authorities;
 
     @NotBlank(message = "Role is required.")
-    public String highestRole;
+    private String highestRole;
 
 }
