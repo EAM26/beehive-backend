@@ -33,62 +33,93 @@ public class UserService {
 
     public List<UserOutputDto> getUsers() {
         List<UserOutputDto> allUsersList = new ArrayList<>();
-        List<User> list = userRepository.findAll();
-        for (User user : list) {
+        for (User user : userRepository.findAll()) {
             allUsersList.add(transferUserToUserOutputDto(user));
         }
         return allUsersList;
     }
 
-    public UserOutputDto getUser(String username) {
+    public List<UserOutputDto> getUsers(Boolean isDeleted) {
+        List<UserOutputDto> allUsersList = new ArrayList<>();
+        List<User> list = userRepository.findAll();
+        for (User user : list) {
+            if(user.getIsDeleted() == isDeleted) {
+                allUsersList.add(transferUserToUserOutputDto(user));
+            }
+        }
+        return allUsersList;
+    }
+
+    public UserOutputDto getSingleUser(String username) {
         User user = userRepository.findById(username).orElseThrow(()-> new RecordNotFoundException("No user found with name: " + username));
         return transferUserToUserOutputDto(user);
     }
 
-    public boolean userExists(String username) {
-        return userRepository.existsById(username);
-    }
-
-
-
-//    public UserOutputDto createUser(UserInputDto userInputDto, String roleName) {
-//        if(userExists(userInputDto.getUsername())) {
-//            throw new IsNotUniqueException("Username is not unique");
-//        }
-//        if(roleName == null || !checkUserRoleExists(roleName)){
-//            throw new RecordNotFoundException("Role does not exist.");
-//        }
-//        User user = transferUserInputDtoToUser(userInputDto);
-//        UserRole userRole = UserRole.valueOf(roleName.toUpperCase());
-//        user.addAuthority(new Authority(user.getUsername(), userRole));
-//        userRepository.save(user);
-//        return transferUserToUserOutputDto(user);
-//    }
 
     public UserOutputDto createUser(UserInputDto userInputDto) {
-        System.out.println("Service Test new user");
         if(userExists(userInputDto.getUsername())) {
             throw new IsNotUniqueException("Username is not unique");
         }
-
-        if (userRepository.existsByEmail(userInputDto.getEmail())) {
+        userInputDto.setEmail(userInputDto.getEmail().toLowerCase());
+        if (emailExists(userInputDto.getEmail())) {
             throw new IsNotUniqueException("Email is not unique");
         }
-
-        String highestRole = userInputDto.getHighestRole();
-        if(highestRole == null || !checkUserRoleExists(highestRole)){
-            throw new RecordNotFoundException("Role does not exist.");
+        if(!checkUserRoleExists(userInputDto.getUserRole())) {
+            throw new BadRequestException("Unknown user role");
         }
         User user = transferUserInputDtoToUser(userInputDto);
-        UserRole userRole = UserRole.valueOf(highestRole.toUpperCase());
+        UserRole userRole = UserRole.valueOf(userInputDto.getUserRole().toUpperCase());
         user.addAuthority(new Authority(user.getUsername(), userRole));
         userRepository.save(user);
         return transferUserToUserOutputDto(user);
     }
 
-    private Set<Authority> addAuthoritySet(User user, String highestRole) {
-        Set<Authority> authorities = new HashSet<>();
-        return authorities;
+    public void addAuthority(String username, String roleName) {
+        User user = userRepository.findById(username).orElseThrow(()-> new RecordNotFoundException("User with name " + username + " doesn't exist."));
+        if(!checkUserRoleExists(roleName)) {
+            throw new RecordNotFoundException("Role doesn't exist");
+        }
+        UserRole userRole = UserRole.valueOf(roleName.toUpperCase());
+        for(Authority auth : user.getAuthorities()) {
+            if(auth.getAuthority().equals(userRole.getRoleAsString())) {
+                throw new BadRequestException("Authority already present");
+            }
+        }
+        user.addAuthority(new Authority(username, userRole));
+        userRepository.save(user);
+    }
+
+    public void removeAuthority(String username, String roleName) {
+        boolean isRemoved = false;
+        User user = userRepository.findById(username).orElseThrow(()-> new RecordNotFoundException("User with name " + username + " doesn't exist."));
+        if(!checkUserRoleExists(roleName)) {
+            throw new RecordNotFoundException("Role doesn't exist");
+        }
+        UserRole userRole = UserRole.valueOf(roleName.toUpperCase());
+        for(Authority auth : user.getAuthorities()) {
+            if(auth.getAuthority().equals(userRole.getRoleAsString())) {
+                user.removeAuthority(auth);
+                userRepository.save(user);
+                isRemoved = true;
+                break;
+            }
+        }
+
+        if(!isRemoved) {
+            throw new BadRequestException("Authority not found");
+        }
+
+
+//        if (!userRepository.existsById(username)) throw new UsernameNotFoundException(username);
+//        User user = userRepository.findById(username).get();
+//        if(checkUserRoleExists(role)) {
+//            for (Authority authority: user.getAuthorities()) {
+//                if(authority.getAuthority().equalsIgnoreCase("ROLE_" + checkUserRoleExists(role))) {
+//                    user.removeAuthority(authority);
+//                }
+//            }
+//            userRepository.save(user);
+//        }
     }
 
 
@@ -97,82 +128,61 @@ public class UserService {
         userRepository.deleteById(username);
     }
 
-    public void updateUser(String username, UserInputDto userInputDto) {
-        User user = userRepository.findById(username).orElseThrow(()-> new RecordNotFoundException("User with name " + username + " doesn't exist."));
-        if(!(user.getUsername().equals(userInputDto.getUsername()))) {
-            throw new BadRequestException("Not allowed to change user name.");
-        }
-        // TODO: 18-8-2023 is dit nodig? 
-//        if(userExists((newUser.getUsername())) && (!username.equalsIgnoreCase(newUser.getUsername()))) {
-//            throw new IsNotUniqueException("Username is not unique");
+//    public void updateUser(String username, UserInputDto userInputDto) {
+//        User user = userRepository.findById(username).orElseThrow(()-> new RecordNotFoundException("User with name " + username + " doesn't exist."));
+//        if(!(user.getUsername().equals(userInputDto.getUsername()))) {
+//            throw new BadRequestException("Not allowed to change user name.");
 //        }
-
-        // TODO: 18-8-2023 check of ingelogde user gelijk is aan de te wijzigen user
-        String authUserName = SecurityContextHolder.getContext().getAuthentication().getName();
-        if(!(user.getUsername().equals(authUserName))) {
-            throw new BadRequestException("Not allowed to change other user");
-        }
-        user.setEmail(userInputDto.getEmail());
-        user.setPassword(passwordEncoder.encode(userInputDto.getPassword()));
-        userRepository.save(user);
-    }
-
-    public Set<Authority> getAuthorities(String username) {
-        if (!userRepository.existsById(username)) throw new UsernameNotFoundException("User not found with name: " + username);
-        User user = userRepository.findById(username).get();
-        UserOutputDto userOutputDto = transferUserToUserOutputDto(user);
-        return userOutputDto.getAuthorities();
-    }
-
-    public void addAuthority(String username, String  roleName) {
-        User user = userRepository.findById(username).orElseThrow(()-> new UsernameNotFoundException(username));
-//        if (!userRepository.existsById(username)) throw new UsernameNotFoundException(username);
-//        User user = userRepository.findById(username).get();
-        if(roleName == null || !checkUserRoleExists(roleName)){
-            throw new RecordNotFoundException("Role does not exist.");
-        }
-        UserRole userRole = UserRole.valueOf(roleName.toUpperCase());
-        user.addAuthority(new Authority(username, userRole));
-//        try {
-//            UserRole userRole = UserRole.valueOf(roleName.toUpperCase());
-//            user.addAuthority(new Authority(username, userRole));
-//        } catch (Exception e) {
-//            throw new RecordNotFoundException("No role found with name: " + roleName);
+//        // TODO: 18-8-2023 is dit nodig?
+////        if(userExists((newUser.getUsername())) && (!username.equalsIgnoreCase(newUser.getUsername()))) {
+////            throw new IsNotUniqueException("Username is not unique");
+////        }
+//
+//        // TODO: 18-8-2023 check of ingelogde user gelijk is aan de te wijzigen user
+//        String authUserName = SecurityContextHolder.getContext().getAuthentication().getName();
+//        if(!(user.getUsername().equals(authUserName))) {
+//            throw new BadRequestException("Not allowed to change other user");
 //        }
-        userRepository.save(user);
+//        user.setEmail(userInputDto.getEmail());
+//        user.setPassword(passwordEncoder.encode(userInputDto.getPassword()));
+//        userRepository.save(user);
+//    }
+
+
+
+
+
+
+//    Helper methods
+
+    private boolean userExists(String username) {
+        return userRepository.existsById(username);
     }
 
-
-    public void removeAuthority(String username, String role) {
-        if (!userRepository.existsById(username)) throw new UsernameNotFoundException(username);
-        User user = userRepository.findById(username).get();
-        if(checkUserRoleExists(role)) {
-            for (Authority authority: user.getAuthorities()) {
-                if(authority.getAuthority().equalsIgnoreCase("ROLE_" + checkUserRoleExists(role))) {
-                    user.removeAuthority(authority);
-                }
-            }
-            userRepository.save(user);
-        }
+    private boolean emailExists(String email) {
+        return userRepository.existsByEmail(email);
     }
 
-    public  UserOutputDto transferUserToUserOutputDto(User user){
-        var outputDto = new UserOutputDto();
-        outputDto.username = user.getUsername();
-//        outputDto.password = user.getPassword();
-        outputDto.email = user.getEmail();
-        outputDto.authorities = user.getAuthorities();
+    private UserOutputDto transferUserToUserOutputDto(User user){
+        UserOutputDto outputDto = new UserOutputDto();
+        outputDto.setUsername(user.getUsername());
+        outputDto.setIsDeleted(user.getIsDeleted());
+        outputDto.setEmail(user.getEmail());
+        outputDto.setAuthorities(user.getAuthorities());
         if(user.getEmployee() != null) {
-            outputDto.employeeId = user.getEmployee().getId();
+            outputDto.setEmployeeId(user.getEmployee().getId());
         }
         return outputDto;
     }
 
-    public User transferUserInputDtoToUser(UserInputDto userInputDto) {
-        var user = new User();
+    private User transferUserInputDtoToUser(UserInputDto userInputDto) {
+        User user = new User();
         user.setUsername(userInputDto.getUsername());
         user.setPassword(passwordEncoder.encode(userInputDto.getPassword()));
         user.setEmail(userInputDto.getEmail());
+        if(userInputDto.getIsDeleted() != null) {
+            user.setIsDeleted(userInputDto.getIsDeleted());
+        }
         return user;
 
     }
@@ -185,12 +195,13 @@ public class UserService {
                 break;
             }
         }
-        if(!isMatch) {
-            throw new BadRequestException("No role found with name: " + roleName);
-        }
-        return true;
+        return isMatch;
     }
 
+    private Set<Authority> addAuthoritySet(User user, String highestRole) {
+        Set<Authority> authorities = new HashSet<>();
+        return authorities;
+    }
 
 }
 

@@ -1,51 +1,22 @@
 package nl.novi.beehivebackend.dtos.output;
 
 import nl.novi.beehivebackend.models.Authority;
-
+import lombok.Getter;
+import lombok.Setter;
 import java.util.Set;
 
+@Getter
+@Setter
 public class UserOutputDto {
 
-    public String username;
-    public String email;
-    public Long employeeId;
+    private String username;
+    private String email;
+    private Long employeeId;
+    private Boolean isDeleted;
 
-    public Set<Authority> authorities;
-
-    public String getUsername() {
-        return username;
-    }
+    private Set<Authority> authorities;
 
 
 
-    public String getEmail() {
-        return email;
-    }
-
-    public Set<Authority> getAuthorities() {
-        return authorities;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public void setAuthorities(Set<Authority> authorities) {
-        this.authorities = authorities;
-    }
-
-    public Long getEmployeeId() {
-        return employeeId;
-    }
-
-    public void setEmployeeId(Long employeeId) {
-        this.employeeId = employeeId;
-    }
 }
 

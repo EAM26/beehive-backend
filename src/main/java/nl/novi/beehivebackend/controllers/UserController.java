@@ -2,6 +2,7 @@ package nl.novi.beehivebackend.controllers;
 
 
 import jakarta.validation.Valid;
+import nl.novi.beehivebackend.dtos.input.UserRoleInputDto;
 import nl.novi.beehivebackend.dtos.input.UserInputDto;
 import nl.novi.beehivebackend.dtos.output.UserOutputDto;
 import nl.novi.beehivebackend.services.UserService;
@@ -29,21 +30,24 @@ public class UserController {
     }
 
     @GetMapping(value = "")
-    public ResponseEntity<List<UserOutputDto>> getUsers() {
-        List<UserOutputDto> userDtos = userService.getUsers();
-        return ResponseEntity.ok().body(userDtos);
+    public ResponseEntity<List<UserOutputDto>> getUsers(@RequestParam(required = false) Boolean isDeleted) {
+        if(isDeleted == null) {
+            return ResponseEntity.ok().body(userService.getUsers());
+        }
+
+        return ResponseEntity.ok().body(userService.getUsers(isDeleted));
     }
 
     @GetMapping(value = "/{username}")
-    public ResponseEntity<UserOutputDto> getUser(@PathVariable("username") String username) {
-        UserOutputDto optionalUser = userService.getUser(username);
+    public ResponseEntity<UserOutputDto> getSingleUser(@PathVariable("username") String username) {
+        UserOutputDto optionalUser = userService.getSingleUser(username);
         return ResponseEntity.ok().body(optionalUser);
     }
 
-    @GetMapping(value = "/{username}/authorities")
-    public ResponseEntity<Object> getUserAuthorities(@PathVariable("username") String username) {
-        return ResponseEntity.ok().body(userService.getAuthorities(username));
-    }
+//    @GetMapping(value = "/{username}/authorities")
+//    public ResponseEntity<Object> getUserAuthorities(@PathVariable("username") String username) {
+//        return ResponseEntity.ok().body(userService.getAuthorities(username));
+//    }
 
 //    // TODO: 14-8-2023 Wijzg userRole in String, zodat de Param gestest kan worden en evt Exception kan gooien als het geen UserRole is.
 //    @PostMapping(value = "")
@@ -58,30 +62,35 @@ public class UserController {
 //    }
 
     @PostMapping(value = "")
-    public ResponseEntity<Object> createUser(@Valid @RequestBody UserInputDto userInputDto, BindingResult bindingResult) {
+    public ResponseEntity<String> createUser(@Valid @RequestBody UserInputDto userInputDto, BindingResult bindingResult) {
         if (bindingResult.hasFieldErrors()) {
             return ResponseEntity.badRequest().body(validationUtil.validationMessage(bindingResult).toString());
         }
         UserOutputDto userOutputDto = userService.createUser(userInputDto);
         URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{username}")
                 .buildAndExpand(userOutputDto.getUsername()).toUri();
-        return ResponseEntity.created(location).build();
+        return ResponseEntity.created(location).body(userOutputDto.getUsername());
     }
 
 
 
-    @PostMapping(value = "/{username}/{userrole}/authorities")
-    public ResponseEntity<Object> addUserAuthority(@PathVariable("username") String username, @PathVariable("userrole") String roleName) {
-        userService.addAuthority(username, roleName);
+//    @PutMapping(value = "/{username}")
+//    public ResponseEntity<Object> updateExistingUser(@PathVariable("username") String username, @Valid @RequestBody UserInputDto userInputDto, BindingResult bindingResult) {
+//        if (bindingResult.hasFieldErrors()) {
+//            return ResponseEntity.badRequest().body(validationUtil.validationMessage(bindingResult).toString());
+//        }
+//        userService.updateUser(username, userInputDto);
+//        return ResponseEntity.noContent().build();
+//    }
+
+    @PutMapping(value = "/add_auth/{username}")
+    public ResponseEntity<Object> addUserAuthority(@PathVariable("username") String username, @RequestBody UserRoleInputDto userRole) {
+        userService.addAuthority(username, userRole.getRoleName());
         return ResponseEntity.noContent().build();
     }
-
-    @PutMapping(value = "/{username}")
-    public ResponseEntity<Object> updateExistingUser(@PathVariable("username") String username, @Valid @RequestBody UserInputDto userInputDto, BindingResult bindingResult) {
-        if (bindingResult.hasFieldErrors()) {
-            return ResponseEntity.badRequest().body(validationUtil.validationMessage(bindingResult).toString());
-        }
-        userService.updateUser(username, userInputDto);
+    @PutMapping(value = "/remove_auth/{username}")
+    public ResponseEntity<Object> removeUserAuthority(@PathVariable("username") String username, @RequestBody UserRoleInputDto userRole) {
+        userService.removeAuthority(username, userRole.getRoleName());
         return ResponseEntity.noContent().build();
     }
 

@@ -24,6 +24,9 @@ public class User {
     @Column(nullable = false)
     private String email ;
 
+
+    private Boolean isDeleted = false;
+
     @OneToMany(
             targetEntity = Authority.class,
             mappedBy = "username",
