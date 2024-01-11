@@ -74,18 +74,23 @@ public class UserController {
 
 
 
-    @PutMapping(value = "/{username}")
-    public ResponseEntity<Object> updateExistingUser(@PathVariable("username") String username, @Valid @RequestBody UserInputDto userInputDto, BindingResult bindingResult) {
-        if (bindingResult.hasFieldErrors()) {
-            return ResponseEntity.badRequest().body(validationUtil.validationMessage(bindingResult).toString());
-        }
-        userService.updateUser(username, userInputDto);
+//    @PutMapping(value = "/{username}")
+//    public ResponseEntity<Object> updateExistingUser(@PathVariable("username") String username, @Valid @RequestBody UserInputDto userInputDto, BindingResult bindingResult) {
+//        if (bindingResult.hasFieldErrors()) {
+//            return ResponseEntity.badRequest().body(validationUtil.validationMessage(bindingResult).toString());
+//        }
+//        userService.updateUser(username, userInputDto);
+//        return ResponseEntity.noContent().build();
+//    }
+
+    @PutMapping(value = "/add_auth/{username}")
+    public ResponseEntity<Object> addUserAuthority(@PathVariable("username") String username, @RequestBody UserRoleInputDto userRole) {
+        userService.addAuthority(username, userRole.getRoleName());
         return ResponseEntity.noContent().build();
     }
-
-    @PutMapping(value = "/addauth/{username}")
-    public ResponseEntity<Object> updateUserAuthority(@PathVariable("username") String username, @RequestBody UserRoleInputDto userRole) {
-        userService.addAuthority(username, userRole.getRoleName());
+    @PutMapping(value = "/remove_auth/{username}")
+    public ResponseEntity<Object> removeUserAuthority(@PathVariable("username") String username, @RequestBody UserRoleInputDto userRole) {
+        userService.removeAuthority(username, userRole.getRoleName());
         return ResponseEntity.noContent().build();
     }
 

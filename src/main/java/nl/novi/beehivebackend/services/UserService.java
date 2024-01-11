@@ -57,7 +57,6 @@ public class UserService {
 
 
     public UserOutputDto createUser(UserInputDto userInputDto) {
-        System.out.println("Service Test new user");
         if(userExists(userInputDto.getUsername())) {
             throw new IsNotUniqueException("Username is not unique");
         }
@@ -90,7 +89,38 @@ public class UserService {
         userRepository.save(user);
     }
 
+    public void removeAuthority(String username, String roleName) {
+        boolean isRemoved = false;
+        User user = userRepository.findById(username).orElseThrow(()-> new RecordNotFoundException("User with name " + username + " doesn't exist."));
+        if(!checkUserRoleExists(roleName)) {
+            throw new RecordNotFoundException("Role doesn't exist");
+        }
+        UserRole userRole = UserRole.valueOf(roleName.toUpperCase());
+        for(Authority auth : user.getAuthorities()) {
+            if(auth.getAuthority().equals(userRole.getRoleAsString())) {
+                user.removeAuthority(auth);
+                userRepository.save(user);
+                isRemoved = true;
+                break;
+            }
+        }
 
+        if(!isRemoved) {
+            throw new BadRequestException("Authority not found");
+        }
+
+
+//        if (!userRepository.existsById(username)) throw new UsernameNotFoundException(username);
+//        User user = userRepository.findById(username).get();
+//        if(checkUserRoleExists(role)) {
+//            for (Authority authority: user.getAuthorities()) {
+//                if(authority.getAuthority().equalsIgnoreCase("ROLE_" + checkUserRoleExists(role))) {
+//                    user.removeAuthority(authority);
+//                }
+//            }
+//            userRepository.save(user);
+//        }
+    }
 
 
 
@@ -98,67 +128,30 @@ public class UserService {
         userRepository.deleteById(username);
     }
 
-    public void updateUser(String username, UserInputDto userInputDto) {
-        User user = userRepository.findById(username).orElseThrow(()-> new RecordNotFoundException("User with name " + username + " doesn't exist."));
-        if(!(user.getUsername().equals(userInputDto.getUsername()))) {
-            throw new BadRequestException("Not allowed to change user name.");
-        }
-        // TODO: 18-8-2023 is dit nodig? 
-//        if(userExists((newUser.getUsername())) && (!username.equalsIgnoreCase(newUser.getUsername()))) {
-//            throw new IsNotUniqueException("Username is not unique");
+//    public void updateUser(String username, UserInputDto userInputDto) {
+//        User user = userRepository.findById(username).orElseThrow(()-> new RecordNotFoundException("User with name " + username + " doesn't exist."));
+//        if(!(user.getUsername().equals(userInputDto.getUsername()))) {
+//            throw new BadRequestException("Not allowed to change user name.");
 //        }
-
-        // TODO: 18-8-2023 check of ingelogde user gelijk is aan de te wijzigen user
-        String authUserName = SecurityContextHolder.getContext().getAuthentication().getName();
-        if(!(user.getUsername().equals(authUserName))) {
-            throw new BadRequestException("Not allowed to change other user");
-        }
-        user.setEmail(userInputDto.getEmail());
-        user.setPassword(passwordEncoder.encode(userInputDto.getPassword()));
-        userRepository.save(user);
-    }
-
-//    public Set<Authority> getAuthorities(String username) {
-//        if (!userRepository.existsById(username)) throw new UsernameNotFoundException("User not found with name: " + username);
-//        User user = userRepository.findById(username).get();
-//        UserOutputDto userOutputDto = transferUserToUserOutputDto(user);
-//        return userOutputDto.getAuthorities();
-//    }
-
-//    public void addAuthority(String username, String  roleName) {
-//        User user = userRepository.findById(username).orElseThrow(()-> new UsernameNotFoundException(username));
-////        if (!userRepository.existsById(username)) throw new UsernameNotFoundException(username);
-////        User user = userRepository.findById(username).get();
-//        if(!checkUserRoleExists(roleName)){
-//            System.out.println("************");
-//            System.out.println(roleName);
-//            System.out.println("************");
-//            throw new RecordNotFoundException("Role does not exist.");
-//        }
-//        UserRole userRole = UserRole.valueOf(roleName.toUpperCase());
-//        user.addAuthority(new Authority(username, userRole));
-////        try {
-////            UserRole userRole = UserRole.valueOf(roleName.toUpperCase());
-////            user.addAuthority(new Authority(username, userRole));
-////        } catch (Exception e) {
-////            throw new RecordNotFoundException("No role found with name: " + roleName);
+//        // TODO: 18-8-2023 is dit nodig?
+////        if(userExists((newUser.getUsername())) && (!username.equalsIgnoreCase(newUser.getUsername()))) {
+////            throw new IsNotUniqueException("Username is not unique");
 ////        }
+//
+//        // TODO: 18-8-2023 check of ingelogde user gelijk is aan de te wijzigen user
+//        String authUserName = SecurityContextHolder.getContext().getAuthentication().getName();
+//        if(!(user.getUsername().equals(authUserName))) {
+//            throw new BadRequestException("Not allowed to change other user");
+//        }
+//        user.setEmail(userInputDto.getEmail());
+//        user.setPassword(passwordEncoder.encode(userInputDto.getPassword()));
 //        userRepository.save(user);
 //    }
 
 
-    public void removeAuthority(String username, String role) {
-        if (!userRepository.existsById(username)) throw new UsernameNotFoundException(username);
-        User user = userRepository.findById(username).get();
-        if(checkUserRoleExists(role)) {
-            for (Authority authority: user.getAuthorities()) {
-                if(authority.getAuthority().equalsIgnoreCase("ROLE_" + checkUserRoleExists(role))) {
-                    user.removeAuthority(authority);
-                }
-            }
-            userRepository.save(user);
-        }
-    }
+
+
+
 
 //    Helper methods
 
