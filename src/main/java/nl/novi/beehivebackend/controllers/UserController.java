@@ -7,6 +7,7 @@ import nl.novi.beehivebackend.dtos.input.UserInputDto;
 import nl.novi.beehivebackend.dtos.output.UserOutputDto;
 import nl.novi.beehivebackend.services.UserService;
 import nl.novi.beehivebackend.utils.ValidationUtil;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -84,27 +85,40 @@ public class UserController {
 //    }
 
     @PutMapping(value = "/add_auth/{username}")
-    public ResponseEntity<Object> addUserAuthority(@PathVariable("username") String username, @RequestBody UserRoleInputDto userRole) {
+    public ResponseEntity<String> addUserAuthority(@PathVariable("username") String username, @RequestBody UserRoleInputDto userRole) {
         userService.addAuthority(username, userRole.getRoleName());
-        return ResponseEntity.noContent().build();
+        return new ResponseEntity<>(userRole.getRoleName() + " added to authorities", HttpStatus.OK);
     }
     @PutMapping(value = "/remove_auth/{username}")
-    public ResponseEntity<Object> removeUserAuthority(@PathVariable("username") String username, @RequestBody UserRoleInputDto userRole) {
+    public ResponseEntity<String> removeUserAuthority(@PathVariable("username") String username, @RequestBody UserRoleInputDto userRole) {
         userService.removeAuthority(username, userRole.getRoleName());
-        return ResponseEntity.noContent().build();
+        return new ResponseEntity<>(userRole.getRoleName() + " removed from authorities", HttpStatus.OK);
     }
 
-    @DeleteMapping(value = "/{username}")
-    public ResponseEntity<Object> deleteExistingUser(@PathVariable("username") String username) {
-        userService.deleteUser(username);
-        return ResponseEntity.noContent().build();
+    @PutMapping(value = "/{username}")
+    public ResponseEntity<String> updateUser(@PathVariable("username") String username, @Valid @RequestBody UserInputDto userInputDto, BindingResult bindingResult) {
+        if (bindingResult.hasFieldErrors()) {
+            return ResponseEntity.badRequest().body(validationUtil.validationMessage(bindingResult).toString());
+        }
+        UserOutputDto userOutputDto = userService.updateUser(username, userInputDto);
+        return new ResponseEntity<>(userOutputDto.getUsername() + " updated.", HttpStatus.OK);
     }
 
-    @DeleteMapping(value = "/{username}/authorities/{authority}")
-    public ResponseEntity<Object> deleteUserAuthority(@PathVariable("username") String username, @PathVariable("authority") String role) {
-        userService.removeAuthority(username, role);
-        return ResponseEntity.noContent().build();
-    }
+//    @PutMapping(value = "/update/{username}")
+//    public ResponseEntity
+
+
+//    @DeleteMapping(value = "/{username}")
+//    public ResponseEntity<Object> deleteExistingUser(@PathVariable("username") String username) {
+//        userService.deleteUser(username);
+//        return ResponseEntity.noContent().build();
+//    }
+//
+//    @DeleteMapping(value = "/{username}/authorities/{authority}")
+//    public ResponseEntity<Object> deleteUserAuthority(@PathVariable("username") String username, @PathVariable("authority") String role) {
+//        userService.removeAuthority(username, role);
+//        return ResponseEntity.noContent().build();
+//    }
 
 
 }
