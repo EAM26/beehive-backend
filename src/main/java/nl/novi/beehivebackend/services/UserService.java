@@ -3,15 +3,14 @@ package nl.novi.beehivebackend.services;
 
 import nl.novi.beehivebackend.dtos.input.UserInputDto;
 import nl.novi.beehivebackend.dtos.output.UserOutputDto;
-import nl.novi.beehivebackend.exceptions.BadRequestException;
-import nl.novi.beehivebackend.exceptions.IsNotUniqueException;
-import nl.novi.beehivebackend.exceptions.RecordNotFoundException;
-import nl.novi.beehivebackend.exceptions.UsernameNotFoundException;
+import nl.novi.beehivebackend.exceptions.*;
 import nl.novi.beehivebackend.models.Authority;
 import nl.novi.beehivebackend.models.User;
 import nl.novi.beehivebackend.models.UserRole;
 import nl.novi.beehivebackend.repositories.UserRepository;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -94,6 +93,9 @@ public class UserService {
         User user = userRepository.findById(username).orElseThrow(()-> new RecordNotFoundException("User with name " + username + " doesn't exist."));
         if(!checkUserRoleExists(roleName)) {
             throw new RecordNotFoundException("Role doesn't exist");
+        }
+        if(getCurrentUserId().equals(username)) {
+            throw new AccessDeniedException("Not Allowed to remove own authority");
         }
         UserRole userRole = UserRole.valueOf(roleName.toUpperCase());
         for(Authority auth : user.getAuthorities()) {
@@ -201,6 +203,10 @@ public class UserService {
     private Set<Authority> addAuthoritySet(User user, String highestRole) {
         Set<Authority> authorities = new HashSet<>();
         return authorities;
+    }
+
+    private String getCurrentUserId() {
+        return SecurityContextHolder.getContext().getAuthentication().getName();
     }
 
 }
