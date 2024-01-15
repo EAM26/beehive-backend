@@ -3,10 +3,7 @@ package nl.novi.beehivebackend.services;
 
 import nl.novi.beehivebackend.dtos.input.UserInputDto;
 import nl.novi.beehivebackend.dtos.output.UserOutputDto;
-import nl.novi.beehivebackend.exceptions.BadRequestException;
-import nl.novi.beehivebackend.exceptions.IsNotUniqueException;
-import nl.novi.beehivebackend.exceptions.RecordNotFoundException;
-import nl.novi.beehivebackend.exceptions.UsernameNotFoundException;
+import nl.novi.beehivebackend.exceptions.*;
 import nl.novi.beehivebackend.models.Authority;
 import nl.novi.beehivebackend.models.User;
 import nl.novi.beehivebackend.models.UserRole;
@@ -43,7 +40,7 @@ public class UserService {
         List<UserOutputDto> allUsersList = new ArrayList<>();
         List<User> list = userRepository.findAll();
         for (User user : list) {
-            if(user.getIsDeleted() == isDeleted) {
+            if (user.getIsDeleted() == isDeleted) {
                 allUsersList.add(transferUserToUserOutputDto(user));
             }
         }
@@ -51,37 +48,71 @@ public class UserService {
     }
 
     public UserOutputDto getSingleUser(String username) {
-        User user = userRepository.findById(username).orElseThrow(()-> new RecordNotFoundException("No user found with name: " + username));
+        User user = userRepository.findById(username).orElseThrow(() -> new RecordNotFoundException("No user found with name: " + username));
         return transferUserToUserOutputDto(user);
     }
 
 
     public UserOutputDto createUser(UserInputDto userInputDto) {
-        if(userExists(userInputDto.getUsername())) {
+        if (userExists(userInputDto.getUsername())) {
             throw new IsNotUniqueException("Username is not unique");
         }
         userInputDto.setEmail(userInputDto.getEmail().toLowerCase());
         if (emailExists(userInputDto.getEmail())) {
             throw new IsNotUniqueException("Email is not unique");
         }
-        if(!checkUserRoleExists(userInputDto.getUserRole())) {
+        if (!checkUserRoleExists(userInputDto.getUserRole())) {
             throw new BadRequestException("Unknown user role");
         }
-        User user = transferUserInputDtoToUser(userInputDto);
+        User user = adminTransferUserInputDtoToUser(new User(), userInputDto);
         UserRole userRole = UserRole.valueOf(userInputDto.getUserRole().toUpperCase());
         user.addAuthority(new Authority(user.getUsername(), userRole));
         userRepository.save(user);
         return transferUserToUserOutputDto(user);
     }
 
+    public UserOutputDto updateUser(String username, UserInputDto userInputDto) {
+        User user = userRepository.findById(username).orElseThrow(() -> new RecordNotFoundException("User with name " + username + " doesn't exist."));
+        User currentUser = userRepository.findByUsername(getCurrentUserId());
+        if (!username.equals(userInputDto.getUsername())) {
+            throw new AccessDeniedException("Not allowed to change username.");
+        }
+
+
+//      check if authority of current user is Admin
+        for (Authority auth : currentUser.getAuthorities()) {
+            if (auth.getAuthority().equals("ROLE_ADMIN")) {
+                if(currentUser.getUsername().equals(userInputDto.getUsername()) && !userInputDto.getUserRole().toUpperCase().equals("ADMIN")) {
+                    throw new AccessDeniedException("You can't demote your own authority role");
+                }
+                User updatedUser = adminTransferUserInputDtoToUser(user, userInputDto);
+                UserRole userRole = UserRole.valueOf(userInputDto.getUserRole().toUpperCase());
+                updatedUser.getAuthorities().clear();
+                updatedUser.addAuthority(new Authority(user.getUsername(), userRole));
+                userRepository.save(updatedUser);
+                return transferUserToUserOutputDto(user);
+            }
+        }
+
+//      check if current user is not owner
+        if (!currentUser.getUsername().equals(username)) {
+            throw new AccessDeniedException("Not allowed to change user data");
+        }
+
+        User updatedUser = ownerTransferUserInputDtoToUser(currentUser, userInputDto);
+        userRepository.save(updatedUser);
+        return transferUserToUserOutputDto(updatedUser);
+    }
+
+
     public void addAuthority(String username, String roleName) {
-        User user = userRepository.findById(username).orElseThrow(()-> new RecordNotFoundException("User with name " + username + " doesn't exist."));
-        if(!checkUserRoleExists(roleName)) {
+        User user = userRepository.findById(username).orElseThrow(() -> new RecordNotFoundException("User with name " + username + " doesn't exist."));
+        if (!checkUserRoleExists(roleName)) {
             throw new RecordNotFoundException("Role doesn't exist");
         }
         UserRole userRole = UserRole.valueOf(roleName.toUpperCase());
-        for(Authority auth : user.getAuthorities()) {
-            if(auth.getAuthority().equals(userRole.getRoleAsString())) {
+        for (Authority auth : user.getAuthorities()) {
+            if (auth.getAuthority().equals(userRole.getRoleAsString())) {
                 throw new BadRequestException("Authority already present");
             }
         }
@@ -91,13 +122,16 @@ public class UserService {
 
     public void removeAuthority(String username, String roleName) {
         boolean isRemoved = false;
-        User user = userRepository.findById(username).orElseThrow(()-> new RecordNotFoundException("User with name " + username + " doesn't exist."));
-        if(!checkUserRoleExists(roleName)) {
+        User user = userRepository.findById(username).orElseThrow(() -> new RecordNotFoundException("User with name " + username + " doesn't exist."));
+        if (!checkUserRoleExists(roleName)) {
             throw new RecordNotFoundException("Role doesn't exist");
         }
+        if (getCurrentUserId().equals(username)) {
+            throw new AccessDeniedException("Not Allowed to remove own authority");
+        }
         UserRole userRole = UserRole.valueOf(roleName.toUpperCase());
-        for(Authority auth : user.getAuthorities()) {
-            if(auth.getAuthority().equals(userRole.getRoleAsString())) {
+        for (Authority auth : user.getAuthorities()) {
+            if (auth.getAuthority().equals(userRole.getRoleAsString())) {
                 user.removeAuthority(auth);
                 userRepository.save(user);
                 isRemoved = true;
@@ -105,7 +139,7 @@ public class UserService {
             }
         }
 
-        if(!isRemoved) {
+        if (!isRemoved) {
             throw new BadRequestException("Authority not found");
         }
 
@@ -121,7 +155,6 @@ public class UserService {
 //            userRepository.save(user);
 //        }
     }
-
 
 
     public void deleteUser(String username) {
@@ -149,10 +182,6 @@ public class UserService {
 //    }
 
 
-
-
-
-
 //    Helper methods
 
     private boolean userExists(String username) {
@@ -163,34 +192,57 @@ public class UserService {
         return userRepository.existsByEmail(email);
     }
 
-    private UserOutputDto transferUserToUserOutputDto(User user){
+    private UserOutputDto transferUserToUserOutputDto(User user) {
         UserOutputDto outputDto = new UserOutputDto();
         outputDto.setUsername(user.getUsername());
         outputDto.setIsDeleted(user.getIsDeleted());
         outputDto.setEmail(user.getEmail());
         outputDto.setAuthorities(user.getAuthorities());
-        if(user.getEmployee() != null) {
+        if (user.getEmployee() != null) {
             outputDto.setEmployeeId(user.getEmployee().getId());
         }
         return outputDto;
     }
 
-    private User transferUserInputDtoToUser(UserInputDto userInputDto) {
-        User user = new User();
+    private User adminTransferUserInputDtoToUser(User user, UserInputDto userInputDto) {
+        userInputDto.setEmail(userInputDto.getEmail().toLowerCase());
+        if(emailExists(userInputDto.getEmail())) {
+            throw new IsNotUniqueException("Email is not unique");
+        }
+        if(getCurrentUserId().equals(userInputDto.getUsername()) && userInputDto.getIsDeleted() == true) {
+            throw new AccessDeniedException("You can't delete your own account");
+        }
+
         user.setUsername(userInputDto.getUsername());
         user.setPassword(passwordEncoder.encode(userInputDto.getPassword()));
         user.setEmail(userInputDto.getEmail());
-        if(userInputDto.getIsDeleted() != null) {
+        if (userInputDto.getIsDeleted() != null) {
             user.setIsDeleted(userInputDto.getIsDeleted());
         }
         return user;
+    }
 
+    private User ownerTransferUserInputDtoToUser(User currentUser, UserInputDto userInputDto) {
+//        if (!currentUser.getAuthorities().equals(userInputDto.getAuthorities())) {
+//            throw new AccessDeniedException("Not allowed to change authorities");
+//        }
+        if (currentUser.getIsDeleted() != userInputDto.getIsDeleted()) {
+            throw new AccessDeniedException("Not allowed to change user status.");
+        }
+
+        userInputDto.setEmail(userInputDto.getEmail().toLowerCase());
+        if (!userInputDto.getEmail().equals(currentUser.getEmail()) && emailExists(userInputDto.getEmail())) {
+            throw new IsNotUniqueException("Email is not unique");
+        }
+        currentUser.setPassword(passwordEncoder.encode(userInputDto.getPassword()));
+        currentUser.setEmail(userInputDto.getEmail());
+        return currentUser;
     }
 
     private boolean checkUserRoleExists(String roleName) {
         boolean isMatch = false;
-        for (UserRole userRole: UserRole.values()) {
-            if(roleName.equalsIgnoreCase(userRole.name())) {
+        for (UserRole userRole : UserRole.values()) {
+            if (roleName.equalsIgnoreCase(userRole.name())) {
                 isMatch = true;
                 break;
             }
@@ -201,6 +253,10 @@ public class UserService {
     private Set<Authority> addAuthoritySet(User user, String highestRole) {
         Set<Authority> authorities = new HashSet<>();
         return authorities;
+    }
+
+    private String getCurrentUserId() {
+        return SecurityContextHolder.getContext().getAuthentication().getName();
     }
 
 }
