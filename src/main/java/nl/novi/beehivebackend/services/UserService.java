@@ -206,10 +206,13 @@ public class UserService {
 
     private User adminTransferUserInputDtoToUser(User user, UserInputDto userInputDto) {
         userInputDto.setEmail(userInputDto.getEmail().toLowerCase());
-        if(emailExists(userInputDto.getEmail())) {
-            throw new IsNotUniqueException("Email is not unique");
+        if(user.getEmail() != null) {
+            if(!user.getEmail().equals(userInputDto.getEmail())  && emailExists(userInputDto.getEmail())) {
+                throw new IsNotUniqueException("Email is not unique");
+            }
         }
-        if(getCurrentUserId().equals(userInputDto.getUsername()) && userInputDto.getIsDeleted() == true) {
+
+        if(getCurrentUserId().equals(userInputDto.getUsername()) && userInputDto.getIsDeleted()) {
             throw new AccessDeniedException("You can't delete your own account");
         }
 
@@ -234,6 +237,10 @@ public class UserService {
         if (!userInputDto.getEmail().equals(currentUser.getEmail()) && emailExists(userInputDto.getEmail())) {
             throw new IsNotUniqueException("Email is not unique");
         }
+
+        if(!hasRole(currentUser, userInputDto.getUserRole())) {
+            throw new AccessDeniedException("Not allowed to change authority/");
+        }
         currentUser.setPassword(passwordEncoder.encode(userInputDto.getPassword()));
         currentUser.setEmail(userInputDto.getEmail());
         return currentUser;
@@ -257,6 +264,16 @@ public class UserService {
 
     private String getCurrentUserId() {
         return SecurityContextHolder.getContext().getAuthentication().getName();
+    }
+
+    private boolean hasRole(User user, String roleName) {
+        UserRole userRole = UserRole.valueOf(roleName.toUpperCase());
+        for (Authority auth : user.getAuthorities()) {
+            if (auth.getAuthority().equals(userRole.getRoleAsString())) {
+               return true;
+            }
+        }
+        return false;
     }
 
 }
