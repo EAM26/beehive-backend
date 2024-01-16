@@ -45,22 +45,6 @@ public class UserController {
         return ResponseEntity.ok().body(optionalUser);
     }
 
-//    @GetMapping(value = "/{username}/authorities")
-//    public ResponseEntity<Object> getUserAuthorities(@PathVariable("username") String username) {
-//        return ResponseEntity.ok().body(userService.getAuthorities(username));
-//    }
-
-//    // TODO: 14-8-2023 Wijzg userRole in String, zodat de Param gestest kan worden en evt Exception kan gooien als het geen UserRole is.
-//    @PostMapping(value = "")
-//    public ResponseEntity<Object> createNewUser(@Valid @RequestBody UserInputDto userInputDto, BindingResult bindingResult, @RequestParam(value = "userrole", required = false) String roleName) {
-//        if (bindingResult.hasFieldErrors()) {
-//            return ResponseEntity.badRequest().body(validationUtil.validationMessage(bindingResult).toString());
-//        }
-//        UserOutputDto userOutputDto = userService.createUser(userInputDto, roleName);
-//        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{username}")
-//                .buildAndExpand(userOutputDto.getUsername()).toUri();
-//        return ResponseEntity.created(location).build();
-//    }
 
     @PostMapping(value = "")
     public ResponseEntity<String> createUser(@Valid @RequestBody UserInputDto userInputDto, BindingResult bindingResult) {
@@ -74,15 +58,6 @@ public class UserController {
     }
 
 
-
-//    @PutMapping(value = "/{username}")
-//    public ResponseEntity<Object> updateExistingUser(@PathVariable("username") String username, @Valid @RequestBody UserInputDto userInputDto, BindingResult bindingResult) {
-//        if (bindingResult.hasFieldErrors()) {
-//            return ResponseEntity.badRequest().body(validationUtil.validationMessage(bindingResult).toString());
-//        }
-//        userService.updateUser(username, userInputDto);
-//        return ResponseEntity.noContent().build();
-//    }
 
     @PutMapping(value = "/add_auth/{username}")
     public ResponseEntity<String> addUserAuthority(@PathVariable("username") String username, @RequestBody UserRoleInputDto userRole) {
@@ -104,21 +79,7 @@ public class UserController {
         return new ResponseEntity<>(userOutputDto.getUsername() + " updated.", HttpStatus.OK);
     }
 
-//    @PutMapping(value = "/update/{username}")
-//    public ResponseEntity
 
-
-//    @DeleteMapping(value = "/{username}")
-//    public ResponseEntity<Object> deleteExistingUser(@PathVariable("username") String username) {
-//        userService.deleteUser(username);
-//        return ResponseEntity.noContent().build();
-//    }
-//
-//    @DeleteMapping(value = "/{username}/authorities/{authority}")
-//    public ResponseEntity<Object> deleteUserAuthority(@PathVariable("username") String username, @PathVariable("authority") String role) {
-//        userService.removeAuthority(username, role);
-//        return ResponseEntity.noContent().build();
-//    }
 
 
 }
