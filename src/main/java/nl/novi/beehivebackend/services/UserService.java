@@ -65,8 +65,8 @@ public class UserService {
             throw new BadRequestException("Unknown user role");
         }
         User user = adminTransferUserInputDtoToUser(new User(), userInputDto);
-        UserRole userRole = UserRole.valueOf(userInputDto.getUserRole().toUpperCase());
-        user.addAuthority(new Authority(user.getUsername(), userRole));
+//        UserRole userRole = UserRole.valueOf(userInputDto.getUserRole().toUpperCase());
+//        user.addAuthority(new Authority(user.getUsername(), userRole));
         userRepository.save(user);
         return transferUserToUserOutputDto(user);
     }
@@ -86,9 +86,9 @@ public class UserService {
                     throw new AccessDeniedException("You can't demote your own authority role");
                 }
                 User updatedUser = adminTransferUserInputDtoToUser(user, userInputDto);
-                UserRole userRole = UserRole.valueOf(userInputDto.getUserRole().toUpperCase());
-                updatedUser.getAuthorities().clear();
-                updatedUser.addAuthority(new Authority(user.getUsername(), userRole));
+//                UserRole userRole = UserRole.valueOf(userInputDto.getUserRole().toUpperCase());
+//                updatedUser.getAuthorities().clear();
+//                updatedUser.addAuthority(new Authority(user.getUsername(), userRole));
                 userRepository.save(updatedUser);
                 return transferUserToUserOutputDto(user);
             }
@@ -222,6 +222,9 @@ public class UserService {
         if (userInputDto.getIsDeleted() != null) {
             user.setIsDeleted(userInputDto.getIsDeleted());
         }
+        UserRole userRole = UserRole.valueOf(userInputDto.getUserRole().toUpperCase());
+        user.getAuthorities().clear();
+        user.addAuthority(new Authority(user.getUsername(), userRole));
         return user;
     }
 
@@ -239,7 +242,7 @@ public class UserService {
         }
 
         if(!hasRole(currentUser, userInputDto.getUserRole())) {
-            throw new AccessDeniedException("Not allowed to change authority/");
+            throw new AccessDeniedException("Not allowed to change authority");
         }
         currentUser.setPassword(passwordEncoder.encode(userInputDto.getPassword()));
         currentUser.setEmail(userInputDto.getEmail());

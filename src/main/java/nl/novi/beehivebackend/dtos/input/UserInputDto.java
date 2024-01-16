@@ -33,7 +33,7 @@ public class UserInputDto {
     private Boolean isDeleted;
 
 
-    private Set<Authority> authorities;
+//    private Set<Authority> authorities;
 
     @NotBlank(message = "Role is required.")
     private String userRole;
