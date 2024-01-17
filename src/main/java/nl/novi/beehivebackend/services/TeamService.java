@@ -3,6 +3,7 @@ package nl.novi.beehivebackend.services;
 import nl.novi.beehivebackend.dtos.input.EmployeeInputDto;
 import nl.novi.beehivebackend.dtos.input.TeamInputDto;
 import nl.novi.beehivebackend.dtos.output.TeamOutputDto;
+import nl.novi.beehivebackend.exceptions.BadRequestException;
 import nl.novi.beehivebackend.exceptions.IsNotEmptyException;
 import nl.novi.beehivebackend.exceptions.IsNotUniqueException;
 import nl.novi.beehivebackend.exceptions.RecordNotFoundException;
@@ -40,7 +41,7 @@ public class TeamService {
 
     public TeamOutputDto createTeam(TeamInputDto teamInputDto) {
         if (teamRepository.existsByTeamNameIgnoreCase(teamInputDto.getTeamName())) {
-            throw new IsNotUniqueException("A team with that name already exists.");
+            throw new BadRequestException("A team with that name already exists.");
         }
         Team team = teamRepository.save(transferTeamInputDtoToTeam(teamInputDto));
         return transferTeamToTeamOutputDto(team);
@@ -64,6 +65,8 @@ public class TeamService {
         teamRepository.deleteById(id);
     }
 
+//  HELPER METHODS
+
     // Overload transfer for postmapping
     private Team transferTeamInputDtoToTeam(TeamInputDto teamInputDto) {
         return transferTeamInputDtoToTeam(teamInputDto, new Team());
@@ -72,7 +75,7 @@ public class TeamService {
     // Overload transfer for putmapping
     private Team transferTeamInputDtoToTeam(TeamInputDto teamInputDto, Team team) {
         team.setTeamName(teamInputDto.getTeamName());
-        team.setActive(teamInputDto.isActive());
+        team.setIsActive(teamInputDto.getIsActive());
 
         return team;
     }

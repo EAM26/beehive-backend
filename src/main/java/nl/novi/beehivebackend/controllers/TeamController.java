@@ -47,18 +47,18 @@ public class TeamController {
         return ResponseEntity.created(uri).body(teamOutputDto.getTeamName() + " created");
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Object> updateTeam(@PathVariable String teamName, @Valid @RequestBody TeamInputDto teamInputDto, BindingResult bindingResult) {
-        if (bindingResult.hasFieldErrors()) {
-            return ResponseEntity.badRequest().body(validationUtil.validationMessage(bindingResult).toString());
-        }
-        return new ResponseEntity<>(teamService.updateTeam(teamName, teamInputDto), HttpStatus.ACCEPTED);
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Object> deleteTeam(@PathVariable String teamName) {
-        teamService.deleteTeam(teamName);
-        return ResponseEntity.noContent().build();
-    }
+//    @PutMapping("/{id}")
+//    public ResponseEntity<Object> updateTeam(@PathVariable String teamName, @Valid @RequestBody TeamInputDto teamInputDto, BindingResult bindingResult) {
+//        if (bindingResult.hasFieldErrors()) {
+//            return ResponseEntity.badRequest().body(validationUtil.validationMessage(bindingResult).toString());
+//        }
+//        return new ResponseEntity<>(teamService.updateTeam(teamName, teamInputDto), HttpStatus.ACCEPTED);
+//    }
+//
+//    @DeleteMapping("/{id}")
+//    public ResponseEntity<Object> deleteTeam(@PathVariable String teamName) {
+//        teamService.deleteTeam(teamName);
+//        return ResponseEntity.noContent().build();
+//    }
 
 }
