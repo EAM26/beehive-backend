@@ -13,7 +13,7 @@ import java.util.List;
 public class TeamOutputDto {
 
     private String teamName;
-    private boolean isActive;
+    private Boolean isActive;
     private List<Employee> employees;
 
 

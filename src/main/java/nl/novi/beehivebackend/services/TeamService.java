@@ -83,6 +83,7 @@ public class TeamService {
     private TeamOutputDto transferTeamToTeamOutputDto(Team team) {
         TeamOutputDto teamOutputDto = new TeamOutputDto();
         teamOutputDto.setTeamName(team.getTeamName());
+        teamOutputDto.setIsActive(team.getIsActive());
         teamOutputDto.setEmployees(team.getEmployees());
 
         return teamOutputDto;
