@@ -58,13 +58,14 @@ public class TeamService {
         return transferTeamToTeamOutputDto(team);
     }
 
-    public TeamOutputDto updateTeam(String id, TeamInputDto teamInputDto) {
-        if (teamRepository.existsByTeamNameIgnoreCase(teamInputDto.getTeamName())) {
-            throw new IsNotUniqueException("A team with that name already exists.");
+    public TeamOutputDto updateTeam(String teamName, TeamInputDto teamInputDto) {
+        Team teamToUpdate = teamRepository.findById(teamName).orElseThrow(() -> new RecordNotFoundException("Team with name " + teamName + " doesn't exist."));
+        if (!teamInputDto.getTeamName().equals(teamName)) {
+            throw new BadRequestException("Not allowed to change the Team name.");
         }
-        Team team = teamRepository.findById(id).orElseThrow(()-> new RecordNotFoundException("No team found with id: " + id));
-        transferTeamInputDtoToTeam(teamInputDto, team);
-        teamRepository.save(team);
+
+        Team updatedTeam = transferTeamInputDtoToTeam(teamInputDto, teamToUpdate);
+        Team team = teamRepository.save(updatedTeam);
         return transferTeamToTeamOutputDto(team);
     }
 
@@ -87,7 +88,6 @@ public class TeamService {
     private Team transferTeamInputDtoToTeam(TeamInputDto teamInputDto, Team team) {
         team.setTeamName(teamInputDto.getTeamName());
         team.setIsActive(teamInputDto.getIsActive());
-
         return team;
     }
 
