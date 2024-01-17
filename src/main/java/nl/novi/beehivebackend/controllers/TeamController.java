@@ -28,37 +28,41 @@ public class TeamController {
     }
 
     @GetMapping
-    public ResponseEntity<Iterable<TeamOutputDto>> getAllTeams() {
-        return new ResponseEntity<>(teamService.getAllTeams(), HttpStatus.OK);
+    public ResponseEntity<Iterable<TeamOutputDto>> getAllTeams(@RequestParam(required = false) Boolean isActive) {
+        if (isActive != null) {
+            return new ResponseEntity<>(teamService.getAllTeams(isActive), HttpStatus.OK);
+        }
+            return new ResponseEntity<>(teamService.getAllTeams(), HttpStatus.OK);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<TeamOutputDto> getTeam(@PathVariable Long id) {
-        return new ResponseEntity<>(teamService.getTeam(id), HttpStatus.OK);
+    @GetMapping("/{teamName}")
+    public ResponseEntity<TeamOutputDto> getTeam(@PathVariable String teamName) {
+        return new ResponseEntity<>(teamService.getTeam(teamName), HttpStatus.OK);
     }
 
     @PostMapping
-    public ResponseEntity<Object> createTeam(@Valid @RequestBody TeamInputDto teamInputDto, BindingResult bindingResult) {
+    public ResponseEntity<String> createTeam(@Valid @RequestBody TeamInputDto teamInputDto, BindingResult bindingResult) {
         if (bindingResult.hasFieldErrors()) {
             return ResponseEntity.badRequest().body(validationUtil.validationMessage(bindingResult).toString());
         }
         TeamOutputDto teamOutputDto = teamService.createTeam(teamInputDto);
-        URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentRequest().path("/" + teamOutputDto.teamName).toUriString());
-        return ResponseEntity.created(uri).body(teamOutputDto);
+        URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentRequest().path("/" + teamOutputDto.getTeamName()).toUriString());
+        return ResponseEntity.created(uri).body(teamOutputDto.getTeamName() + " created");
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Object> updateTeam(@PathVariable Long id, @Valid @RequestBody TeamInputDto teamInputDto, BindingResult bindingResult) {
+    @PutMapping("/{teamName}")
+    public ResponseEntity<Object> updateTeam(@PathVariable String teamName, @Valid @RequestBody TeamInputDto teamInputDto, BindingResult bindingResult) {
         if (bindingResult.hasFieldErrors()) {
             return ResponseEntity.badRequest().body(validationUtil.validationMessage(bindingResult).toString());
         }
-        return new ResponseEntity<>(teamService.updateTeam(id, teamInputDto), HttpStatus.ACCEPTED);
+        TeamOutputDto teamOutputDto = teamService.updateTeam(teamName, teamInputDto);
+        return new ResponseEntity<>(teamOutputDto.getTeamName() + " updated.", HttpStatus.OK);
     }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Object> deleteTeam(@PathVariable Long id) {
-        teamService.deleteTeam(id);
-        return ResponseEntity.noContent().build();
-    }
+//
+//    @DeleteMapping("/{id}")
+//    public ResponseEntity<Object> deleteTeam(@PathVariable String teamName) {
+//        teamService.deleteTeam(teamName);
+//        return ResponseEntity.noContent().build();
+//    }
 
 }

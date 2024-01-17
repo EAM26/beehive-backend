@@ -31,6 +31,7 @@ public class Employee {
 
     @ManyToOne
     @JsonIgnore
+    @JoinColumn(name = "team_name")
     private Team team;
 
 

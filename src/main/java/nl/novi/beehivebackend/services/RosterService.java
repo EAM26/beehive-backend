@@ -45,10 +45,10 @@ public class RosterService {
 
 
 
-    public RosterOutputDto createRoster(RosterInputDto rosterInputDto) {
-        Roster roster = rosterRepository.save(transferRosterInputDtoToRoster(rosterInputDto));
-        return transferRostertoRosterOutputDto(roster);
-    }
+//    public RosterOutputDto createRoster(RosterInputDto rosterInputDto) {
+//        Roster roster = rosterRepository.save(transferRosterInputDtoToRoster(rosterInputDto));
+//        return transferRostertoRosterOutputDto(roster);
+//    }
 //
 //    // TODO: 11-7-2023 Check getShifts, methode geschreven voor relatie met Shift was gelegd
 //    public void deleteRoster(String id) {
@@ -72,34 +72,34 @@ public class RosterService {
         return rosterOutputDto;
     }
 
-    public Roster transferRosterInputDtoToRoster(RosterInputDto rosterInputDto) {
-        Roster roster = new Roster();
-        roster.setYear(rosterInputDto.getYear());
-        roster.setWeekNumber(rosterInputDto.getWeekNumber());
-//       check if team exists
-        Team team = teamRepository.findById(rosterInputDto.getTeamId()).orElseThrow(() -> new RecordNotFoundException("No team found with id: " + rosterInputDto.getTeamId()));
-        String tempId = roster.getWeekNumber() + "-" + roster.getYear() + "-" + team.getTeamName();
-        if(rosterRepository.existsById(tempId)) {
-            throw new IsNotUniqueException("This roster already exists.");
-        }
-        roster.setId(tempId);
-
-        LocalDate firstDayOfYear = LocalDate.of(roster.getYear(), 1, 1);
-
-        // Define the week-based year and week fields
-        TemporalField weekBasedYearField = WeekFields.ISO.weekBasedYear();
-        TemporalField weekOfWeekBasedYearField = WeekFields.ISO.weekOfWeekBasedYear();
-
-        // Calculate the start and end dates of the week
-        roster.setStartOfWeek(firstDayOfYear.with(weekBasedYearField, roster.getYear())
-                .with(weekOfWeekBasedYearField, roster.getWeekNumber())
-                .with(java.time.DayOfWeek.MONDAY));
-        roster.setEndOfWeek(roster.getStartOfWeek().plusDays(6));
-
-//        Get and set team
-        roster.setTeam(team);
-
-        return roster;
-    }
+//    public Roster transferRosterInputDtoToRoster(RosterInputDto rosterInputDto) {
+//        Roster roster = new Roster();
+//        roster.setYear(rosterInputDto.getYear());
+//        roster.setWeekNumber(rosterInputDto.getWeekNumber());
+////       check if team exists
+//        Team team = teamRepository.findById(rosterInputDto.getTeamName()).orElseThrow(() -> new RecordNotFoundException("No team found with id: " + rosterInputDto.getTeamId()));
+//        String tempId = roster.getWeekNumber() + "-" + roster.getYear() + "-" + team.getTeamName();
+//        if(rosterRepository.existsById(tempId)) {
+//            throw new IsNotUniqueException("This roster already exists.");
+//        }
+//        roster.setId(tempId);
+//
+//        LocalDate firstDayOfYear = LocalDate.of(roster.getYear(), 1, 1);
+//
+//        // Define the week-based year and week fields
+//        TemporalField weekBasedYearField = WeekFields.ISO.weekBasedYear();
+//        TemporalField weekOfWeekBasedYearField = WeekFields.ISO.weekOfWeekBasedYear();
+//
+//        // Calculate the start and end dates of the week
+//        roster.setStartOfWeek(firstDayOfYear.with(weekBasedYearField, roster.getYear())
+//                .with(weekOfWeekBasedYearField, roster.getWeekNumber())
+//                .with(java.time.DayOfWeek.MONDAY));
+//        roster.setEndOfWeek(roster.getStartOfWeek().plusDays(6));
+//
+////        Get and set team
+//        roster.setTeam(team);
+//
+//        return roster;
+//    }
 
 }

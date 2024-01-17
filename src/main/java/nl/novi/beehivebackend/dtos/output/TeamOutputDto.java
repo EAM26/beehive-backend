@@ -12,9 +12,10 @@ import java.util.List;
 @Setter
 public class TeamOutputDto {
 
-    public Long id;
-    public String teamName;
-    public List<Employee> employees;
-    public List<Roster> rosters;
+    private String teamName;
+    private Boolean isActive;
+    private List<Employee> employees;
+
+
 
 }
