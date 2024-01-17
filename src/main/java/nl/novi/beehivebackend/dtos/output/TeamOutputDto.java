@@ -14,7 +14,7 @@ public class TeamOutputDto {
 
     private String teamName;
     private Boolean isActive;
-    private List<Employee> employees;
+    private List<Long> employeeIds;
 
 
 

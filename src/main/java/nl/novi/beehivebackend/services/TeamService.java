@@ -1,14 +1,12 @@
 package nl.novi.beehivebackend.services;
 
-import nl.novi.beehivebackend.dtos.input.EmployeeInputDto;
 import nl.novi.beehivebackend.dtos.input.TeamInputDto;
 import nl.novi.beehivebackend.dtos.output.TeamOutputDto;
 import nl.novi.beehivebackend.exceptions.BadRequestException;
 import nl.novi.beehivebackend.exceptions.IsNotEmptyException;
-import nl.novi.beehivebackend.exceptions.IsNotUniqueException;
 import nl.novi.beehivebackend.exceptions.RecordNotFoundException;
-import nl.novi.beehivebackend.models.Employee;
 import nl.novi.beehivebackend.models.Team;
+import nl.novi.beehivebackend.repositories.EmployeeRepository;
 import nl.novi.beehivebackend.repositories.TeamRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -19,16 +17,16 @@ import java.util.List;
 @Service
 public class TeamService {
     private final TeamRepository teamRepository;
-    private final ModelMapper modelMapper;
+    private final EmployeeRepository employeeRepository;
 
-    public TeamService(TeamRepository teamRepository) {
-        this.modelMapper = new ModelMapper();
+    public TeamService(TeamRepository teamRepository, EmployeeRepository employeeRepository) {
+        this.employeeRepository = employeeRepository;
         this.teamRepository = teamRepository;
     }
 
     public Iterable<TeamOutputDto> getAllTeams() {
         List<TeamOutputDto> teamOutputDtos = new ArrayList<>();
-        for(Team team: teamRepository.findAll()) {
+        for (Team team : teamRepository.findAll()) {
             teamOutputDtos.add(transferTeamToTeamOutputDto(team));
         }
         return teamOutputDtos;
@@ -36,8 +34,8 @@ public class TeamService {
 
     public Iterable<TeamOutputDto> getAllTeams(Boolean isActive) {
         List<TeamOutputDto> teamOutputDtos = new ArrayList<>();
-        for(Team team: teamRepository.findAll()) {
-            if(team.getIsActive() == isActive) {
+        for (Team team : teamRepository.findAll()) {
+            if (team.getIsActive() == isActive) {
                 teamOutputDtos.add(transferTeamToTeamOutputDto(team));
             }
 
@@ -70,8 +68,8 @@ public class TeamService {
     }
 
     public void deleteTeam(String id) {
-        Team team = teamRepository.findById(id).orElseThrow(()-> new RecordNotFoundException("No team found with id: " + id));
-        if(!team.getEmployees().isEmpty()) {
+        Team team = teamRepository.findById(id).orElseThrow(() -> new RecordNotFoundException("No team found with id: " + id));
+        if (!team.getEmployees().isEmpty()) {
             throw new IsNotEmptyException("Team is not empty. First remove all employees");
         }
         teamRepository.deleteById(id);
@@ -95,18 +93,8 @@ public class TeamService {
         TeamOutputDto teamOutputDto = new TeamOutputDto();
         teamOutputDto.setTeamName(team.getTeamName());
         teamOutputDto.setIsActive(team.getIsActive());
-        teamOutputDto.setEmployees(team.getEmployees());
+        teamOutputDto.setEmployeeIds(employeeRepository.findAllIds());
 
         return teamOutputDto;
     }
-
-    private TeamOutputDto convertTeamToDto(Team team) {
-        return modelMapper.map(team, TeamOutputDto.class);
-    }
-
-    private Team convertDtoToTeam(TeamInputDto teamInputDto) {
-        return modelMapper.map(teamInputDto, Team.class);
-    }
-
-
 }
