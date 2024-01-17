@@ -33,7 +33,7 @@ public class TeamService {
         return teamOutputDtos;
     }
 
-    public TeamOutputDto getTeam(Long id) {
+    public TeamOutputDto getTeam(String id) {
         Team team = teamRepository.findById(id).orElseThrow(() -> new RecordNotFoundException("No Team found with name: " + id));
         return transferTeamToTeamOutputDto(team);
     }
@@ -46,7 +46,7 @@ public class TeamService {
         return transferTeamToTeamOutputDto(team);
     }
 
-    public TeamOutputDto updateTeam(Long id, TeamInputDto teamInputDto) {
+    public TeamOutputDto updateTeam(String id, TeamInputDto teamInputDto) {
         if (teamRepository.existsByTeamNameIgnoreCase(teamInputDto.getTeamName())) {
             throw new IsNotUniqueException("A team with that name already exists.");
         }
@@ -56,7 +56,7 @@ public class TeamService {
         return transferTeamToTeamOutputDto(team);
     }
 
-    public void deleteTeam(Long id) {
+    public void deleteTeam(String id) {
         Team team = teamRepository.findById(id).orElseThrow(()-> new RecordNotFoundException("No team found with id: " + id));
         if(!team.getEmployees().isEmpty()) {
             throw new IsNotEmptyException("Team is not empty. First remove all employees");
@@ -72,15 +72,15 @@ public class TeamService {
     // Overload transfer for putmapping
     private Team transferTeamInputDtoToTeam(TeamInputDto teamInputDto, Team team) {
         team.setTeamName(teamInputDto.getTeamName());
+        team.setActive(teamInputDto.isActive());
+
         return team;
     }
 
     private TeamOutputDto transferTeamToTeamOutputDto(Team team) {
         TeamOutputDto teamOutputDto = new TeamOutputDto();
-        teamOutputDto.setId(team.getId());
         teamOutputDto.setTeamName(team.getTeamName());
         teamOutputDto.setEmployees(team.getEmployees());
-        teamOutputDto.setRosters(team.getRosters());
 
         return teamOutputDto;
     }

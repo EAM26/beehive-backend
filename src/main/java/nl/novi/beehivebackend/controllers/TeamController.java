@@ -33,31 +33,31 @@ public class TeamController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<TeamOutputDto> getTeam(@PathVariable Long id) {
-        return new ResponseEntity<>(teamService.getTeam(id), HttpStatus.OK);
+    public ResponseEntity<TeamOutputDto> getTeam(@PathVariable String teamName) {
+        return new ResponseEntity<>(teamService.getTeam(teamName), HttpStatus.OK);
     }
 
     @PostMapping
-    public ResponseEntity<Object> createTeam(@Valid @RequestBody TeamInputDto teamInputDto, BindingResult bindingResult) {
+    public ResponseEntity<String> createTeam(@Valid @RequestBody TeamInputDto teamInputDto, BindingResult bindingResult) {
         if (bindingResult.hasFieldErrors()) {
             return ResponseEntity.badRequest().body(validationUtil.validationMessage(bindingResult).toString());
         }
         TeamOutputDto teamOutputDto = teamService.createTeam(teamInputDto);
-        URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentRequest().path("/" + teamOutputDto.teamName).toUriString());
-        return ResponseEntity.created(uri).body(teamOutputDto);
+        URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentRequest().path("/" + teamOutputDto.getTeamName()).toUriString());
+        return ResponseEntity.created(uri).body(teamOutputDto.getTeamName() + " created");
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Object> updateTeam(@PathVariable Long id, @Valid @RequestBody TeamInputDto teamInputDto, BindingResult bindingResult) {
+    public ResponseEntity<Object> updateTeam(@PathVariable String teamName, @Valid @RequestBody TeamInputDto teamInputDto, BindingResult bindingResult) {
         if (bindingResult.hasFieldErrors()) {
             return ResponseEntity.badRequest().body(validationUtil.validationMessage(bindingResult).toString());
         }
-        return new ResponseEntity<>(teamService.updateTeam(id, teamInputDto), HttpStatus.ACCEPTED);
+        return new ResponseEntity<>(teamService.updateTeam(teamName, teamInputDto), HttpStatus.ACCEPTED);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Object> deleteTeam(@PathVariable Long id) {
-        teamService.deleteTeam(id);
+    public ResponseEntity<Object> deleteTeam(@PathVariable String teamName) {
+        teamService.deleteTeam(teamName);
         return ResponseEntity.noContent().build();
     }
 

@@ -10,21 +10,19 @@ import java.util.List;
 @Getter
 @Setter
 @Entity
-@Table(name="teams")
+@Table(name = "teams")
 public class Team {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @Column(unique = true)
     private String teamName;
+
+    @Column(nullable = false)
+    private boolean isActive;
 
     @OneToMany(mappedBy = "team")
     @JsonIgnore
     private List<Employee> employees;
-
-    @OneToMany(mappedBy = "team")
-    @JsonIgnore
-    private List<Roster> rosters;
 }
+
+
+
