@@ -1,7 +1,7 @@
 package nl.novi.beehivebackend.services;
 
 
-import nl.novi.beehivebackend.dtos.output.UserOutputDto;
+import nl.novi.beehivebackend.exceptions.DisabledException;
 import nl.novi.beehivebackend.models.Authority;
 import nl.novi.beehivebackend.models.User;
 import nl.novi.beehivebackend.repositories.UserRepository;
@@ -35,6 +35,10 @@ public class CustomUserDetailsService implements UserDetailsService {
         List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
         for (Authority authority: authorities) {
             grantedAuthorities.add(new SimpleGrantedAuthority(authority.getAuthority()));
+        }
+        if (user.getIsDeleted()) {
+
+            throw new DisabledException("Accounts is disabled");
         }
 
         return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(),grantedAuthorities);

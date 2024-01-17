@@ -2,6 +2,7 @@ package nl.novi.beehivebackend.controllers;
 
 import nl.novi.beehivebackend.dtos.input.AuthenticationRequest;
 import nl.novi.beehivebackend.dtos.output.AuthenticationResponse;
+import nl.novi.beehivebackend.exceptions.DisabledException;
 import nl.novi.beehivebackend.services.CustomUserDetailsService;
 import nl.novi.beehivebackend.utils.JwtUtil;
 import org.springframework.http.ResponseEntity;
@@ -54,7 +55,11 @@ public class AuthenticationController {
             );
         }
         catch (Exception e) {
-            throw new BadCredentialsException("Incorrect username or password", e);
+            if (e.getMessage().equals("Accounts is disabled")) {
+                throw e;
+            } else {
+                throw new BadCredentialsException("Incorrect username or password", e);
+            }
         }
 
         final UserDetails userDetails = userDetailsService
