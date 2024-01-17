@@ -17,7 +17,7 @@ public class Team {
     private String teamName;
 
     @Column(nullable = false)
-    private boolean isActive;
+    private Boolean isActive;
 
     @OneToMany(mappedBy = "team")
     @JsonIgnore

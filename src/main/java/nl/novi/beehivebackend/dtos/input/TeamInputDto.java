@@ -14,6 +14,6 @@ public class TeamInputDto {
     private String teamName;
 
     @NotNull(message = "Team status is required")
-    private boolean isActive;
+    private Boolean isActive;
 
 }
