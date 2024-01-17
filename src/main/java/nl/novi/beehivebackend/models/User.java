@@ -24,8 +24,8 @@ public class User {
     @Column(nullable = false)
     private String email ;
 
-
-    private Boolean isDeleted = false;
+    @Column(nullable = false)
+    private Boolean isDeleted;
 
     @OneToMany(
             targetEntity = Authority.class,
