@@ -28,11 +28,14 @@ public class TeamController {
     }
 
     @GetMapping
-    public ResponseEntity<Iterable<TeamOutputDto>> getAllTeams() {
-        return new ResponseEntity<>(teamService.getAllTeams(), HttpStatus.OK);
+    public ResponseEntity<Iterable<TeamOutputDto>> getAllTeams(@RequestParam(required = false) Boolean isActive) {
+        if (isActive != null) {
+            return new ResponseEntity<>(teamService.getAllTeams(isActive), HttpStatus.OK);
+        }
+            return new ResponseEntity<>(teamService.getAllTeams(), HttpStatus.OK);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/{teamName}")
     public ResponseEntity<TeamOutputDto> getTeam(@PathVariable String teamName) {
         return new ResponseEntity<>(teamService.getTeam(teamName), HttpStatus.OK);
     }

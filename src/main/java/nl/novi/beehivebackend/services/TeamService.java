@@ -34,6 +34,17 @@ public class TeamService {
         return teamOutputDtos;
     }
 
+    public Iterable<TeamOutputDto> getAllTeams(Boolean isActive) {
+        List<TeamOutputDto> teamOutputDtos = new ArrayList<>();
+        for(Team team: teamRepository.findAll()) {
+            if(team.getIsActive() == isActive) {
+                teamOutputDtos.add(transferTeamToTeamOutputDto(team));
+            }
+
+        }
+        return teamOutputDtos;
+    }
+
     public TeamOutputDto getTeam(String id) {
         Team team = teamRepository.findById(id).orElseThrow(() -> new RecordNotFoundException("No Team found with name: " + id));
         return transferTeamToTeamOutputDto(team);

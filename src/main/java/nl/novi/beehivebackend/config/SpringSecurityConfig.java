@@ -81,6 +81,7 @@ public class SpringSecurityConfig {
 
 //                Team requests
                 .requestMatchers(HttpMethod.GET,"/teams").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.GET,"/teams/{teamName}").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.POST,"/teams").hasRole("ADMIN")
 
 //                .requestMatchers(HttpMethod.GET,"/profile").authenticated()
