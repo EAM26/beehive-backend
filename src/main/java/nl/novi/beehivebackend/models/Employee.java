@@ -9,6 +9,8 @@ import lombok.Setter;
 import java.time.LocalDate;
 import java.util.List;
 
+
+
 @Getter
 @Setter
 @Entity
@@ -42,4 +44,9 @@ public class Employee {
     @OneToOne(mappedBy = "employee")
     @JsonIgnore
     private User user;
+
+    @OneToMany(mappedBy = "employee")
+    @JsonIgnore
+    private List<Absence> absences;
+
 }
