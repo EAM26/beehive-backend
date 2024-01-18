@@ -1,6 +1,7 @@
 package nl.novi.beehivebackend.services;
 
 import nl.novi.beehivebackend.dtos.output.AbsenceOutputDto;
+import nl.novi.beehivebackend.exceptions.RecordNotFoundException;
 import nl.novi.beehivebackend.models.Absence;
 import nl.novi.beehivebackend.repositories.AbsenceRepository;
 import org.springframework.stereotype.Service;
@@ -23,6 +24,11 @@ public class AbsenceService {
             absenceOutputDtos.add(transferAbsenceToAbsenceOutputDto(absence));
         }
         return absenceOutputDtos;
+    }
+
+    public AbsenceOutputDto getSingleAbsence(Long id) {
+        Absence absence = absenceRepository.findById(id).orElseThrow(() -> new RecordNotFoundException("No absence found with id: " + id));
+        return transferAbsenceToAbsenceOutputDto(absence);
     }
 
 

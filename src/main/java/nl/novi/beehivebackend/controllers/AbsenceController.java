@@ -6,6 +6,7 @@ import nl.novi.beehivebackend.utils.ValidationUtil;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -24,5 +25,10 @@ public class AbsenceController {
     @GetMapping
     public ResponseEntity<Iterable<AbsenceOutputDto>> getAllAbsences() {
         return new ResponseEntity<>(absenceService.getAllAbsences(), HttpStatus.OK);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<AbsenceOutputDto> getSingleAbsence(@PathVariable Long id) {
+        return new ResponseEntity<>(absenceService.getSingleAbsence( id), HttpStatus.OK);
     }
 }
