@@ -82,6 +82,8 @@ public class SpringSecurityConfig {
 //                TEAM REQUESTS
                 .requestMatchers(HttpMethod.GET, "/teams").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.GET, "/teams/{teamName}").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.GET, "/teams/**").hasRole("ADMIN")
+
                 .requestMatchers(HttpMethod.POST, "/teams").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.PUT, "/teams/{teamName}").hasRole("ADMIN")
 
@@ -90,7 +92,10 @@ public class SpringSecurityConfig {
 //                ABSENCE REQUESTS
 
                 .requestMatchers(HttpMethod.GET, "/absences").hasAnyRole("ADMIN", "MANAGER")
-                .requestMatchers(HttpMethod.GET, "/absences/{id}").hasAnyRole("ADMIN", "MANAGER", "USER")
+                .requestMatchers(HttpMethod.GET, "/absences/{id}").hasAnyRole("ADMIN", "MANAGER")
+                .requestMatchers(HttpMethod.GET, "/absences/**").hasAnyRole("ADMIN", "MANAGER")
+
+                .requestMatchers(HttpMethod.POST, "/absences").hasAnyRole("ADMIN", "MANAGER")
 
 //              ******************************************************
 
