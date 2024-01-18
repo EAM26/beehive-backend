@@ -2,9 +2,7 @@ package nl.novi.beehivebackend.controllers;
 
 import jakarta.validation.Valid;
 import nl.novi.beehivebackend.dtos.input.AbsenceInputDto;
-import nl.novi.beehivebackend.dtos.input.EmployeeInputDto;
 import nl.novi.beehivebackend.dtos.output.AbsenceOutputDto;
-import nl.novi.beehivebackend.dtos.output.EmployeeOutputDto;
 import nl.novi.beehivebackend.services.AbsenceService;
 import nl.novi.beehivebackend.utils.ValidationUtil;
 import org.springframework.http.HttpStatus;
