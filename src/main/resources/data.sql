@@ -61,6 +61,13 @@ VALUES (201, '2023-01-02', '2023-01-02', '09:00:00', '17:00:00', 101),
        (218, '2023-01-04', '2023-01-05', '17:00:00', '02:00:00', null);
 
 
+INSERT INTO absences(id, start_date, end_date, employee_id)
+VALUES (301, '2023-01-15', '2023-01-18', 101),
+       (302, '2023-01-20', '2023-01-25', 101),
+       (303, '2023-01-30', '2023-01-30', 101),
+       (304, '2023-02-22', '2023-02-26', 101);
+
+
 INSERT INTO users (username, password, email, employee_id, is_deleted)
 VALUES ('drone', '$2a$12$3seFwZfJ/gm3E2VFHqz7g.T465Jw/IDe8.sibEOE9RsmCLzr6KUke', 'drone@test.nl', 101, false),
        ('bee', '$2a$12$3seFwZfJ/gm3E2VFHqz7g.T465Jw/IDe8.sibEOE9RsmCLzr6KUke', 'bee@test.nl', 102, false),
