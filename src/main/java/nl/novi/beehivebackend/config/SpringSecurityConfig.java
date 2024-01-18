@@ -33,8 +33,6 @@ public class SpringSecurityConfig {
     }
 
 
-
-
     // Authenticatie met customUserDetailsService en passwordEncoder
     @Bean
     public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
@@ -46,10 +44,9 @@ public class SpringSecurityConfig {
     }
 
 
-
     // Authorizatie met jwt
     @Bean
-    protected SecurityFilterChain filter (HttpSecurity http) throws Exception {
+    protected SecurityFilterChain filter(HttpSecurity http) throws Exception {
 
         http
                 .csrf().disable()
@@ -58,42 +55,52 @@ public class SpringSecurityConfig {
                 .authorizeHttpRequests()
 
 
+//                AUTHENTICATION REQUESTS
 
-//                Authentication requests
                 .requestMatchers(HttpMethod.GET, "/authenticated").authenticated()
                 .requestMatchers(HttpMethod.POST, "/authenticate").permitAll()
 
-//                User requests
-                .requestMatchers(HttpMethod.GET,"/users").hasRole("ADMIN")
-                .requestMatchers(HttpMethod.GET,"/users/{username}").hasRole("ADMIN")
-                .requestMatchers(HttpMethod.GET,"/users/**").hasRole("ADMIN")
+//              ******************************************************
+
+//                USER REQUESTS
+                .requestMatchers(HttpMethod.GET, "/users").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.GET, "/users/{username}").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.GET, "/users/**").hasRole("ADMIN")
 
                 .requestMatchers(HttpMethod.POST, "/users").hasRole("ADMIN")
-                .requestMatchers(HttpMethod.POST,"/users/**").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.POST, "/users/**").hasRole("ADMIN")
 
-                .requestMatchers(HttpMethod.PUT,"/users/{username}").hasAnyRole("ADMIN", "MANAGER", "USER")
-                .requestMatchers(HttpMethod.PUT,"/users/auth/{username}").hasRole("ADMIN")
-                .requestMatchers(HttpMethod.PUT,"/users/**").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.PUT, "/users/{username}").hasAnyRole("ADMIN", "MANAGER", "USER")
+                .requestMatchers(HttpMethod.PUT, "/users/auth/{username}").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.PUT, "/users/**").hasRole("ADMIN")
 
+//              ******************************************************
 
 //                .requestMatchers(HttpMethod.DELETE, "/users/{username}").hasAnyRole("ADMIN", "MANAGER")
 //                .requestMatchers(HttpMethod.DELETE, "/users/**").hasRole("ADMIN")
 
-//                Team requests
-                .requestMatchers(HttpMethod.GET,"/teams").hasRole("ADMIN")
-                .requestMatchers(HttpMethod.GET,"/teams/{teamName}").hasRole("ADMIN")
-                .requestMatchers(HttpMethod.POST,"/teams").hasRole("ADMIN")
-                .requestMatchers(HttpMethod.PUT,"/teams/{teamName}").hasRole("ADMIN")
+//                TEAM REQUESTS
+                .requestMatchers(HttpMethod.GET, "/teams").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.GET, "/teams/{teamName}").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.POST, "/teams").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.PUT, "/teams/{teamName}").hasRole("ADMIN")
 
-//                .requestMatchers(HttpMethod.GET,"/profile").authenticated()
+//              ******************************************************
+
+//                ABSENCE REQUESTS
+
+                .requestMatchers(HttpMethod.GET, "/absences").hasAnyRole("ADMIN", "MANAGER")
+
+//              ******************************************************
+
 //                Employee requests
-                .requestMatchers(HttpMethod.GET,"/employees").hasAnyRole("ADMIN", "MANAGER")
-                .requestMatchers(HttpMethod.GET,"/employees/profile").authenticated()
-                .requestMatchers(HttpMethod.GET,"/employees/profile/{id}").hasAnyRole("ADMIN", "MANAGER")
-                .requestMatchers(HttpMethod.POST,"/employees").hasAnyRole("ADMIN", "MANAGER")
+                .requestMatchers(HttpMethod.GET, "/employees").hasAnyRole("ADMIN", "MANAGER")
+                .requestMatchers(HttpMethod.GET, "/employees/profile").authenticated()
+                .requestMatchers(HttpMethod.GET, "/employees/profile/{id}").hasAnyRole("ADMIN", "MANAGER")
+                .requestMatchers(HttpMethod.POST, "/employees").hasAnyRole("ADMIN", "MANAGER")
 
 //                Roster requests
-                .requestMatchers(HttpMethod.GET,"/rosters").hasAnyRole("ADMIN", "MANAGER", "USER")
+                .requestMatchers(HttpMethod.GET, "/rosters").hasAnyRole("ADMIN", "MANAGER", "USER")
 //
                 .anyRequest().denyAll()
                 .and()
