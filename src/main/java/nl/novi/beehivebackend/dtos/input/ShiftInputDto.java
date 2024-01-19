@@ -12,13 +12,13 @@ import java.time.LocalDateTime;
 public class ShiftInputDto {
 
     @NotNull(message = "Start of shift is required.")
-    public LocalDateTime startShift;
+    private LocalDateTime startShift;
 
     @NotNull(message = "Tnd of shift is required.")
-    public LocalDateTime endShift;
+    private LocalDateTime endShift;
 
     @NotNull(message = "Team name is required.")
-    public String teamName;
+    private String teamName;
 
-    public Long employeeId;
+    private Long employeeId;
 }

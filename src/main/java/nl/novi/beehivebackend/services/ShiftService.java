@@ -1,8 +1,12 @@
 package nl.novi.beehivebackend.services;
 
+import nl.novi.beehivebackend.dtos.input.ShiftInputDto;
 import nl.novi.beehivebackend.dtos.output.ShiftOutputDto;
+import nl.novi.beehivebackend.exceptions.BadRequestException;
 import nl.novi.beehivebackend.exceptions.RecordNotFoundException;
+import nl.novi.beehivebackend.models.Employee;
 import nl.novi.beehivebackend.models.Shift;
+import nl.novi.beehivebackend.models.Team;
 import nl.novi.beehivebackend.repositories.EmployeeRepository;
 import nl.novi.beehivebackend.repositories.ShiftRepository;
 import nl.novi.beehivebackend.repositories.TeamRepository;
@@ -15,12 +19,14 @@ import java.util.ArrayList;
 public class ShiftService {
 
     private final ShiftRepository shiftRepository;
+    private final TeamRepository teamRepository;
     private final EmployeeRepository employeeRepository;
 
 
-    public ShiftService(ShiftRepository shiftRepository, EmployeeRepository employeeRepository, TeamRepository teamRepository) {
+    public ShiftService(ShiftRepository shiftRepository, EmployeeRepository employeeRepository, TeamRepository teamRepository, TeamRepository teamRepository1) {
         this.shiftRepository = shiftRepository;
         this.employeeRepository = employeeRepository;
+        this.teamRepository = teamRepository1;
     }
 
     public Iterable<ShiftOutputDto> getAllShifts() {
@@ -36,18 +42,37 @@ public class ShiftService {
         return transferShiftToShiftOutputDto(shift);
     }
 
-//    public ShiftOutputDto createShift(ShiftInputDto shiftInputDto) {
-//        Roster roster = rosterValidation(shiftInputDto);
-//        Shift shift;
-//        if(shiftInputDto.getEmployeeId() != null) {
-//            Employee employee = employeeValidation(shiftInputDto, roster);
-//            shift = shiftRepository.save(transferShiftInputDtoToShift(shiftInputDto, employee, roster));
-//        } else {
-//            shift = shiftRepository.save(transferShiftInputDtoToShift(shiftInputDto, null, roster));
-//        }
-//        return transferShiftToShiftOutputDto(shift);
-//
-//    }
+    public ShiftOutputDto createShift(ShiftInputDto shiftInputDto) {
+        Shift shift = new Shift();
+//        Team check
+        Team team = teamRepository.findById(shiftInputDto.getTeamName()).orElseThrow(() -> new RecordNotFoundException("No team found with name. Name is case sensitive!"));
+        if (!team.getIsActive()) {
+            throw new BadRequestException("This team is not active");
+        }
+
+//        Employee check
+        if(shiftInputDto.getEmployeeId() != null) {
+            Employee employee = employeeRepository.findById(shiftInputDto.getEmployeeId()).orElseThrow(() -> new RecordNotFoundException("No employee found with name."));
+            if(checkEmployeeMatchTeam(employee, team)) {
+                shift = transferShiftInputDtoToShift(shiftInputDto, team, employee);
+            }
+        } else {
+            shift = transferShiftInputDtoToShift(shiftInputDto, team, null);
+        }
+        shiftRepository.save(shift);
+
+
+        return transferShiftToShiftOutputDto(shift);
+    }
+
+
+    private Boolean checkEmployeeMatchTeam(Employee employee, Team team) {
+            if (!employee.getTeam().getTeamName().equals(team.getTeamName())) {
+                throw new BadRequestException("Employee is not in team: " + team.getTeamName());
+            }
+            return true;
+    }
+
 //
 //    public ShiftOutputDto updateShift(Long id, ShiftInputDto shiftInputDto) {
 //        Shift shift = shiftRepository.findById(id).orElseThrow(()-> new RecordNotFoundException("No shift found with id: " + id));
@@ -124,12 +149,24 @@ public class ShiftService {
 //        return shift;
 //    }
 
+    private Shift transferShiftInputDtoToShift(ShiftInputDto shiftInputDto, Team team, Employee employee) {
+        Shift shift = new Shift();
+        shift.setStartShift(shiftInputDto.getStartShift());
+        shift.setEndShift(shiftInputDto.getEndShift());
+        shift.setTeam(team);
+        if(employee!=null) {
+            shift.setEmployee(employee);
+        }
+
+
+        return shiftRepository.save(shift);
+    }
     private ShiftOutputDto transferShiftToShiftOutputDto(Shift shift) {
         ShiftOutputDto shiftOutputDto = new ShiftOutputDto();
         shiftOutputDto.setId(shift.getId());
         shiftOutputDto.setStartShift(shift.getStartShift());
         shiftOutputDto.setEndShift(shift.getEndShift());
-        if(shift.getEmployee() != null) {
+        if (shift.getEmployee() != null) {
             shiftOutputDto.setEmployeeShortName(shift.getEmployee().getShortName());
         }
         shiftOutputDto.setTeamName(shift.getTeam().getTeamName());

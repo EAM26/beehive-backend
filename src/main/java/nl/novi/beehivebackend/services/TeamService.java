@@ -49,7 +49,7 @@ public class TeamService {
     }
 
     public TeamOutputDtoEmpIds createTeam(TeamInputDto teamInputDto) {
-        if (teamRepository.existsByTeamNameIgnoreCase(teamInputDto.getTeamName())) {
+        if (teamRepository.existsById(teamInputDto.getTeamName())) {
             throw new BadRequestException("A team with that name already exists.");
         }
         Team team = teamRepository.save(transferTeamInputDtoToTeam(teamInputDto));
