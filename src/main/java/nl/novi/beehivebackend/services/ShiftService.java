@@ -135,7 +135,9 @@ public class ShiftService {
         shiftOutputDto.setId(shift.getId());
         shiftOutputDto.setStartShift(shift.getStartShift());
         shiftOutputDto.setEndShift(shift.getEndShift());
-        shiftOutputDto.setEmployeeShortName(shift.getEmployee().getShortName());
+        if(shift.getEmployee() != null) {
+            shiftOutputDto.setEmployeeShortName(shift.getEmployee().getShortName());
+        }
         shiftOutputDto.setTeamName(shift.getTeam().getTeamName());
 
         return shiftOutputDto;

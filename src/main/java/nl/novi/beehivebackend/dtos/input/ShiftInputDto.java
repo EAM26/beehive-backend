@@ -3,25 +3,21 @@ package nl.novi.beehivebackend.dtos.input;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
-import nl.novi.beehivebackend.models.Employee;
-import nl.novi.beehivebackend.models.Roster;
-import nl.novi.beehivebackend.models.Team;
 
-import java.time.LocalDate;
+
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 
 @Getter
 @Setter
 public class ShiftInputDto {
 
-    @NotNull
+    @NotNull(message = "Start of shift is required.")
     public LocalDateTime startShift;
 
-    @NotNull
+    @NotNull(message = "Tnd of shift is required.")
     public LocalDateTime endShift;
 
-    @NotNull
+    @NotNull(message = "Team name is required.")
     public String teamName;
 
     public Long employeeId;

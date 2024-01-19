@@ -26,14 +26,21 @@ public class Shift {
     @Column(nullable = false)
     private LocalDateTime endShift;
 
+//    @Column(nullable = false)
+//    private int weekNumber;
+//
+//    @Column(nullable = false)
+//    private int year;
+//
 
 
-    @ManyToOne
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnore
     @JoinColumn(name = "team_name", nullable = false)
     private Team team;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnore
     @JoinColumn(name = "employee_id")
     private Employee employee;

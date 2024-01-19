@@ -23,7 +23,7 @@ public class Absence {
     @Column(nullable = false)
     private LocalDate endDate;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnore
     @JoinColumn(name = "employee_id", nullable = false)
     private Employee employee;

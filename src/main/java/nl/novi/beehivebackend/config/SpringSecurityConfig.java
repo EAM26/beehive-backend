@@ -85,6 +85,13 @@ public class SpringSecurityConfig {
 
 //              ******************************************************
 
+//              SHIFT REQUESTS
+                .requestMatchers(HttpMethod.GET, "/shifts").hasAnyRole("ADMIN", "MANAGER")
+                .requestMatchers(HttpMethod.GET, "/shifts/{id}").hasAnyRole("ADMIN", "MANAGER")
+
+
+//              ******************************************************
+
 //                ABSENCE REQUESTS
 
                 .requestMatchers(HttpMethod.GET, "/absences").hasAnyRole("ADMIN", "MANAGER")
