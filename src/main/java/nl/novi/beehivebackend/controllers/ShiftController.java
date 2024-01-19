@@ -36,27 +36,27 @@ public class ShiftController {
         return new ResponseEntity<>(shiftService.getShift(id), HttpStatus.OK);
     }
 
-    @PostMapping
-    public ResponseEntity<Object> createShift(@Valid @RequestBody ShiftInputDto shiftInputDto, BindingResult bindingResult) {
-        if (bindingResult.hasFieldErrors()) {
-            return ResponseEntity.badRequest().body(validationUtil.validationMessage(bindingResult).toString());
-        }
-
-        ShiftOutputDto shiftOutputDto = shiftService.createShift(shiftInputDto);
-        URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentRequest().path("/" + shiftOutputDto.id).toUriString());
-        return ResponseEntity.created(uri).body(shiftOutputDto);
-    }
-
-    @PutMapping("/{id}") ResponseEntity<Object> updateShift(@PathVariable Long id, @Valid @RequestBody ShiftInputDto shiftInputDto, BindingResult bindingResult) {
-        if (bindingResult.hasFieldErrors()) {
-            return ResponseEntity.badRequest().body(validationUtil.validationMessage(bindingResult).toString());
-        }
-        return new ResponseEntity<>(shiftService.updateShift(id, shiftInputDto), HttpStatus.ACCEPTED);
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Object> deleteShift(@PathVariable Long id) {
-        shiftService.deleteShift(id);
-        return ResponseEntity.noContent().build();
-    }
+//    @PostMapping
+//    public ResponseEntity<Object> createShift(@Valid @RequestBody ShiftInputDto shiftInputDto, BindingResult bindingResult) {
+//        if (bindingResult.hasFieldErrors()) {
+//            return ResponseEntity.badRequest().body(validationUtil.validationMessage(bindingResult).toString());
+//        }
+//
+//        ShiftOutputDto shiftOutputDto = shiftService.createShift(shiftInputDto);
+//        URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentRequest().path("/" + shiftOutputDto.id).toUriString());
+//        return ResponseEntity.created(uri).body(shiftOutputDto);
+//    }
+//
+//    @PutMapping("/{id}") ResponseEntity<Object> updateShift(@PathVariable Long id, @Valid @RequestBody ShiftInputDto shiftInputDto, BindingResult bindingResult) {
+//        if (bindingResult.hasFieldErrors()) {
+//            return ResponseEntity.badRequest().body(validationUtil.validationMessage(bindingResult).toString());
+//        }
+//        return new ResponseEntity<>(shiftService.updateShift(id, shiftInputDto), HttpStatus.ACCEPTED);
+//    }
+//
+//    @DeleteMapping("/{id}")
+//    public ResponseEntity<Object> deleteShift(@PathVariable Long id) {
+//        shiftService.deleteShift(id);
+//        return ResponseEntity.noContent().build();
+//    }
 }

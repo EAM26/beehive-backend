@@ -7,6 +7,7 @@ import nl.novi.beehivebackend.models.Roster;
 import nl.novi.beehivebackend.models.Team;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 @Getter
@@ -15,12 +16,9 @@ public class ShiftOutputDto {
 
     public Long id;
 
-    public LocalDate startDate;
-    public LocalDate endDate;
+    public LocalDateTime startShift;
+    public LocalDateTime  endShift;
 
-    public LocalTime startTime;
-    public LocalTime endTime;
-
-    public Employee employee;
-    public Roster roster;
+    public String  employeeShortName;
+    public String teamName;
 }

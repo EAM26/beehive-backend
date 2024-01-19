@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 @Getter
@@ -18,19 +19,25 @@ public class Shift {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private LocalDate startDate;
-    private LocalDate endDate;
 
-    private LocalTime startTime;
-    private LocalTime endTime;
+    @Column(nullable = false)
+    private LocalDateTime startShift;
+
+    @Column(nullable = false)
+    private LocalDateTime endShift;
+
+
 
     @ManyToOne
     @JsonIgnore
+    @JoinColumn(name = "team_name", nullable = false)
+    private Team team;
+
+    @ManyToOne
+    @JsonIgnore
+    @JoinColumn(name = "employee_id")
     private Employee employee;
 
 
-    @ManyToOne
-    @JsonIgnore
-    private Roster roster;
 
 }
