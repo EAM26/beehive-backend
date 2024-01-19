@@ -46,6 +46,15 @@ public class ShiftController {
         URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentRequest().path("/" + shiftOutputDto.id).toUriString());
         return ResponseEntity.created(uri).body(shiftOutputDto);
     }
+
+    @PutMapping
+    public ResponseEntity<Object> updateShift(@PathVariable Long id, @Valid @RequestBody ShiftInputDto shiftInputDto, BindingResult bindingResult) {
+        if (bindingResult.hasFieldErrors()) {
+            return ResponseEntity.badRequest().body(validationUtil.validationMessage(bindingResult).toString());
+        }
+
+        return new ResponseEntity<>(shiftService.updateShift(id, shiftInputDto), HttpStatus.OK);
+    }
 //
 //    @PutMapping("/{id}") ResponseEntity<Object> updateShift(@PathVariable Long id, @Valid @RequestBody ShiftInputDto shiftInputDto, BindingResult bindingResult) {
 //        if (bindingResult.hasFieldErrors()) {

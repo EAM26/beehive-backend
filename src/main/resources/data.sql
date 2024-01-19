@@ -2,7 +2,8 @@ INSERT INTO teams (team_name, is_active)
 VALUES ('Kitchen', true),
        ('Bar', true),
        ('Reception', true),
-       ('RestaurantService', true);
+       ('RestaurantService', true),
+       ('OldTeam', false);
 
 
 INSERT INTO employees (id, first_name, preposition, last_name, short_name, dob, phone_number,

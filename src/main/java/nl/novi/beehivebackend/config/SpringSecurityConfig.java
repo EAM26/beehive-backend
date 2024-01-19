@@ -72,8 +72,6 @@ public class SpringSecurityConfig {
 
 //              ******************************************************
 
-//                .requestMatchers(HttpMethod.DELETE, "/users/{username}").hasAnyRole("ADMIN", "MANAGER")
-//                .requestMatchers(HttpMethod.DELETE, "/users/**").hasRole("ADMIN")
 
 //                TEAM REQUESTS
                 .requestMatchers(HttpMethod.GET, "/teams").hasRole("ADMIN")
@@ -85,14 +83,17 @@ public class SpringSecurityConfig {
 
 //              ******************************************************
 
+
 //              SHIFT REQUESTS
                 .requestMatchers(HttpMethod.GET, "/shifts").hasAnyRole("ADMIN", "MANAGER")
                 .requestMatchers(HttpMethod.GET, "/shifts/{id}").hasAnyRole("ADMIN", "MANAGER")
 
                 .requestMatchers(HttpMethod.POST, "/shifts").hasAnyRole("ADMIN", "MANAGER")
 
+                .requestMatchers(HttpMethod.PUT, "/shifts").hasAnyRole("ADMIN", "MANAGER")
 
 //              ******************************************************
+
 
 //                ABSENCE REQUESTS
 
@@ -105,6 +106,7 @@ public class SpringSecurityConfig {
                 .requestMatchers(HttpMethod.DELETE, "/absences/{id}").hasAnyRole("ADMIN", "MANAGER")
 
 //              ******************************************************
+
 
 //                Employee requests
                 .requestMatchers(HttpMethod.GET, "/employees").hasAnyRole("ADMIN", "MANAGER")
