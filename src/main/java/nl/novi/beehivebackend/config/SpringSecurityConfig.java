@@ -110,9 +110,7 @@ public class SpringSecurityConfig {
                 .requestMatchers(HttpMethod.GET, "/employees/profile/{id}").hasAnyRole("ADMIN", "MANAGER")
                 .requestMatchers(HttpMethod.POST, "/employees").hasAnyRole("ADMIN", "MANAGER")
 
-//                Roster requests
-                .requestMatchers(HttpMethod.GET, "/rosters").hasAnyRole("ADMIN", "MANAGER", "USER")
-//
+
                 .anyRequest().denyAll()
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);

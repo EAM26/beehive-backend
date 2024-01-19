@@ -1,11 +1,7 @@
 package nl.novi.beehivebackend.services;
 
-import nl.novi.beehivebackend.dtos.input.ShiftInputDto;
 import nl.novi.beehivebackend.dtos.output.ShiftOutputDto;
-import nl.novi.beehivebackend.exceptions.IllegalValueException;
 import nl.novi.beehivebackend.exceptions.RecordNotFoundException;
-import nl.novi.beehivebackend.models.Employee;
-import nl.novi.beehivebackend.models.Roster;
 import nl.novi.beehivebackend.models.Shift;
 import nl.novi.beehivebackend.repositories.EmployeeRepository;
 import nl.novi.beehivebackend.repositories.ShiftRepository;
@@ -13,8 +9,6 @@ import nl.novi.beehivebackend.repositories.TeamRepository;
 import org.springframework.stereotype.Service;
 
 
-import java.time.LocalDate;
-import java.time.temporal.IsoFields;
 import java.util.ArrayList;
 
 @Service
