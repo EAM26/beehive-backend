@@ -93,6 +93,8 @@ public class SpringSecurityConfig {
 
                 .requestMatchers(HttpMethod.POST, "/absences").hasAnyRole("ADMIN", "MANAGER")
 
+                .requestMatchers(HttpMethod.DELETE, "/absences/{id}").hasAnyRole("ADMIN", "MANAGER")
+
 //              ******************************************************
 
 //                Employee requests

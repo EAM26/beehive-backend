@@ -19,6 +19,7 @@ public class AbsenceController {
 
     private final AbsenceService absenceService;
     private final ValidationUtil validationUtil;
+
     public AbsenceController(AbsenceService absenceService, ValidationUtil validationUtil) {
         this.absenceService = absenceService;
         this.validationUtil = validationUtil;
@@ -32,7 +33,7 @@ public class AbsenceController {
 
     @GetMapping("/{id}")
     public ResponseEntity<AbsenceOutputDto> getSingleAbsence(@PathVariable Long id) {
-        return new ResponseEntity<>(absenceService.getSingleAbsence( id), HttpStatus.OK);
+        return new ResponseEntity<>(absenceService.getSingleAbsence(id), HttpStatus.OK);
     }
 
     @PostMapping
@@ -43,5 +44,11 @@ public class AbsenceController {
         AbsenceOutputDto absenceOutputDto = absenceService.createAbsence(absenceInputDto);
         URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentRequest().path("/" + absenceOutputDto.getId()).toUriString());
         return ResponseEntity.created(uri).body(absenceOutputDto);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<HttpStatus> deleteAbsence(@PathVariable Long id) {
+        absenceService.deleteAbsence(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }
