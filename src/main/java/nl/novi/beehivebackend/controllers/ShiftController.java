@@ -47,7 +47,7 @@ public class ShiftController {
         return ResponseEntity.created(uri).body(shiftOutputDto);
     }
 
-    @PutMapping
+    @PutMapping("/{id}")
     public ResponseEntity<Object> updateShift(@PathVariable Long id, @Valid @RequestBody ShiftInputDto shiftInputDto, BindingResult bindingResult) {
         if (bindingResult.hasFieldErrors()) {
             return ResponseEntity.badRequest().body(validationUtil.validationMessage(bindingResult).toString());

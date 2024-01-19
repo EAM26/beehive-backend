@@ -19,7 +19,6 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.List;
 
 @Service
 public class ShiftService {
@@ -30,10 +29,10 @@ public class ShiftService {
     private final AbsenceRepository absenceRepository;
 
 
-    public ShiftService(ShiftRepository shiftRepository, EmployeeRepository employeeRepository, TeamRepository teamRepository, TeamRepository teamRepository1, AbsenceRepository absenceRepository) {
+    public ShiftService(ShiftRepository shiftRepository, EmployeeRepository employeeRepository, TeamRepository teamRepository, AbsenceRepository absenceRepository) {
         this.shiftRepository = shiftRepository;
         this.employeeRepository = employeeRepository;
-        this.teamRepository = teamRepository1;
+        this.teamRepository = teamRepository;
         this.absenceRepository = absenceRepository;
     }
 
@@ -53,48 +52,12 @@ public class ShiftService {
     public ShiftOutputDto createShift(ShiftInputDto shiftInputDto) {
         Shift shift = shiftRepository.save(shiftCheckManager(shiftInputDto));
         return transferShiftToShiftOutputDto(shift);
-
-////        Shift check duration
-//        isValidShiftDuration(shiftInputDto);
-//
-//        Shift shift;
-////        Team check
-//        Team team = teamRepository.findById(shiftInputDto.getTeamName()).orElseThrow(() -> new RecordNotFoundException("No team found with name. Name is case sensitive!"));
-//        if (!team.getIsActive()) {
-//            throw new BadRequestException("This team is not active");
-//        }
-//
-////        Employee check exists and in right team
-//        if (shiftInputDto.getEmployeeId() == null) {
-//            shift = transferShiftInputDtoToShift(shiftInputDto, team, null);
-//        } else {
-//                Employee employee = employeeRepository.findById(shiftInputDto.getEmployeeId()).orElseThrow(() -> new RecordNotFoundException("No employee found with id: " + shiftInputDto.getEmployeeId()));
-//
-//            if (!checkEmployeeMatchTeam(employee, team)) {
-//                throw new BadRequestException("Employee is not in team: " + team.getTeamName());
-//
-//            }
-//
-////        Shift check overlap shift or absence
-//            if(shiftToShiftOverlap(shiftInputDto, employee)) {
-//               throw new BadRequestException("Shift overlaps other shift.");
-//            }
-//
-//            if(shiftToAbsenceOverlap(shiftInputDto.getStartShift(), employee) || shiftToAbsenceOverlap(shiftInputDto.getEndShift(), employee)) {
-//                throw new BadRequestException("Shift overlaps absence");
-//            }
-//            shift = transferShiftInputDtoToShift(shiftInputDto, team, employee);
-//        }
-//
-//        shiftRepository.save(shift);
-//        return transferShiftToShiftOutputDto(shift);
     }
 
     public ShiftOutputDto updateShift(Long id, ShiftInputDto shiftInputDto) {
         if(!shiftRepository.existsById(id)) {
             throw new RecordNotFoundException("No shift found with id: " + id);
         }
-
         Shift shift = shiftRepository.save(shiftCheckManager(shiftInputDto));
         return transferShiftToShiftOutputDto(shift);
     }
@@ -135,10 +98,7 @@ public class ShiftService {
     }
 
     private Boolean checkEmployeeMatchTeam(Employee employee, Team team) {
-        if (!employee.getTeam().getTeamName().equals(team.getTeamName())) {
-            return false;
-        }
-        return true;
+        return employee.getTeam().getTeamName().equals(team.getTeamName());
     }
 
     private Boolean shiftToShiftOverlap(ShiftInputDto shiftInputDto, Employee employee) {
@@ -171,9 +131,7 @@ public class ShiftService {
             throw new BadRequestException("End of shift is before start of shift.");
         }
 
-
         Duration duration = Duration.between(shiftInputDto.getStartShift(), shiftInputDto.getEndShift());
-
         if(!(duration.toHours() <= 24)) {
             throw new BadRequestException("Duration of shift is longer than 24 hours");
         }
