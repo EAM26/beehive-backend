@@ -45,6 +45,11 @@ public class AbsenceService {
         return (transferAbsenceToAbsenceOutputDto(absence));
     }
 
+    public void deleteAbsence(Long id) {
+        Absence absence = absenceRepository.findById(id).orElseThrow(() -> new RecordNotFoundException("No absence found with id:  " + id));
+        absenceRepository.delete(absence);
+    }
+
 
     private AbsenceOutputDto transferAbsenceToAbsenceOutputDto(Absence absence) {
         AbsenceOutputDto absenceOutputDto = new AbsenceOutputDto();
