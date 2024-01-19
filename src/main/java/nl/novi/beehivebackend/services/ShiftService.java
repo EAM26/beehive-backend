@@ -4,9 +4,11 @@ import nl.novi.beehivebackend.dtos.input.ShiftInputDto;
 import nl.novi.beehivebackend.dtos.output.ShiftOutputDto;
 import nl.novi.beehivebackend.exceptions.BadRequestException;
 import nl.novi.beehivebackend.exceptions.RecordNotFoundException;
+import nl.novi.beehivebackend.models.Absence;
 import nl.novi.beehivebackend.models.Employee;
 import nl.novi.beehivebackend.models.Shift;
 import nl.novi.beehivebackend.models.Team;
+import nl.novi.beehivebackend.repositories.AbsenceRepository;
 import nl.novi.beehivebackend.repositories.EmployeeRepository;
 import nl.novi.beehivebackend.repositories.ShiftRepository;
 import nl.novi.beehivebackend.repositories.TeamRepository;
@@ -14,6 +16,8 @@ import org.springframework.stereotype.Service;
 
 
 import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,12 +27,14 @@ public class ShiftService {
     private final ShiftRepository shiftRepository;
     private final TeamRepository teamRepository;
     private final EmployeeRepository employeeRepository;
+    private final AbsenceRepository absenceRepository;
 
 
-    public ShiftService(ShiftRepository shiftRepository, EmployeeRepository employeeRepository, TeamRepository teamRepository, TeamRepository teamRepository1) {
+    public ShiftService(ShiftRepository shiftRepository, EmployeeRepository employeeRepository, TeamRepository teamRepository, TeamRepository teamRepository1, AbsenceRepository absenceRepository) {
         this.shiftRepository = shiftRepository;
         this.employeeRepository = employeeRepository;
         this.teamRepository = teamRepository1;
+        this.absenceRepository = absenceRepository;
     }
 
     public Iterable<ShiftOutputDto> getAllShifts() {
@@ -69,9 +75,13 @@ public class ShiftService {
 
             }
 
-//        Shift check overlap
+//        Shift check overlap shift or absence
             if(shiftToShiftOverlap(shiftInputDto, employee)) {
                throw new BadRequestException("Shift overlaps other shift.");
+            }
+
+            if(shiftToAbsenceOverlap(shiftInputDto.getStartShift(), employee) || shiftToAbsenceOverlap(shiftInputDto.getEndShift(), employee)) {
+                throw new BadRequestException("Shift overlaps absence");
             }
             shift = transferShiftInputDtoToShift(shiftInputDto, team, employee);
         }
@@ -92,6 +102,16 @@ public class ShiftService {
         for(Shift shift: shiftRepository.findByEmployeeId(employee.getId())) {
             if(shift.getStartShift().isBefore(shiftInputDto.getEndShift()) &&
                     shift.getEndShift().isAfter(shiftInputDto.getStartShift())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private Boolean shiftToAbsenceOverlap(LocalDateTime shiftDateTime, Employee employee) {
+        LocalDate shiftDate = shiftDateTime.toLocalDate();
+        for(Absence absence: absenceRepository.findByEmployeeId(employee.getId())) {
+            if(!shiftDate.isBefore(absence.getStartDate()) && !shiftDate.isAfter(absence.getEndDate())) {
                 return true;
             }
         }
