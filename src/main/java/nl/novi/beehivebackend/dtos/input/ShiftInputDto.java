@@ -14,7 +14,7 @@ public class ShiftInputDto {
     @NotNull(message = "Start of shift is required.")
     private LocalDateTime startShift;
 
-    @NotNull(message = "Tnd of shift is required.")
+    @NotNull(message = "End of shift is required.")
     private LocalDateTime endShift;
 
     @NotNull(message = "Team name is required.")

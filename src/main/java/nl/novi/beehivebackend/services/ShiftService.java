@@ -13,7 +13,9 @@ import nl.novi.beehivebackend.repositories.TeamRepository;
 import org.springframework.stereotype.Service;
 
 
+import java.time.Duration;
 import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class ShiftService {
@@ -43,35 +45,77 @@ public class ShiftService {
     }
 
     public ShiftOutputDto createShift(ShiftInputDto shiftInputDto) {
-        Shift shift = new Shift();
+
+//        Shift check duration
+        isValidShiftDuration(shiftInputDto);
+
+        Shift shift;
+        Employee employee = new Employee();
 //        Team check
         Team team = teamRepository.findById(shiftInputDto.getTeamName()).orElseThrow(() -> new RecordNotFoundException("No team found with name. Name is case sensitive!"));
         if (!team.getIsActive()) {
             throw new BadRequestException("This team is not active");
         }
 
-//        Employee check
-        if(shiftInputDto.getEmployeeId() != null) {
-            Employee employee = employeeRepository.findById(shiftInputDto.getEmployeeId()).orElseThrow(() -> new RecordNotFoundException("No employee found with name."));
-            if(checkEmployeeMatchTeam(employee, team)) {
-                shift = transferShiftInputDtoToShift(shiftInputDto, team, employee);
-            }
-        } else {
+//        Employee check exists and in right team
+        if (shiftInputDto.getEmployeeId() == null) {
             shift = transferShiftInputDtoToShift(shiftInputDto, team, null);
+        } else {
+            if (shiftInputDto.getEmployeeId() != null) {
+                employee = employeeRepository.findById(shiftInputDto.getEmployeeId()).orElseThrow(() -> new RecordNotFoundException("No employee found with id: " + shiftInputDto.getEmployeeId()));
+            }
+            if (!checkEmployeeMatchTeam(employee, team)) {
+                throw new BadRequestException("Employee is not in team: " + team.getTeamName());
+
+            }
+
+//        Shift check overlap
+            if(shiftToShiftOverlap(shiftInputDto, employee)) {
+               throw new BadRequestException("Shift overlaps other shift.");
+            }
+            shift = transferShiftInputDtoToShift(shiftInputDto, team, employee);
         }
+
         shiftRepository.save(shift);
-
-
         return transferShiftToShiftOutputDto(shift);
     }
 
 
     private Boolean checkEmployeeMatchTeam(Employee employee, Team team) {
-            if (!employee.getTeam().getTeamName().equals(team.getTeamName())) {
-                throw new BadRequestException("Employee is not in team: " + team.getTeamName());
-            }
-            return true;
+        if (!employee.getTeam().getTeamName().equals(team.getTeamName())) {
+            return false;
+        }
+        return true;
     }
+
+    private Boolean shiftToShiftOverlap(ShiftInputDto shiftInputDto, Employee employee) {
+        for(Shift shift: shiftRepository.findByEmployeeId(employee.getId())) {
+            if(shift.getStartShift().isBefore(shiftInputDto.getEndShift()) &&
+                    shift.getEndShift().isAfter(shiftInputDto.getStartShift())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void isValidShiftDuration(ShiftInputDto shiftInputDto) {
+        if (shiftInputDto.getStartShift() == null || shiftInputDto.getEndShift() == null) {
+            throw new BadRequestException("Start and End of shift are required");
+        }
+
+        // Check if endShift is after startShift
+        if (!shiftInputDto.getEndShift().isAfter(shiftInputDto.getStartShift())) {
+            throw new BadRequestException("End of shift is before start of shift.");
+        }
+
+
+        Duration duration = Duration.between(shiftInputDto.getStartShift(), shiftInputDto.getEndShift());
+
+        if(!(duration.toHours() <= 24)) {
+            throw new BadRequestException("Duration of shift is longer than 24 hours");
+        }
+    }
+
 
 //
 //    public ShiftOutputDto updateShift(Long id, ShiftInputDto shiftInputDto) {
@@ -154,13 +198,14 @@ public class ShiftService {
         shift.setStartShift(shiftInputDto.getStartShift());
         shift.setEndShift(shiftInputDto.getEndShift());
         shift.setTeam(team);
-        if(employee!=null) {
+        if (employee != null) {
             shift.setEmployee(employee);
         }
 
 
         return shiftRepository.save(shift);
     }
+
     private ShiftOutputDto transferShiftToShiftOutputDto(Shift shift) {
         ShiftOutputDto shiftOutputDto = new ShiftOutputDto();
         shiftOutputDto.setId(shift.getId());
