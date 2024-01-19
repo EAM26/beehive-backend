@@ -98,9 +98,9 @@ public class EmployeeService {
 
     public void deleteEmployee(Long id) {
         Employee employee = employeeRepository.findById(id).orElseThrow(() -> new RecordNotFoundException("No employee found with id " + id));
-        if (!employee.getShifts().isEmpty()) {
-            throw new IsNotEmptyException("Employee is not empty. First remove all shifts");
-        }
+//        if (!employee.getShifts().isEmpty()) {
+//            throw new IsNotEmptyException("Employee is not empty. First remove all shifts");
+//        }
         employeeRepository.deleteById(id);
     }
 
@@ -117,7 +117,7 @@ public class EmployeeService {
         employeeOutputDto.setEmail(employee.getUser().getEmail());
         employeeOutputDto.setIsEmployed(employee.getIsEmployed());
         employeeOutputDto.setTeam(employee.getTeam());
-        employeeOutputDto.setShifts(employee.getShifts());
+//        employeeOutputDto.setShifts(employee.getShifts());
         employeeOutputDto.setUsername(employee.getUser().getUsername());
         employeeOutputDto.setAuthorities(employee.getUser().getAuthorities());
 
