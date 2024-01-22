@@ -63,9 +63,9 @@ public class ShiftController {
 //        return new ResponseEntity<>(shiftService.updateShift(id, shiftInputDto), HttpStatus.ACCEPTED);
 //    }
 //
-//    @DeleteMapping("/{id}")
-//    public ResponseEntity<Object> deleteShift(@PathVariable Long id) {
-//        shiftService.deleteShift(id);
-//        return ResponseEntity.noContent().build();
-//    }
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Object> deleteShift(@PathVariable Long id) {
+        shiftService.deleteShift(id);
+        return ResponseEntity.noContent().build();
+    }
 }
