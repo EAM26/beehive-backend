@@ -1,13 +1,14 @@
 package nl.novi.beehivebackend.services;
 
 import nl.novi.beehivebackend.dtos.input.TeamInputDto;
-import nl.novi.beehivebackend.dtos.output.TeamOutputDtoEmpDetails;
-import nl.novi.beehivebackend.dtos.output.TeamOutputDtoEmpIds;
+import nl.novi.beehivebackend.dtos.output.TeamOutputDtoDetails;
+import nl.novi.beehivebackend.dtos.output.TeamOutputDto;
 import nl.novi.beehivebackend.exceptions.BadRequestException;
 import nl.novi.beehivebackend.exceptions.IsNotEmptyException;
 import nl.novi.beehivebackend.exceptions.RecordNotFoundException;
 import nl.novi.beehivebackend.models.Team;
 import nl.novi.beehivebackend.repositories.EmployeeRepository;
+import nl.novi.beehivebackend.repositories.RosterRepository;
 import nl.novi.beehivebackend.repositories.TeamRepository;
 import org.springframework.stereotype.Service;
 
@@ -18,45 +19,47 @@ import java.util.List;
 public class TeamService {
     private final TeamRepository teamRepository;
     private final EmployeeRepository employeeRepository;
+    private final RosterRepository rosterRepository;
 
-    public TeamService(TeamRepository teamRepository, EmployeeRepository employeeRepository) {
+    public TeamService(TeamRepository teamRepository, EmployeeRepository employeeRepository, RosterRepository rosterRepository) {
         this.employeeRepository = employeeRepository;
         this.teamRepository = teamRepository;
+        this.rosterRepository = rosterRepository;
     }
 
-    public Iterable<TeamOutputDtoEmpIds> getAllTeams() {
-        List<TeamOutputDtoEmpIds> teamOutputDtoEmpIds = new ArrayList<>();
+    public Iterable<TeamOutputDto> getAllTeams() {
+        List<TeamOutputDto> teamOutputDtoEmpIds = new ArrayList<>();
         for (Team team : teamRepository.findAll()) {
-            teamOutputDtoEmpIds.add(transferTeamToTeamOutputDtoEmpIds(team));
+            teamOutputDtoEmpIds.add(transferTeamToTeamOutputDto(team));
         }
         return teamOutputDtoEmpIds;
     }
 
-    public Iterable<TeamOutputDtoEmpIds> getAllTeams(Boolean isActive) {
-        List<TeamOutputDtoEmpIds> teamOutputDtoEmpIds = new ArrayList<>();
+    public Iterable<TeamOutputDto> getAllTeams(Boolean isActive) {
+        List<TeamOutputDto> teamOutputDtoEmpIds = new ArrayList<>();
         for (Team team : teamRepository.findAll()) {
             if (team.getIsActive() == isActive) {
-                teamOutputDtoEmpIds.add(transferTeamToTeamOutputDtoEmpIds(team));
+                teamOutputDtoEmpIds.add(transferTeamToTeamOutputDto(team));
             }
 
         }
         return teamOutputDtoEmpIds;
     }
 
-    public TeamOutputDtoEmpDetails getTeam(String id) {
+    public TeamOutputDtoDetails getTeam(String id) {
         Team team = teamRepository.findById(id).orElseThrow(() -> new RecordNotFoundException("No Team found with name: " + id));
-        return transferTeamToTeamOutputDtoEmpDetails(team);
+        return transferTeamToTeamOutputDtoDetails(team);
     }
 
-    public TeamOutputDtoEmpIds createTeam(TeamInputDto teamInputDto) {
+    public TeamOutputDto createTeam(TeamInputDto teamInputDto) {
         if (teamRepository.existsById(teamInputDto.getTeamName())) {
             throw new BadRequestException("A team with that name already exists.");
         }
         Team team = teamRepository.save(transferTeamInputDtoToTeam(teamInputDto));
-        return transferTeamToTeamOutputDtoEmpIds(team);
+        return transferTeamToTeamOutputDto(team);
     }
 
-    public TeamOutputDtoEmpIds updateTeam(String teamName, TeamInputDto teamInputDto) {
+    public TeamOutputDto updateTeam(String teamName, TeamInputDto teamInputDto) {
         Team teamToUpdate = teamRepository.findById(teamName).orElseThrow(() -> new RecordNotFoundException("Team with name " + teamName + " doesn't exist."));
         if (!teamInputDto.getTeamName().equals(teamName)) {
             throw new BadRequestException("Not allowed to change the Team name.");
@@ -64,7 +67,7 @@ public class TeamService {
 
         Team updatedTeam = transferTeamInputDtoToTeam(teamInputDto, teamToUpdate);
         Team team = teamRepository.save(updatedTeam);
-        return transferTeamToTeamOutputDtoEmpIds(team);
+        return transferTeamToTeamOutputDto(team);
     }
 
     public void deleteTeam(String id) {
@@ -89,21 +92,21 @@ public class TeamService {
         return team;
     }
 
-    private TeamOutputDtoEmpIds transferTeamToTeamOutputDtoEmpIds(Team team) {
-        TeamOutputDtoEmpIds teamOutputDtoEmpIds = new TeamOutputDtoEmpIds();
-        teamOutputDtoEmpIds.setTeamName(team.getTeamName());
-        teamOutputDtoEmpIds.setIsActive(team.getIsActive());
-        teamOutputDtoEmpIds.setEmployeeIds(employeeRepository.findAllIds());
+    private TeamOutputDto transferTeamToTeamOutputDto(Team team) {
+        TeamOutputDto teamOutputDto = new TeamOutputDto();
+        teamOutputDto.setTeamName(team.getTeamName());
+        teamOutputDto.setIsActive(team.getIsActive());
 
-        return teamOutputDtoEmpIds;
+        return teamOutputDto;
     }
 
-    private TeamOutputDtoEmpDetails transferTeamToTeamOutputDtoEmpDetails(Team team) {
-        TeamOutputDtoEmpDetails teamOutputDtoEmpDetails = new TeamOutputDtoEmpDetails();
-        teamOutputDtoEmpDetails.setTeamName(team.getTeamName());
-        teamOutputDtoEmpDetails.setIsActive(team.getIsActive());
-        teamOutputDtoEmpDetails.setEmployees(employeeRepository.findAll());
+    private TeamOutputDtoDetails transferTeamToTeamOutputDtoDetails(Team team) {
+        TeamOutputDtoDetails teamOutputDtoDetails = new TeamOutputDtoDetails();
+        teamOutputDtoDetails.setTeamName(team.getTeamName());
+        teamOutputDtoDetails.setIsActive(team.getIsActive());
+        teamOutputDtoDetails.setEmployees(employeeRepository.findAllByTeam(team));
+        teamOutputDtoDetails.setRosters(rosterRepository.findAllByTeam(team));
 
-        return teamOutputDtoEmpDetails;
+        return teamOutputDtoDetails;
     }
 }

@@ -8,12 +8,10 @@ import java.util.List;
 
 @Getter
 @Setter
-public class TeamOutputDtoEmpIds {
+public class TeamOutputDto {
 
     private String teamName;
     private Boolean isActive;
-    private List<Long> employeeIds;
-
 
 
 }

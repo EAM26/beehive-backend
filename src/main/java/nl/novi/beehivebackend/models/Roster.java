@@ -16,7 +16,7 @@ public class Roster {
     @Id
     private String name;
 
-    @OneToMany(mappedBy = "rosters", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "roster", fetch = FetchType.LAZY)
     @JsonIgnore
     private List<Shift> shifts;
 
