@@ -29,7 +29,7 @@ public class Employee {
     private String shortName;
     private LocalDate dob;
     private String phoneNumber;
-    private Boolean isEmployed;
+    private Boolean isActive;
 
     @ManyToOne
     @JsonIgnore

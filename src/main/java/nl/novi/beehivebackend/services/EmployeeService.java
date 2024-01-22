@@ -2,7 +2,6 @@ package nl.novi.beehivebackend.services;
 
 
 import nl.novi.beehivebackend.dtos.input.EmployeeInputDto;
-import nl.novi.beehivebackend.exceptions.IsNotEmptyException;
 import nl.novi.beehivebackend.exceptions.IsNotUniqueException;
 import nl.novi.beehivebackend.exceptions.RecordNotFoundException;
 import nl.novi.beehivebackend.dtos.output.EmployeeOutputDto;
@@ -47,7 +46,7 @@ public class EmployeeService {
     public Iterable<EmployeeOutputDto> getAllEmployees(boolean isEmployed) {
         List<EmployeeOutputDto> employeeOutputDtos = new ArrayList<>();
         for (Employee employee : employeeRepository.findAll()) {
-            if (isEmployed == employee.getIsEmployed()) {
+            if (isEmployed == employee.getIsActive()) {
                 employeeOutputDtos.add(transferEmployeeToEmployeeOutputDto(employee));
             }
         }
@@ -115,7 +114,7 @@ public class EmployeeService {
         employeeOutputDto.setDob(employee.getDob());
         employeeOutputDto.setPhoneNumber(employee.getPhoneNumber());
         employeeOutputDto.setEmail(employee.getUser().getEmail());
-        employeeOutputDto.setIsEmployed(employee.getIsEmployed());
+        employeeOutputDto.setIsEmployed(employee.getIsActive());
         employeeOutputDto.setTeam(employee.getTeam());
 //        employeeOutputDto.setShifts(employee.getShifts());
         employeeOutputDto.setUsername(employee.getUser().getUsername());
@@ -143,7 +142,7 @@ public class EmployeeService {
         employee.setDob(employeeInputDto.getDob());
         employee.setPhoneNumber(employeeInputDto.getPhoneNumber());
         employee.setUser(user);
-        employee.setIsEmployed(employeeInputDto.getIsEmployed());
+        employee.setIsActive(employeeInputDto.getIsEmployed());
         employee.setTeam(team);
         user.setEmployee(employee);
         return employee;
