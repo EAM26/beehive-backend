@@ -19,6 +19,7 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Objects;
 
 @Service
 public class ShiftService {
@@ -129,7 +130,7 @@ public class ShiftService {
         for (Shift plannedShift : shiftRepository.findByEmployeeId(employee.getId())) {
 //            No shift check against itself
             if (plannedShift.getStartShift().isBefore(shiftInputDto.getEndShift()) &&
-                    plannedShift.getEndShift().isAfter(shiftInputDto.getStartShift()) && plannedShift.getId() != shift.getId()) {
+                    plannedShift.getEndShift().isAfter(shiftInputDto.getStartShift()) && !Objects.equals(plannedShift.getId(), shift.getId())) {
                 return true;
             }
         }
