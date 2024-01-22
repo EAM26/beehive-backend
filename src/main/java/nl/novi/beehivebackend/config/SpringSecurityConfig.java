@@ -75,7 +75,8 @@ public class SpringSecurityConfig {
 
 //                TEAM REQUESTS
                 .requestMatchers(HttpMethod.GET, "/teams").hasRole("ADMIN")
-                .requestMatchers(HttpMethod.GET, "/teams/{teamName}").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.GET, "/teams/rosters/{teamName}").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.GET, "/teams/employees/{teamName}").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.GET, "/teams/**").hasRole("ADMIN")
 
                 .requestMatchers(HttpMethod.POST, "/teams").hasRole("ADMIN")
@@ -106,6 +107,13 @@ public class SpringSecurityConfig {
                 .requestMatchers(HttpMethod.POST, "/absences").hasAnyRole("ADMIN", "MANAGER")
 
                 .requestMatchers(HttpMethod.DELETE, "/absences/{id}").hasAnyRole("ADMIN", "MANAGER")
+
+//              ******************************************************
+
+                //                ROSTER REQUESTS
+
+                .requestMatchers(HttpMethod.GET, "/rosters/{id}").hasAnyRole("ADMIN", "MANAGER")
+
 
 //              ******************************************************
 

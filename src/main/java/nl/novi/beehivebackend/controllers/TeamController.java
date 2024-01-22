@@ -2,8 +2,8 @@ package nl.novi.beehivebackend.controllers;
 
 import jakarta.validation.Valid;
 import nl.novi.beehivebackend.dtos.input.TeamInputDto;
-import nl.novi.beehivebackend.dtos.output.TeamOutputDtoEmpDetails;
-import nl.novi.beehivebackend.dtos.output.TeamOutputDtoEmpIds;
+import nl.novi.beehivebackend.dtos.output.TeamOutputDtoDetails;
+import nl.novi.beehivebackend.dtos.output.TeamOutputDto;
 import nl.novi.beehivebackend.services.TeamService;
 import nl.novi.beehivebackend.utils.ValidationUtil;
 import org.springframework.http.HttpStatus;
@@ -27,7 +27,7 @@ public class TeamController {
     }
 
     @GetMapping
-    public ResponseEntity<Iterable<TeamOutputDtoEmpIds>> getAllTeams(@RequestParam(required = false) Boolean isActive) {
+    public ResponseEntity<Iterable<TeamOutputDto>> getAllTeams(@RequestParam(required = false) Boolean isActive) {
         if (isActive != null) {
             return new ResponseEntity<>(teamService.getAllTeams(isActive), HttpStatus.OK);
         }
@@ -35,7 +35,7 @@ public class TeamController {
     }
 
     @GetMapping("/{teamName}")
-    public ResponseEntity<TeamOutputDtoEmpDetails> getTeam(@PathVariable String teamName) {
+    public ResponseEntity<TeamOutputDtoDetails> getTeam(@PathVariable String teamName) {
         return new ResponseEntity<>(teamService.getTeam(teamName), HttpStatus.OK);
     }
 
@@ -44,9 +44,9 @@ public class TeamController {
         if (bindingResult.hasFieldErrors()) {
             return ResponseEntity.badRequest().body(validationUtil.validationMessage(bindingResult).toString());
         }
-        TeamOutputDtoEmpIds teamOutputDtoEmpIds = teamService.createTeam(teamInputDto);
-        URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentRequest().path("/" + teamOutputDtoEmpIds.getTeamName()).toUriString());
-        return ResponseEntity.created(uri).body(teamOutputDtoEmpIds.getTeamName() + " created");
+        TeamOutputDto teamOutputDto = teamService.createTeam(teamInputDto);
+        URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentRequest().path("/" + teamOutputDto.getTeamName()).toUriString());
+        return ResponseEntity.created(uri).body(teamOutputDto.getTeamName() + " created");
     }
 
     @PutMapping("/{teamName}")
@@ -54,8 +54,8 @@ public class TeamController {
         if (bindingResult.hasFieldErrors()) {
             return ResponseEntity.badRequest().body(validationUtil.validationMessage(bindingResult).toString());
         }
-        TeamOutputDtoEmpIds teamOutputDtoEmpIds = teamService.updateTeam(teamName, teamInputDto);
-        return new ResponseEntity<>(teamOutputDtoEmpIds.getTeamName() + " updated.", HttpStatus.OK);
+        TeamOutputDto teamOutputDto = teamService.updateTeam(teamName, teamInputDto);
+        return new ResponseEntity<>(teamOutputDto.getTeamName() + " updated.", HttpStatus.OK);
     }
 //
 //    @DeleteMapping("/{id}")

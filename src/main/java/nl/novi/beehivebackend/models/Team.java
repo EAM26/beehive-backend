@@ -26,6 +26,10 @@ public class Team {
     @OneToMany(mappedBy = "team")
     @JsonIgnore
     private List<Shift> shifts;
+
+    @OneToMany(mappedBy = "team")
+    @JsonIgnore
+    private List<Roster> rosters;
 }
 
 

@@ -19,21 +19,17 @@ public class Shift {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-
     @Column(nullable = false)
     private LocalDateTime startShift;
 
     @Column(nullable = false)
     private LocalDateTime endShift;
 
-//    @Column(nullable = false)
-//    private int weekNumber;
-//
-//    @Column(nullable = false)
-//    private int year;
+    @Column(nullable = false)
+    private int weekNumber;
 
-
-
+    @Column(nullable = false)
+    private int year;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnore
@@ -44,6 +40,11 @@ public class Shift {
     @JsonIgnore
     @JoinColumn(name = "employee_id")
     private Employee employee;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnore
+    @JoinColumn(name = "roster_name")
+    private Roster roster;
 
 
 

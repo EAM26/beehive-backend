@@ -4,20 +4,15 @@ import nl.novi.beehivebackend.dtos.input.ShiftInputDto;
 import nl.novi.beehivebackend.dtos.output.ShiftOutputDto;
 import nl.novi.beehivebackend.exceptions.BadRequestException;
 import nl.novi.beehivebackend.exceptions.RecordNotFoundException;
-import nl.novi.beehivebackend.models.Absence;
-import nl.novi.beehivebackend.models.Employee;
-import nl.novi.beehivebackend.models.Shift;
-import nl.novi.beehivebackend.models.Team;
-import nl.novi.beehivebackend.repositories.AbsenceRepository;
-import nl.novi.beehivebackend.repositories.EmployeeRepository;
-import nl.novi.beehivebackend.repositories.ShiftRepository;
-import nl.novi.beehivebackend.repositories.TeamRepository;
+import nl.novi.beehivebackend.models.*;
+import nl.novi.beehivebackend.repositories.*;
 import org.springframework.stereotype.Service;
 
 
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.temporal.WeekFields;
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -28,13 +23,15 @@ public class ShiftService {
     private final TeamRepository teamRepository;
     private final EmployeeRepository employeeRepository;
     private final AbsenceRepository absenceRepository;
+    private final RosterRepository rosterRepository;
 
 
-    public ShiftService(ShiftRepository shiftRepository, EmployeeRepository employeeRepository, TeamRepository teamRepository, AbsenceRepository absenceRepository) {
+    public ShiftService(ShiftRepository shiftRepository, EmployeeRepository employeeRepository, TeamRepository teamRepository, AbsenceRepository absenceRepository, RosterRepository rosterRepository) {
         this.shiftRepository = shiftRepository;
         this.employeeRepository = employeeRepository;
         this.teamRepository = teamRepository;
         this.absenceRepository = absenceRepository;
+        this.rosterRepository = rosterRepository;
     }
 
     public Iterable<ShiftOutputDto> getAllShifts() {
@@ -105,8 +102,18 @@ public class ShiftService {
     }
 
 
+    //   Get week and year from startShift for rosterName
+    private int extractWeekNumber(ShiftInputDto shiftInputDto) {
+        WeekFields weekFields = WeekFields.ISO;
+        return shiftInputDto.getStartShift().get(weekFields.weekOfWeekBasedYear());
+    }
 
-    //  Checks if Employee is in given team
+    private int extractYear(ShiftInputDto shiftInputDto) {
+        WeekFields weekFields = WeekFields.ISO;
+        return shiftInputDto.getStartShift().get(weekFields.weekBasedYear());
+    }
+
+
     private Boolean isMatchEmployeeTeam(Employee employee, Team team) {
         return employee.getTeam().getTeamName().equals(team.getTeamName());
     }
@@ -137,7 +144,7 @@ public class ShiftService {
         return false;
     }
 
-    //    Checks if date of shift overlaps absences of employee
+    //   Checks if date of shift overlaps absences of employee
     private Boolean shiftToAbsenceOverlap(LocalDateTime shiftDateTime, Employee employee) {
         LocalDate shiftDate = shiftDateTime.toLocalDate();
         for (Absence absence : absenceRepository.findByEmployeeId(employee.getId())) {
@@ -171,12 +178,25 @@ public class ShiftService {
         shift.setStartShift(shiftInputDto.getStartShift());
         shift.setEndShift(shiftInputDto.getEndShift());
         shift.setTeam(team);
+
         if (employee != null) {
             shift.setEmployee(employee);
         }
 
+        shift.setWeekNumber(extractWeekNumber(shiftInputDto));
+        shift.setYear(extractYear(shiftInputDto));
+        Roster roster = rosterManager(shift);
+        rosterRepository.save(roster);
+        shift.setRoster(roster);
+
 
         return shiftRepository.save(shift);
+    }
+
+    private Roster rosterManager(Shift shift) {
+        String rosterName = shift.getWeekNumber() + "-" + shift.getYear() + "-" + shift.getTeam().getTeamName();
+        return rosterRepository.findById(rosterName).orElse(new Roster(rosterName, shift.getTeam()));
+
     }
 
     private ShiftOutputDto transferShiftToShiftOutputDto(Shift shift) {
