@@ -10,7 +10,7 @@ INSERT INTO employees (id, first_name, preposition, last_name, short_name, dob, 
                        is_active, team_name)
 VALUES (101, 'Jan', 'de', 'Groot', 'Jan', '1990-01-01', '1234567890', true, 'Kitchen'),
        (102, 'Lotte', 'van', 'Beek', 'Lotte', '1992-05-15', '9876543210', true, 'Kitchen'),
-       (103, 'Pieter', 'van', 'Dijk', 'Pieter vD', '1985-07-20', '5555555555', false, 'Kitchen'),
+       (103, 'Pieter', 'van', 'Dijk', 'Pieter vD', '1985-07-20', '5555555555', true, 'Kitchen'),
        (104, 'Emma', 'de', 'Vries', 'Emma', '1998-03-10', '1111111111', true, 'Bar'),
        (105, 'Daan', 'van', 'Leeuwen', 'Daan2', '1993-11-27', '9999999999', false, 'Bar'),
        (106, 'Lisa', 'van', 'Dijk', 'Lies', '1995-09-03', '4444444444', true, 'Bar'),
