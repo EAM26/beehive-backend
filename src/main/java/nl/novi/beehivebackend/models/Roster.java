@@ -13,6 +13,11 @@ import java.util.List;
 @Table(name = "rosters")
 public class Roster {
 
+    public Roster(String name, Team team) {
+        this.name = name;
+        this.team = team;
+    }
+
     @Id
     private String name;
 
@@ -25,4 +30,7 @@ public class Roster {
     @JoinColumn(name = "team_name", nullable = false)
     private Team team;
 
+    public Roster() {
+
+    }
 }
