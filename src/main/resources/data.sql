@@ -7,7 +7,7 @@ VALUES ('Kitchen', true),
 
 
 INSERT INTO employees (id, first_name, preposition, last_name, short_name, dob, phone_number,
-                       is_employed, team_name)
+                       is_active, team_name)
 VALUES (101, 'Jan', 'de', 'Groot', 'Jan', '1990-01-01', '1234567890', true, 'Kitchen'),
        (102, 'Lotte', 'van', 'Beek', 'Lotte', '1992-05-15', '9876543210', true, 'Kitchen'),
        (103, 'Pieter', 'van', 'Dijk', 'Pieter vD', '1985-07-20', '5555555555', false, 'Kitchen'),

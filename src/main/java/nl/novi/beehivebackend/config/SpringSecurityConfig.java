@@ -90,7 +90,7 @@ public class SpringSecurityConfig {
 
                 .requestMatchers(HttpMethod.POST, "/shifts").hasAnyRole("ADMIN", "MANAGER")
 
-                .requestMatchers(HttpMethod.PUT, "/shifts").hasAnyRole("ADMIN", "MANAGER")
+                .requestMatchers(HttpMethod.PUT, "/shifts/{id}").hasAnyRole("ADMIN", "MANAGER")
 
 //              ******************************************************
 
