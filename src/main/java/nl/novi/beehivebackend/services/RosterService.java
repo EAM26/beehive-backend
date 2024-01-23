@@ -1,12 +1,10 @@
 package nl.novi.beehivebackend.services;
 
 import nl.novi.beehivebackend.dtos.output.RosterOutputDto;
-import nl.novi.beehivebackend.dtos.output.RosterOutputDtoExShift;
 import nl.novi.beehivebackend.exceptions.BadRequestException;
 import nl.novi.beehivebackend.models.Roster;
 import nl.novi.beehivebackend.repositories.RosterRepository;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
 
 import java.time.LocalDate;
 import java.time.temporal.TemporalAdjusters;
