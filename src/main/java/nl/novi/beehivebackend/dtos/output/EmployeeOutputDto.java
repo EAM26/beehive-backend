@@ -2,6 +2,7 @@ package nl.novi.beehivebackend.dtos.output;
 
 import lombok.Getter;
 import lombok.Setter;
+import nl.novi.beehivebackend.models.Absence;
 import nl.novi.beehivebackend.models.Authority;
 import nl.novi.beehivebackend.models.Shift;
 import nl.novi.beehivebackend.models.Team;
@@ -25,6 +26,7 @@ public class EmployeeOutputDto {
     public Boolean isEmployed;
     public Team team;
     public List<Shift> shifts;
+    public List<Absence> absences;
     public String username;
     public Set<Authority> authorities;
 }
