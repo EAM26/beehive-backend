@@ -20,10 +20,18 @@ public class RosterService {
         this.rosterRepository = rosterRepository;
     }
 
-    public RosterOutputDto getSingleRoster(String name) {
-        Roster roster = rosterRepository.findById(name).orElseThrow(() -> new BadRequestException("No Roster found with name: " + name));
+    public RosterOutputDto getSingleRoster(String roserName) {
+        Roster roster = rosterRepository.findById(roserName).orElseThrow(() -> new BadRequestException("No Roster found with name: " + roserName));
 
         return transferRosterToOutputDto(roster);
+    }
+
+    public void deleteRoster(String rosterName) {
+        Roster roster = rosterRepository.findById(rosterName).orElseThrow(() -> new BadRequestException("No roster found with name: " + rosterName));
+        if (roster.getShifts() != null && !roster.getShifts().isEmpty()) {
+            throw new BadRequestException("Roster has Shifts");
+        }
+        rosterRepository.delete(roster);
     }
 
     private RosterOutputDto transferRosterToOutputDto(Roster roster) {
