@@ -2,6 +2,7 @@ package nl.novi.beehivebackend.services;
 
 
 import nl.novi.beehivebackend.dtos.input.EmployeeInputDto;
+import nl.novi.beehivebackend.exceptions.BadRequestException;
 import nl.novi.beehivebackend.exceptions.IsNotUniqueException;
 import nl.novi.beehivebackend.exceptions.RecordNotFoundException;
 import nl.novi.beehivebackend.dtos.output.EmployeeOutputDto;
@@ -43,12 +44,12 @@ public class EmployeeService {
         return employeeOutputDtos;
     }
 
-    public Iterable<EmployeeOutputDto> getAllEmployees(boolean isEmployed) {
+    public Iterable<EmployeeOutputDto> getAllEmployees(String teamName) {
+        Team team = teamRepository.findById(teamName).orElseThrow(()-> new BadRequestException("No team with name: " + teamName));
+
         List<EmployeeOutputDto> employeeOutputDtos = new ArrayList<>();
-        for (Employee employee : employeeRepository.findAll()) {
-            if (isEmployed == employee.getIsActive()) {
+        for (Employee employee : employeeRepository.findAllByTeam(team)) {
                 employeeOutputDtos.add(transferEmployeeToEmployeeOutputDto(employee));
-            }
         }
         return employeeOutputDtos;
     }
