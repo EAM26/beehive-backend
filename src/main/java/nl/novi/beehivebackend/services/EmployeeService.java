@@ -5,10 +5,7 @@ import nl.novi.beehivebackend.dtos.input.EmployeeInputDto;
 import nl.novi.beehivebackend.exceptions.IsNotUniqueException;
 import nl.novi.beehivebackend.exceptions.RecordNotFoundException;
 import nl.novi.beehivebackend.dtos.output.EmployeeOutputDto;
-import nl.novi.beehivebackend.models.Employee;
-import nl.novi.beehivebackend.models.Shift;
-import nl.novi.beehivebackend.models.Team;
-import nl.novi.beehivebackend.models.User;
+import nl.novi.beehivebackend.models.*;
 import nl.novi.beehivebackend.repositories.EmployeeRepository;
 import nl.novi.beehivebackend.repositories.TeamRepository;
 import nl.novi.beehivebackend.repositories.UserRepository;
@@ -121,7 +118,7 @@ public class EmployeeService {
         employeeOutputDto.setIsEmployed(employee.getIsActive());
         employeeOutputDto.setTeam(employee.getTeam());
         employeeOutputDto.setShifts(shiftSorter(employee.getShifts()));
-        employeeOutputDto.setAbsences(employee.getAbsences());
+        employeeOutputDto.setAbsences(absenceSorter(employee.getAbsences()));
         employeeOutputDto.setUsername(employee.getUser().getUsername());
         employeeOutputDto.setAuthorities(employee.getUser().getAuthorities());
 
@@ -133,6 +130,13 @@ public class EmployeeService {
             shifts.sort(Comparator.comparing(Shift::getStartShift));
         }
         return shifts;
+    }
+
+    private List<Absence> absenceSorter(List<Absence> absences) {
+        if(absences != null) {
+            absences.sort(Comparator.comparing(Absence:: getStartDate));
+        }
+        return absences;
     }
 
 //    Overload transfer for postmapping
