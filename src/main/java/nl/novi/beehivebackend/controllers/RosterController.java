@@ -4,11 +4,7 @@ import nl.novi.beehivebackend.dtos.output.RosterOutputDto;
 import nl.novi.beehivebackend.services.RosterService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.parameters.P;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/rosters")
@@ -23,5 +19,11 @@ public class RosterController {
     @GetMapping("/{rosterName}")
     public ResponseEntity<RosterOutputDto> getRoster(@PathVariable String rosterName) {
         return new ResponseEntity<>(rosterService.getSingleRoster(rosterName), HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{rosterName}")
+    public ResponseEntity<HttpStatus> deleteRoster(@PathVariable String rosterName) {
+        rosterService.deleteRoster(rosterName);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }
