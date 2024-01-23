@@ -49,13 +49,43 @@ class ShiftServiceTest {
         assertTrue(shiftService.isValidShiftDuration(shiftInputDto));
     }
 
-//    @Test
-//    void isValidShiftDuration_WithEndBeforeStart() {
-//        ShiftInputDto shiftInputDto = new ShiftInputDto();
-//        shiftInputDto.setStartShift(LocalDateTime.of(2023, 1, 1, 9, 0));
-//        shiftInputDto.setEndShift(LocalDateTime.of(2023, 1, 1, 8, 0));
-//
-//        assertThrows(BadRequestException.class)
-//        assertTrue(shiftService.isValidShiftDuration(shiftInputDto));
-//    }
+    @Test
+    void isValidShiftDuration_WithEndBeforeStart_ThrowsException() {
+        ShiftInputDto shiftInputDto = new ShiftInputDto();
+        shiftInputDto.setStartShift(LocalDateTime.of(2023, 1, 1, 9, 0));
+        shiftInputDto.setEndShift(LocalDateTime.of(2023, 1, 1, 8, 0));
+
+        BadRequestException thrownException = assertThrows(BadRequestException.class,
+                () -> shiftService.isValidShiftDuration(shiftInputDto));
+
+        assertEquals("End of shift not after start of shift.", thrownException.getMessage());
+
+
+    }
+
+    @Test
+    void isValidShiftDuration_WithStartNull_ThrowsException() {
+        ShiftInputDto shiftInputDto = new ShiftInputDto();
+        shiftInputDto.setStartShift(null);
+        shiftInputDto.setEndShift(LocalDateTime.of(2023, 1, 1, 8, 0));
+
+        BadRequestException thrownException = assertThrows(BadRequestException.class,
+                () -> shiftService.isValidShiftDuration(shiftInputDto));
+
+        assertEquals("Start and End of shift are required", thrownException.getMessage());
+
+
+    }
+
+    @Test
+    void isValidShiftDuration_Over24H_ThrowsException() {
+        ShiftInputDto shiftInputDto = new ShiftInputDto();
+        shiftInputDto.setStartShift(LocalDateTime.of(2023, 1, 1, 9, 0));
+        shiftInputDto.setEndShift(LocalDateTime.of(2023, 1, 3, 9, 0));
+
+        assertThrows(BadRequestException.class, () -> shiftService.isValidShiftDuration(shiftInputDto));
+    }
+
+
+
 }
