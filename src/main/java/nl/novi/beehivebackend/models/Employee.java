@@ -23,12 +23,22 @@ public class Employee {
 
 
     // Personal details
+    @Column(nullable = false)
     private String firstName;
+
+    @Column(nullable = false)
     private String preposition;
+
+    @Column(nullable = false)
     private String lastName;
+
+    @Column(nullable = false, unique = true)
     private String shortName;
+
     private LocalDate dob;
     private String phoneNumber;
+
+    @Column(nullable = false)
     private Boolean isActive;
 
     @ManyToOne

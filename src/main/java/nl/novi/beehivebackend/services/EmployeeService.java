@@ -2,12 +2,11 @@ package nl.novi.beehivebackend.services;
 
 
 import nl.novi.beehivebackend.dtos.input.EmployeeInputDto;
+import nl.novi.beehivebackend.exceptions.BadRequestException;
 import nl.novi.beehivebackend.exceptions.IsNotUniqueException;
 import nl.novi.beehivebackend.exceptions.RecordNotFoundException;
 import nl.novi.beehivebackend.dtos.output.EmployeeOutputDto;
-import nl.novi.beehivebackend.models.Employee;
-import nl.novi.beehivebackend.models.Team;
-import nl.novi.beehivebackend.models.User;
+import nl.novi.beehivebackend.models.*;
 import nl.novi.beehivebackend.repositories.EmployeeRepository;
 import nl.novi.beehivebackend.repositories.TeamRepository;
 import nl.novi.beehivebackend.repositories.UserRepository;
@@ -15,6 +14,8 @@ import nl.novi.beehivebackend.utils.UserData;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 
@@ -43,12 +44,12 @@ public class EmployeeService {
         return employeeOutputDtos;
     }
 
-    public Iterable<EmployeeOutputDto> getAllEmployees(boolean isEmployed) {
+    public Iterable<EmployeeOutputDto> getAllEmployees(String teamName) {
+        Team team = teamRepository.findById(teamName).orElseThrow(()-> new BadRequestException("No team with name: " + teamName));
+
         List<EmployeeOutputDto> employeeOutputDtos = new ArrayList<>();
-        for (Employee employee : employeeRepository.findAll()) {
-            if (isEmployed == employee.getIsActive()) {
+        for (Employee employee : employeeRepository.findAllByTeam(team)) {
                 employeeOutputDtos.add(transferEmployeeToEmployeeOutputDto(employee));
-            }
         }
         return employeeOutputDtos;
     }
@@ -104,6 +105,7 @@ public class EmployeeService {
     }
 
 
+
     private EmployeeOutputDto transferEmployeeToEmployeeOutputDto(Employee employee) {
         EmployeeOutputDto employeeOutputDto = new EmployeeOutputDto();
         employeeOutputDto.setId(employee.getId());
@@ -116,11 +118,26 @@ public class EmployeeService {
         employeeOutputDto.setEmail(employee.getUser().getEmail());
         employeeOutputDto.setIsEmployed(employee.getIsActive());
         employeeOutputDto.setTeam(employee.getTeam());
-//        employeeOutputDto.setShifts(employee.getShifts());
+        employeeOutputDto.setShifts(shiftSorter(employee.getShifts()));
+        employeeOutputDto.setAbsences(absenceSorter(employee.getAbsences()));
         employeeOutputDto.setUsername(employee.getUser().getUsername());
         employeeOutputDto.setAuthorities(employee.getUser().getAuthorities());
 
         return employeeOutputDto;
+    }
+
+    private List<Shift> shiftSorter(List<Shift> shifts) {
+        if(shifts != null) {
+            shifts.sort(Comparator.comparing(Shift::getStartShift));
+        }
+        return shifts;
+    }
+
+    private List<Absence> absenceSorter(List<Absence> absences) {
+        if(absences != null) {
+            absences.sort(Comparator.comparing(Absence:: getStartDate));
+        }
+        return absences;
     }
 
 //    Overload transfer for postmapping

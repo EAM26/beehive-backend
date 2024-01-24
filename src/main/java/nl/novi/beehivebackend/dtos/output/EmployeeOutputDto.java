@@ -2,6 +2,7 @@ package nl.novi.beehivebackend.dtos.output;
 
 import lombok.Getter;
 import lombok.Setter;
+import nl.novi.beehivebackend.models.Absence;
 import nl.novi.beehivebackend.models.Authority;
 import nl.novi.beehivebackend.models.Shift;
 import nl.novi.beehivebackend.models.Team;
@@ -21,10 +22,14 @@ public class EmployeeOutputDto {
     public String shortName;
     public LocalDate dob;
     public String phoneNumber;
-    public String email;
     public Boolean isEmployed;
+
     public Team team;
     public List<Shift> shifts;
+    public List<Absence> absences;
+
+    //    from user
     public String username;
+    public String email;
     public Set<Authority> authorities;
 }

@@ -27,11 +27,10 @@ public class EmployeeController {
     }
 
 
-
     @GetMapping
-    public ResponseEntity<Iterable<EmployeeOutputDto>> getAllEmployees(@RequestParam(required = false) Boolean isEmployed) {
-        if (isEmployed != null) {
-            return new ResponseEntity<>(employeeService.getAllEmployees(isEmployed), HttpStatus.OK);
+    public ResponseEntity<Iterable<EmployeeOutputDto>> getAllEmployees(@RequestParam(required = false) String teamName) {
+        if (teamName != null) {
+            return new ResponseEntity<>(employeeService.getAllEmployees(teamName), HttpStatus.OK);
         }
         return new ResponseEntity<>(employeeService.getAllEmployees(), HttpStatus.OK);
 
