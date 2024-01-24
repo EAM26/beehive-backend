@@ -6,9 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
 import lombok.Setter;
-import nl.novi.beehivebackend.models.Authority;
 
-import java.util.Set;
 
 @Getter
 @Setter
@@ -33,9 +31,6 @@ public class UserInputDto {
     @NotNull(message = "User status is required")
     private Boolean isDeleted;
 
-
-
-//    private Set<Authority> authorities;
 
     @NotBlank(message = "Role is required.")
     private String userRole;
