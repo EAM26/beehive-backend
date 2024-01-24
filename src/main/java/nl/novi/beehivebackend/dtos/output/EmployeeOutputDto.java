@@ -22,11 +22,14 @@ public class EmployeeOutputDto {
     public String shortName;
     public LocalDate dob;
     public String phoneNumber;
-    public String email;
     public Boolean isEmployed;
+
     public Team team;
     public List<Shift> shifts;
     public List<Absence> absences;
+
+    //    from user
     public String username;
+    public String email;
     public Set<Authority> authorities;
 }
