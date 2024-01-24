@@ -4,10 +4,14 @@ package nl.novi.beehivebackend.repositories;
 import nl.novi.beehivebackend.models.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
+
 public interface UserRepository extends JpaRepository<User, String> {
 
     User findByUsername(String username);
 
     boolean existsByEmail(String email);
+
+    List<User> findAllByIsDeleted(Boolean isDeleted);
 
 }

@@ -38,13 +38,12 @@ public class UserService {
 
     public List<UserOutputDto> getUsers(Boolean isDeleted) {
         List<UserOutputDto> allUsersList = new ArrayList<>();
-        List<User> list = userRepository.findAll();
-        for (User user : list) {
-            if (user.getIsDeleted() == isDeleted) {
-                allUsersList.add(transferUserToUserOutputDto(user));
-            }
+        for (User user : userRepository.findAllByIsDeleted(isDeleted)) {
+            allUsersList.add(transferUserToUserOutputDto(user));
         }
         return allUsersList;
+
+
     }
 
     public UserOutputDto getSingleUser(String username) {
@@ -86,7 +85,6 @@ public class UserService {
         } else {
             throw new AccessDeniedException("Insufficient permission for updating user.");
         }
-
 
 
 //      check if authority of current user is Admin
