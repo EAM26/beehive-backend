@@ -62,17 +62,19 @@ public class UserService {
     public UserOutputDto updateUser(String username, UserInputDto userInputDto) {
         User userToUpdate = userRepository.findById(username).orElseThrow(() -> new RecordNotFoundException("User with name " + username + " doesn't exist."));
         User currentUser = userRepository.findByUsername(getCurrentUserId());
+
         if (!username.equals(userInputDto.getUsername())) {
             throw new AccessDeniedException("Not allowed to change username.");
         }
 
-//      check authority and user
-        if (isAdmin(currentUser)) {
-            System.out.println("USER IS ADMIN");
-            return updateAsAdmin(userToUpdate, userInputDto);
-        } else if (isSelf(userToUpdate)) {
+//      Check is Self or Admin
+
+        if (isSelf(userToUpdate)) {
             System.out.println("USER IS SELF");
             return updateAsSelf(userToUpdate, userInputDto);
+        } else if (isAdmin(currentUser)) {
+            System.out.println("USER IS ADMIN");
+            return updateAsAdmin(userToUpdate, userInputDto);
         } else {
             throw new AccessDeniedException("Insufficient permission for updating user.");
         }
@@ -186,7 +188,7 @@ public class UserService {
         return user;
     }
 
-    private User ownerTransferUserInputDtoToUser(User currentUser, UserInputDto userInputDto) {
+    private User selfTransferUserInputDtoToUser(User currentUser, UserInputDto userInputDto) {
         if (currentUser.getIsDeleted() != userInputDto.getIsDeleted()) {
             throw new AccessDeniedException("Not allowed to change user status.");
         }
@@ -252,8 +254,8 @@ public class UserService {
         return transferUserToUserOutputDto(updatedUser);
     }
 
-    private UserOutputDto updateAsSelf(User user, UserInputDto userInputDto) {
-        User updatedUser = ownerTransferUserInputDtoToUser(user, userInputDto);
+    private UserOutputDto updateAsSelf(User userToUpdate, UserInputDto userInputDto) {
+        User updatedUser = selfTransferUserInputDtoToUser(userToUpdate, userInputDto);
         userRepository.save(updatedUser);
         return transferUserToUserOutputDto(updatedUser);
     }
