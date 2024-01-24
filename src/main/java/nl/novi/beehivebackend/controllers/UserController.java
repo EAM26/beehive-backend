@@ -2,7 +2,6 @@ package nl.novi.beehivebackend.controllers;
 
 
 import jakarta.validation.Valid;
-import nl.novi.beehivebackend.dtos.input.UserRoleInputDto;
 import nl.novi.beehivebackend.dtos.input.UserInputDto;
 import nl.novi.beehivebackend.dtos.output.UserOutputDto;
 import nl.novi.beehivebackend.services.UserService;
@@ -57,18 +56,6 @@ public class UserController {
         return ResponseEntity.created(location).body(userOutputDto.getUsername());
     }
 
-
-
-    @PutMapping(value = "/add_auth/{username}")
-    public ResponseEntity<String> addUserAuthority(@PathVariable("username") String username, @RequestBody UserRoleInputDto userRole) {
-        userService.addAuthority(username, userRole.getRoleName());
-        return new ResponseEntity<>(userRole.getRoleName() + " added to authorities", HttpStatus.OK);
-    }
-    @PutMapping(value = "/remove_auth/{username}")
-    public ResponseEntity<String> removeUserAuthority(@PathVariable("username") String username, @RequestBody UserRoleInputDto userRole) {
-        userService.removeAuthority(username, userRole.getRoleName());
-        return new ResponseEntity<>(userRole.getRoleName() + " removed from authorities", HttpStatus.OK);
-    }
 
     @PutMapping(value = "/{username}")
     public ResponseEntity<String> updateUser(@PathVariable("username") String username, @Valid @RequestBody UserInputDto userInputDto, BindingResult bindingResult) {

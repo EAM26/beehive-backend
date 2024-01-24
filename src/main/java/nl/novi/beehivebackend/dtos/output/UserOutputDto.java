@@ -13,6 +13,7 @@ public class UserOutputDto {
     private String email;
     private Long employeeId;
     private Boolean isDeleted;
+    private String shortName;
 
     private Set<Authority> authorities;
 

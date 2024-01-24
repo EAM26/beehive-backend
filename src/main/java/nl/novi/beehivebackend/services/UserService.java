@@ -38,13 +38,12 @@ public class UserService {
 
     public List<UserOutputDto> getUsers(Boolean isDeleted) {
         List<UserOutputDto> allUsersList = new ArrayList<>();
-        List<User> list = userRepository.findAll();
-        for (User user : list) {
-            if (user.getIsDeleted() == isDeleted) {
-                allUsersList.add(transferUserToUserOutputDto(user));
-            }
+        for (User user : userRepository.findAllByIsDeleted(isDeleted)) {
+            allUsersList.add(transferUserToUserOutputDto(user));
         }
         return allUsersList;
+
+
     }
 
     public UserOutputDto getSingleUser(String username) {
@@ -54,17 +53,8 @@ public class UserService {
 
 
     public UserOutputDto createUser(UserInputDto userInputDto) {
-        if (userExists(userInputDto.getUsername())) {
-            throw new IsNotUniqueException("Username is not unique");
-        }
-        userInputDto.setEmail(userInputDto.getEmail().toLowerCase());
-        if (emailExists(userInputDto.getEmail())) {
-            throw new IsNotUniqueException("Email is not unique");
-        }
-        if (!checkUserRoleExists(userInputDto.getUserRole())) {
-            throw new BadRequestException("Unknown user role");
-        }
-        User user = adminTransferUserInputDtoToUser(new User(), userInputDto);
+
+        User user = dtoToUserAsAdmin(new User(), userInputDto);
         userRepository.save(user);
         return transferUserToUserOutputDto(user);
     }
@@ -72,89 +62,24 @@ public class UserService {
     public UserOutputDto updateUser(String username, UserInputDto userInputDto) {
         User userToUpdate = userRepository.findById(username).orElseThrow(() -> new RecordNotFoundException("User with name " + username + " doesn't exist."));
         User currentUser = userRepository.findByUsername(getCurrentUserId());
+
         if (!username.equals(userInputDto.getUsername())) {
             throw new AccessDeniedException("Not allowed to change username.");
         }
 
-//      check authority and user
-        if (isAdmin(currentUser)) {
-            System.out.println("USER IS ADMIN");
-            return updateAsAdmin(userToUpdate, userInputDto);
-        } else if (isSelf(userToUpdate)) {
-            System.out.println("USER IS SELF");
+//      Check is Self or Admin
+
+        if (isSelf(userToUpdate)) {
             return updateAsSelf(userToUpdate, userInputDto);
+        } else if (isAdmin(currentUser)) {
+            return updateAsAdmin(userToUpdate, userInputDto);
         } else {
             throw new AccessDeniedException("Insufficient permission for updating user.");
         }
-
-
-
-//      check if authority of current user is Admin
-//        for (Authority auth : currentUser.getAuthorities()) {
-//            if (auth.getAuthority().equals("ROLE_ADMIN")) {
-//                if (currentUser.getUsername().equals(userInputDto.getUsername()) && !userInputDto.getUserRole().toUpperCase().equals("ADMIN")) {
-//                    throw new AccessDeniedException("You can't demote your own authority role");
-//                }
-//                User updatedUser = adminTransferUserInputDtoToUser(userToUpdate, userInputDto);
-//                userRepository.save(updatedUser);
-//                return transferUserToUserOutputDto(updatedUser);
-//            }
-//        }
-
-//      check if current user is not owner
-//        if (!currentUser.getUsername().equals(username)) {
-//            throw new AccessDeniedException("Not allowed to change user data");
-//        }
-//
-//        User updatedUser = ownerTransferUserInputDtoToUser(currentUser, userInputDto);
-//        userRepository.save(updatedUser);
-//        return transferUserToUserOutputDto(updatedUser);
     }
 
 
-    public void addAuthority(String username, String roleName) {
-        User user = userRepository.findById(username).orElseThrow(() -> new RecordNotFoundException("User with name " + username + " doesn't exist."));
-        if (!checkUserRoleExists(roleName)) {
-            throw new RecordNotFoundException("Role doesn't exist");
-        }
-        UserRole userRole = UserRole.valueOf(roleName.toUpperCase());
-        for (Authority auth : user.getAuthorities()) {
-            if (auth.getAuthority().equals(userRole.getRoleAsString())) {
-                throw new BadRequestException("Authority already present");
-            }
-        }
-        user.addAuthority(new Authority(username, userRole));
-        userRepository.save(user);
-    }
 
-    public void removeAuthority(String username, String roleName) {
-        boolean isRemoved = false;
-        User user = userRepository.findById(username).orElseThrow(() -> new RecordNotFoundException("User with name " + username + " doesn't exist."));
-        if (!checkUserRoleExists(roleName)) {
-            throw new RecordNotFoundException("Role doesn't exist");
-        }
-        if (getCurrentUserId().equals(username)) {
-            throw new AccessDeniedException("Not Allowed to remove own authority");
-        }
-        UserRole userRole = UserRole.valueOf(roleName.toUpperCase());
-        for (Authority auth : user.getAuthorities()) {
-            if (auth.getAuthority().equals(userRole.getRoleAsString())) {
-                user.removeAuthority(auth);
-                userRepository.save(user);
-                isRemoved = true;
-                break;
-            }
-        }
-
-        if (!isRemoved) {
-            throw new BadRequestException("Authority not found");
-        }
-    }
-
-
-    public void deleteUser(String username) {
-        userRepository.deleteById(username);
-    }
 
 
 //    Helper methods
@@ -175,18 +100,37 @@ public class UserService {
         outputDto.setAuthorities(user.getAuthorities());
         if (user.getEmployee() != null) {
             outputDto.setEmployeeId(user.getEmployee().getId());
+            outputDto.setShortName(user.getEmployee().getShortName());
         }
         return outputDto;
     }
 
-    private User adminTransferUserInputDtoToUser(User user, UserInputDto userInputDto) {
+    private User dtoToUserAsAdmin(User user, UserInputDto userInputDto) {
+
+//        Check username for new user
+        if(user.getUsername() == null && userExists(userInputDto.getUsername())) {
+            throw new IsNotUniqueException("Username is not unique");
+        }
+
+        if (!isRole(userInputDto.getUserRole())) {
+            throw new BadRequestException("Unknown user role");
+        }
+
+//        Check email for new user
         userInputDto.setEmail(userInputDto.getEmail().toLowerCase());
+        if(user.getEmail() == null) {
+            if(emailExists(userInputDto.getEmail())) {
+                throw new BadRequestException("Email is not unique");
+            }
+        }
+//        Check email for existing user
         if (user.getEmail() != null) {
             if (!user.getEmail().equals(userInputDto.getEmail()) && emailExists(userInputDto.getEmail())) {
-                throw new IsNotUniqueException("Email is not unique");
+                throw new BadRequestException("Email is not unique");
             }
         }
 
+//        Id check for removing own account
         if (getCurrentUserId().equals(userInputDto.getUsername()) && userInputDto.getIsDeleted()) {
             throw new AccessDeniedException("You can't delete your own account");
         }
@@ -203,7 +147,7 @@ public class UserService {
         return user;
     }
 
-    private User ownerTransferUserInputDtoToUser(User currentUser, UserInputDto userInputDto) {
+    private User dtoToUserAsSelf(User currentUser, UserInputDto userInputDto) {
         if (currentUser.getIsDeleted() != userInputDto.getIsDeleted()) {
             throw new AccessDeniedException("Not allowed to change user status.");
         }
@@ -211,6 +155,9 @@ public class UserService {
         userInputDto.setEmail(userInputDto.getEmail().toLowerCase());
         if (!userInputDto.getEmail().equals(currentUser.getEmail()) && emailExists(userInputDto.getEmail())) {
             throw new IsNotUniqueException("Email is not unique");
+        }
+        if (!isRole(userInputDto.getUserRole())) {
+            throw new BadRequestException("Unknown user role");
         }
 
         if (!hasRole(currentUser, userInputDto.getUserRole())) {
@@ -221,16 +168,16 @@ public class UserService {
         return currentUser;
     }
 
-    private boolean checkUserRoleExists(String roleName) {
-        boolean isMatch = false;
+    private boolean isRole(String roleName) {
         for (UserRole userRole : UserRole.values()) {
             if (roleName.equalsIgnoreCase(userRole.name())) {
-                isMatch = true;
-                break;
+                return true;
             }
         }
-        return isMatch;
+        return false;
     }
+
+
 
     private Set<Authority> addAuthoritySet(User user, String highestRole) {
         Set<Authority> authorities = new HashSet<>();
@@ -260,21 +207,16 @@ public class UserService {
     }
 
     private UserOutputDto updateAsAdmin(User user, UserInputDto userInputDto) {
-        if (isSelf(user) && !userInputDto.getUserRole().toUpperCase().equals("ADMIN")) {
-            throw new AccessDeniedException("You can't demote your own authority role");
-        }
-
-        User updatedUser = adminTransferUserInputDtoToUser(user, userInputDto);
+        User updatedUser = dtoToUserAsAdmin(user, userInputDto);
         userRepository.save(updatedUser);
         return transferUserToUserOutputDto(updatedUser);
     }
 
-    private UserOutputDto updateAsSelf(User user, UserInputDto userInputDto) {
-        User updatedUser = ownerTransferUserInputDtoToUser(user, userInputDto);
+    private UserOutputDto updateAsSelf(User userToUpdate, UserInputDto userInputDto) {
+        User updatedUser = dtoToUserAsSelf(userToUpdate, userInputDto);
         userRepository.save(updatedUser);
         return transferUserToUserOutputDto(updatedUser);
     }
-
 
 }
 

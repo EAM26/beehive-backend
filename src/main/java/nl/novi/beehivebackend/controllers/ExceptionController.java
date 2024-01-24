@@ -47,7 +47,7 @@ public class ExceptionController {
 
     @ExceptionHandler(value = AccessDeniedException.class)
     public ResponseEntity<String> exception(AccessDeniedException exception) {
-        return new ResponseEntity<>(exception.getMessage(), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(exception.getMessage(), HttpStatus.FORBIDDEN);
     }
 
     @ExceptionHandler(value = DisabledException.class)
