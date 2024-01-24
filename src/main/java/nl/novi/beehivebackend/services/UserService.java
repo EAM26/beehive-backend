@@ -53,16 +53,7 @@ public class UserService {
 
 
     public UserOutputDto createUser(UserInputDto userInputDto) {
-        if (userExists(userInputDto.getUsername())) {
-            throw new IsNotUniqueException("Username is not unique");
-        }
-        userInputDto.setEmail(userInputDto.getEmail().toLowerCase());
-        if (emailExists(userInputDto.getEmail())) {
-            throw new IsNotUniqueException("Email is not unique");
-        }
-        if (!checkUserRoleExists(userInputDto.getUserRole())) {
-            throw new BadRequestException("Unknown user role");
-        }
+
         User user = adminTransferUserInputDtoToUser(new User(), userInputDto);
         userRepository.save(user);
         return transferUserToUserOutputDto(user);
@@ -85,28 +76,6 @@ public class UserService {
         } else {
             throw new AccessDeniedException("Insufficient permission for updating user.");
         }
-
-
-//      check if authority of current user is Admin
-//        for (Authority auth : currentUser.getAuthorities()) {
-//            if (auth.getAuthority().equals("ROLE_ADMIN")) {
-//                if (currentUser.getUsername().equals(userInputDto.getUsername()) && !userInputDto.getUserRole().toUpperCase().equals("ADMIN")) {
-//                    throw new AccessDeniedException("You can't demote your own authority role");
-//                }
-//                User updatedUser = adminTransferUserInputDtoToUser(userToUpdate, userInputDto);
-//                userRepository.save(updatedUser);
-//                return transferUserToUserOutputDto(updatedUser);
-//            }
-//        }
-
-//      check if current user is not owner
-//        if (!currentUser.getUsername().equals(username)) {
-//            throw new AccessDeniedException("Not allowed to change user data");
-//        }
-//
-//        User updatedUser = ownerTransferUserInputDtoToUser(currentUser, userInputDto);
-//        userRepository.save(updatedUser);
-//        return transferUserToUserOutputDto(updatedUser);
     }
 
 
@@ -179,13 +148,28 @@ public class UserService {
     }
 
     private User adminTransferUserInputDtoToUser(User user, UserInputDto userInputDto) {
+        if (userExists(userInputDto.getUsername())) {
+            throw new BadRequestException("Username is not unique");
+        }
+        if (!checkUserRoleExists(userInputDto.getUserRole())) {
+            throw new BadRequestException("Unknown user role");
+        }
+
+//        Check email for new user
         userInputDto.setEmail(userInputDto.getEmail().toLowerCase());
+        if(user.getEmail() == null) {
+            if(emailExists(userInputDto.getEmail())) {
+                throw new BadRequestException("Email is not unique");
+            }
+        }
+//        Check email for existing user if self
         if (user.getEmail() != null) {
             if (!user.getEmail().equals(userInputDto.getEmail()) && emailExists(userInputDto.getEmail())) {
-                throw new IsNotUniqueException("Email is not unique");
+                throw new BadRequestException("Email is not unique");
             }
         }
 
+//        Id check for removing own account
         if (getCurrentUserId().equals(userInputDto.getUsername()) && userInputDto.getIsDeleted()) {
             throw new AccessDeniedException("You can't delete your own account");
         }
