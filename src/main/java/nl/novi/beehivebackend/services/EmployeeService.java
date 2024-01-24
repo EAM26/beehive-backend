@@ -11,6 +11,7 @@ import nl.novi.beehivebackend.repositories.EmployeeRepository;
 import nl.novi.beehivebackend.repositories.TeamRepository;
 import nl.novi.beehivebackend.repositories.UserRepository;
 import nl.novi.beehivebackend.utils.UserData;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -38,7 +39,7 @@ public class EmployeeService {
 
     public Iterable<EmployeeOutputDto> getAllEmployees() {
         List<EmployeeOutputDto> employeeOutputDtos = new ArrayList<>();
-        for (Employee employee : employeeRepository.findAll()) {
+        for (Employee employee : employeeRepository.findAll(Sort.by("id"))) {
             employeeOutputDtos.add(transferEmployeeToEmployeeOutputDto(employee));
         }
         return employeeOutputDtos;
@@ -48,7 +49,7 @@ public class EmployeeService {
         Team team = teamRepository.findById(teamName).orElseThrow(()-> new BadRequestException("No team with name: " + teamName));
 
         List<EmployeeOutputDto> employeeOutputDtos = new ArrayList<>();
-        for (Employee employee : employeeRepository.findAllByTeam(team)) {
+        for (Employee employee : employeeRepository.findAllByTeam(team, Sort.by("id"))) {
                 employeeOutputDtos.add(transferEmployeeToEmployeeOutputDto(employee));
         }
         return employeeOutputDtos;
