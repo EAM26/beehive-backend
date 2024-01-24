@@ -70,10 +70,8 @@ public class UserService {
 //      Check is Self or Admin
 
         if (isSelf(userToUpdate)) {
-            System.out.println("USER IS SELF");
             return updateAsSelf(userToUpdate, userInputDto);
         } else if (isAdmin(currentUser)) {
-            System.out.println("USER IS ADMIN");
             return updateAsAdmin(userToUpdate, userInputDto);
         } else {
             throw new AccessDeniedException("Insufficient permission for updating user.");
@@ -150,9 +148,12 @@ public class UserService {
     }
 
     private User adminTransferUserInputDtoToUser(User user, UserInputDto userInputDto) {
-        if (userExists(userInputDto.getUsername())) {
-            throw new BadRequestException("Username is not unique");
+
+//        Check username for new user
+        if(user.getUsername() == null && userExists(userInputDto.getUsername())) {
+            throw new IsNotUniqueException("Username is not unique");
         }
+
         if (!checkUserRoleExists(userInputDto.getUserRole())) {
             throw new BadRequestException("Unknown user role");
         }
@@ -164,7 +165,7 @@ public class UserService {
                 throw new BadRequestException("Email is not unique");
             }
         }
-//        Check email for existing user if self
+//        Check email for existing user
         if (user.getEmail() != null) {
             if (!user.getEmail().equals(userInputDto.getEmail()) && emailExists(userInputDto.getEmail())) {
                 throw new BadRequestException("Email is not unique");
@@ -196,6 +197,9 @@ public class UserService {
         userInputDto.setEmail(userInputDto.getEmail().toLowerCase());
         if (!userInputDto.getEmail().equals(currentUser.getEmail()) && emailExists(userInputDto.getEmail())) {
             throw new IsNotUniqueException("Email is not unique");
+        }
+        if (!checkUserRoleExists(userInputDto.getUserRole())) {
+            throw new BadRequestException("Unknown user role");
         }
 
         if (!hasRole(currentUser, userInputDto.getUserRole())) {
@@ -245,9 +249,9 @@ public class UserService {
     }
 
     private UserOutputDto updateAsAdmin(User user, UserInputDto userInputDto) {
-        if (isSelf(user) && !userInputDto.getUserRole().toUpperCase().equals("ADMIN")) {
-            throw new AccessDeniedException("You can't demote your own authority role");
-        }
+//        if (isSelf(user) && !userInputDto.getUserRole().toUpperCase().equals("ADMIN")) {
+//            throw new AccessDeniedException("You can't demote your own authority role");
+//        }
 
         User updatedUser = adminTransferUserInputDtoToUser(user, userInputDto);
         userRepository.save(updatedUser);
