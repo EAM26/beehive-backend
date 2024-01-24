@@ -175,6 +175,7 @@ public class UserService {
         outputDto.setAuthorities(user.getAuthorities());
         if (user.getEmployee() != null) {
             outputDto.setEmployeeId(user.getEmployee().getId());
+            outputDto.setShortName(user.getEmployee().getShortName());
         }
         return outputDto;
     }
