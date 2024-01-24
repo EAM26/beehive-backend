@@ -26,7 +26,6 @@ public class Employee {
     @Column(nullable = false)
     private String firstName;
 
-    @Column(nullable = false)
     private String preposition;
 
     @Column(nullable = false)
@@ -43,7 +42,7 @@ public class Employee {
 
     @ManyToOne
     @JsonIgnore
-    @JoinColumn(name = "team_name")
+    @JoinColumn(name = "team_name", nullable = false)
     private Team team;
 
 
@@ -51,7 +50,8 @@ public class Employee {
     @JsonIgnore
     private List<Shift> shifts;
 
-    @OneToOne(mappedBy = "employee")
+    @OneToOne
+    @JoinColumn(name = "username")
     @JsonIgnore
     private User user;
 

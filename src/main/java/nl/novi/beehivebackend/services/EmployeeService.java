@@ -15,7 +15,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -97,13 +96,13 @@ public class EmployeeService {
         return transferEmployeeToEmployeeOutputDto(employee);
     }
 
-    public void deleteEmployee(Long id) {
-        Employee employee = employeeRepository.findById(id).orElseThrow(() -> new RecordNotFoundException("No employee found with id " + id));
-//        if (!employee.getShifts().isEmpty()) {
-//            throw new IsNotEmptyException("Employee is not empty. First remove all shifts");
-//        }
-        employeeRepository.deleteById(id);
-    }
+//    public void deleteEmployee(Long id) {
+//        Employee employee = employeeRepository.findById(id).orElseThrow(() -> new RecordNotFoundException("No employee found with id " + id));
+////        if (!employee.getShifts().isEmpty()) {
+////            throw new IsNotEmptyException("Employee is not empty. First remove all shifts");
+////        }
+//        employeeRepository.deleteById(id);
+//    }
 
 
 
