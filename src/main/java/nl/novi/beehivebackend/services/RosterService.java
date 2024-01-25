@@ -4,7 +4,9 @@ import nl.novi.beehivebackend.dtos.output.RosterNameOutputDto;
 import nl.novi.beehivebackend.dtos.output.RosterOutputDto;
 import nl.novi.beehivebackend.exceptions.BadRequestException;
 import nl.novi.beehivebackend.models.Roster;
+import nl.novi.beehivebackend.models.Team;
 import nl.novi.beehivebackend.repositories.RosterRepository;
+import nl.novi.beehivebackend.repositories.TeamRepository;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -19,14 +21,24 @@ import java.util.Locale;
 public class RosterService {
 
     private final RosterRepository rosterRepository;
+    private final TeamRepository teamRepository;
 
-    public RosterService(RosterRepository rosterRepository) {
+    public RosterService(RosterRepository rosterRepository, TeamRepository teamRepository) {
         this.rosterRepository = rosterRepository;
+        this.teamRepository = teamRepository;
     }
 
     public Iterable<RosterNameOutputDto> getAllRosters() {
         List<RosterNameOutputDto> rosters = new ArrayList<>();
         for(Roster roster: rosterRepository.findAll(Sort.by("id"))){
+            rosters.add(transferRosterNameToDto(roster));
+        }
+        return rosters;
+    }
+    public Iterable<RosterNameOutputDto> getAllRosters(String teamName) {
+        Team team = teamRepository.findById(teamName).orElseThrow(() -> new BadRequestException("No team found with name: " + teamName));
+        List<RosterNameOutputDto> rosters = new ArrayList<>();
+        for(Roster roster: rosterRepository.findAllByTeam(team, Sort.by("id"))){
             rosters.add(transferRosterNameToDto(roster));
         }
         return rosters;
@@ -47,15 +59,9 @@ public class RosterService {
     }
 
     private List<LocalDate> getDatesOfWeek(int weekNumber, int year) {
-//        String[] partsName = rosterName.split("-");
-//        int weekNumber = Integer.parseInt(partsName[0]);
-//        int year = Integer.parseInt(partsName[1]);
-
-//        Get first day of year and adjust to weekNumber and year of rosterName
         LocalDate startOfWeek = LocalDate.ofYearDay(year, 1)
                 .with(WeekFields.of(Locale.getDefault()).weekOfYear(), weekNumber)
                 .with(TemporalAdjusters.previousOrSame(WeekFields.of(Locale.getDefault()).getFirstDayOfWeek()));
-
         List<LocalDate> weekDates = new ArrayList<>();
         for (int i = 0; i < 7; i++) {
             weekDates.add(startOfWeek.plusDays(i));

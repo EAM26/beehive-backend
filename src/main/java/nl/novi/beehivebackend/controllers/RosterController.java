@@ -19,10 +19,10 @@ public class RosterController {
     }
 
     @GetMapping
-    public ResponseEntity<Iterable<RosterNameOutputDto>> getAllRosters(@RequestParam(required = false)Team team) {
-//        if(team != null) {
-//
-//        }
+    public ResponseEntity<Iterable<RosterNameOutputDto>> getAllRosters(@RequestParam(required = false)String  teamName) {
+        if(teamName != null) {
+            return new ResponseEntity<>(rosterService.getAllRosters(teamName), HttpStatus.OK);
+        }
         return new ResponseEntity<>(rosterService.getAllRosters(), HttpStatus.OK);
     }
 
