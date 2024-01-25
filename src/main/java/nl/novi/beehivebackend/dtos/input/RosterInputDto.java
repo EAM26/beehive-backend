@@ -3,7 +3,6 @@ package nl.novi.beehivebackend.dtos.input;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
-import nl.novi.beehivebackend.models.Team;
 
 @Getter
 @Setter
