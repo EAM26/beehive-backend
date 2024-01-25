@@ -4,6 +4,7 @@ package nl.novi.beehivebackend.controllers;
 import jakarta.validation.Valid;
 import nl.novi.beehivebackend.dtos.input.UserInputDto;
 import nl.novi.beehivebackend.dtos.output.UserOutputDto;
+import nl.novi.beehivebackend.dtos.output.selfOutputDto;
 import nl.novi.beehivebackend.services.UserService;
 import nl.novi.beehivebackend.utils.ValidationUtil;
 import org.springframework.http.HttpStatus;
@@ -45,9 +46,9 @@ public class UserController {
     }
 
     @GetMapping(value = "/self")
-    public ResponseEntity<UserOutputDto> getSelfAsUser(@PathVariable("username") String username) {
-        UserOutputDto optionalUser = userService.getSingleUser(username);
-        return ResponseEntity.ok().body(optionalUser);
+    public ResponseEntity<selfOutputDto> getSelfAsUser() {
+        selfOutputDto selfAsUser = userService.getSelfAsUser();
+        return ResponseEntity.ok().body(selfAsUser);
     }
 
 

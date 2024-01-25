@@ -3,12 +3,15 @@ package nl.novi.beehivebackend.services;
 
 import nl.novi.beehivebackend.dtos.input.UserInputDto;
 import nl.novi.beehivebackend.dtos.output.UserOutputDto;
+import nl.novi.beehivebackend.dtos.output.selfOutputDto;
 import nl.novi.beehivebackend.exceptions.*;
 import nl.novi.beehivebackend.models.Authority;
 import nl.novi.beehivebackend.models.User;
 import nl.novi.beehivebackend.models.UserRole;
 import nl.novi.beehivebackend.repositories.UserRepository;
+import nl.novi.beehivebackend.utils.UserData;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -21,10 +24,12 @@ import java.util.Set;
 public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final UserData userData;
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, UserData userData) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.userData = userData;
     }
 
 
@@ -49,6 +54,14 @@ public class UserService {
     public UserOutputDto getSingleUser(String username) {
         User user = userRepository.findById(username).orElseThrow(() -> new RecordNotFoundException("No user found with name: " + username));
         return transferUserToUserOutputDto(user);
+    }
+
+    public selfOutputDto getSelfAsUser() {
+        User user = userData.getLoggedInUser();
+        if(user.getEmployee() != null) {
+
+        }
+        return new selfOutputDto();
     }
 
 
@@ -83,6 +96,7 @@ public class UserService {
 
 
 //    Helper methods
+
 
     private boolean userExists(String username) {
         return userRepository.existsById(username);
