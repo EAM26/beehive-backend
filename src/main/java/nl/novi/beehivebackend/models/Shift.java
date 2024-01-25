@@ -12,7 +12,7 @@ import java.time.LocalTime;
 @Getter
 @Setter
 @Entity
-@Table(name="shifts")
+@Table(name = "shifts")
 public class Shift {
 
     @Id
@@ -43,9 +43,8 @@ public class Shift {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnore
-    @JoinColumn(name = "roster_name")
+    @JoinColumn(name = "roster_id")
     private Roster roster;
-
 
 
 }

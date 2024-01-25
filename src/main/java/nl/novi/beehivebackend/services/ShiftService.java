@@ -73,7 +73,7 @@ public class ShiftService {
         isValidShiftDuration(shiftInputDto);
 
 //        shift check if team is valid
-        Team team = teamRepository.findById(shiftInputDto.getTeamName()).orElseThrow(() -> new RecordNotFoundException("No team found with name. Name is case sensitive!"));
+        Team team = teamRepository.findById(shiftInputDto.getTeamName()).orElseThrow(() -> new RecordNotFoundException("No team found with that name. Name is case sensitive!"));
         isTeamActive(team);
 
 //        if shiftInput has no employee, save as shift and return
@@ -189,13 +189,19 @@ public class ShiftService {
         rosterRepository.save(roster);
         shift.setRoster(roster);
 
-
         return shiftRepository.save(shift);
     }
 
     private Roster rosterManager(Shift shift) {
-        String rosterName = shift.getWeekNumber() + "-" + shift.getYear() + "-" + shift.getTeam().getTeamName();
-        return rosterRepository.findById(rosterName).orElse(new Roster(rosterName, shift.getTeam()));
+        int weekNumber = shift.getWeekNumber();
+        int year = shift.getYear();
+        Team team = shift.getTeam();
+        for(Roster roster: rosterRepository.findAll()) {
+            if(weekNumber == roster.getWeek() && year == roster.getYear() && team == roster.getTeam()) {
+                return roster;
+            }
+        }
+        throw new BadRequestException("No roster found for " + weekNumber + "-" + year + "-" + team.getTeamName());
 
     }
 
