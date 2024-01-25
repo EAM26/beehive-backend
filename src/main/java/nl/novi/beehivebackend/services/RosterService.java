@@ -1,9 +1,11 @@
 package nl.novi.beehivebackend.services;
 
+import nl.novi.beehivebackend.dtos.output.RosterNameOutputDto;
 import nl.novi.beehivebackend.dtos.output.RosterOutputDto;
 import nl.novi.beehivebackend.exceptions.BadRequestException;
 import nl.novi.beehivebackend.models.Roster;
 import nl.novi.beehivebackend.repositories.RosterRepository;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -20,6 +22,14 @@ public class RosterService {
 
     public RosterService(RosterRepository rosterRepository) {
         this.rosterRepository = rosterRepository;
+    }
+
+    public Iterable<RosterNameOutputDto> getAllRosters() {
+        List<RosterNameOutputDto> rosters = new ArrayList<>();
+        for(Roster roster: rosterRepository.findAll(Sort.by("name"))){
+            rosters.add(transferRosterNameToDto(roster));
+        }
+        return rosters;
     }
 
     public RosterOutputDto getSingleRoster(String rosterName) {
@@ -61,5 +71,11 @@ public class RosterService {
         rosterOutputDto.setShifts(roster.getShifts());
         rosterOutputDto.setWeekDates(getDatesOfWeek(roster.getName()));
         return rosterOutputDto;
+    }
+    private RosterNameOutputDto transferRosterNameToDto(Roster roster) {
+        RosterNameOutputDto rosterDto = new RosterNameOutputDto();
+        rosterDto.setName(roster.getName());
+
+        return rosterDto;
     }
 }

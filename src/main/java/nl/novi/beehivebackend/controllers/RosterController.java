@@ -1,6 +1,8 @@
 package nl.novi.beehivebackend.controllers;
 
+import nl.novi.beehivebackend.dtos.output.RosterNameOutputDto;
 import nl.novi.beehivebackend.dtos.output.RosterOutputDto;
+import nl.novi.beehivebackend.models.Team;
 import nl.novi.beehivebackend.services.RosterService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +16,14 @@ public class RosterController {
 
     public RosterController(RosterService rosterService) {
         this.rosterService = rosterService;
+    }
+
+    @GetMapping
+    public ResponseEntity<Iterable<RosterNameOutputDto>> getAllRosters(@RequestParam(required = false)Team team) {
+//        if(team != null) {
+//
+//        }
+        return new ResponseEntity<>(rosterService.getAllRosters(), HttpStatus.OK);
     }
 
     @GetMapping("/{rosterName}")
