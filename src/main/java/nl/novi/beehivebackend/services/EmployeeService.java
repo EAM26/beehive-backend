@@ -11,10 +11,10 @@ import nl.novi.beehivebackend.repositories.EmployeeRepository;
 import nl.novi.beehivebackend.repositories.TeamRepository;
 import nl.novi.beehivebackend.repositories.UserRepository;
 import nl.novi.beehivebackend.utils.UserData;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -38,7 +38,7 @@ public class EmployeeService {
 
     public Iterable<EmployeeOutputDto> getAllEmployees() {
         List<EmployeeOutputDto> employeeOutputDtos = new ArrayList<>();
-        for (Employee employee : employeeRepository.findAll()) {
+        for (Employee employee : employeeRepository.findAll(Sort.by("id"))) {
             employeeOutputDtos.add(transferEmployeeToEmployeeOutputDto(employee));
         }
         return employeeOutputDtos;
@@ -48,7 +48,7 @@ public class EmployeeService {
         Team team = teamRepository.findById(teamName).orElseThrow(()-> new BadRequestException("No team with name: " + teamName));
 
         List<EmployeeOutputDto> employeeOutputDtos = new ArrayList<>();
-        for (Employee employee : employeeRepository.findAllByTeam(team)) {
+        for (Employee employee : employeeRepository.findAllByTeam(team, Sort.by("id"))) {
                 employeeOutputDtos.add(transferEmployeeToEmployeeOutputDto(employee));
         }
         return employeeOutputDtos;
@@ -64,7 +64,7 @@ public class EmployeeService {
             Long empId = userData.getLoggedInUser().getEmployeeId();
             return getSingleEmployee(empId);
         } catch (Exception exception) {
-            throw new RecordNotFoundException("No employee found with that username");
+            throw new RecordNotFoundException("No employee found for that user.");
         }
     }
 
@@ -96,13 +96,13 @@ public class EmployeeService {
         return transferEmployeeToEmployeeOutputDto(employee);
     }
 
-    public void deleteEmployee(Long id) {
-        Employee employee = employeeRepository.findById(id).orElseThrow(() -> new RecordNotFoundException("No employee found with id " + id));
-//        if (!employee.getShifts().isEmpty()) {
-//            throw new IsNotEmptyException("Employee is not empty. First remove all shifts");
-//        }
-        employeeRepository.deleteById(id);
-    }
+//    public void deleteEmployee(Long id) {
+//        Employee employee = employeeRepository.findById(id).orElseThrow(() -> new RecordNotFoundException("No employee found with id " + id));
+////        if (!employee.getShifts().isEmpty()) {
+////            throw new IsNotEmptyException("Employee is not empty. First remove all shifts");
+////        }
+//        employeeRepository.deleteById(id);
+//    }
 
 
 
@@ -115,13 +115,13 @@ public class EmployeeService {
         employeeOutputDto.setShortName(employee.getShortName());
         employeeOutputDto.setDob(employee.getDob());
         employeeOutputDto.setPhoneNumber(employee.getPhoneNumber());
-        employeeOutputDto.setEmail(employee.getUser().getEmail());
-        employeeOutputDto.setIsEmployed(employee.getIsActive());
+//        employeeOutputDto.setEmail(employee.getUser().getEmail());
+        employeeOutputDto.setIsActive(employee.getIsActive());
         employeeOutputDto.setTeam(employee.getTeam());
         employeeOutputDto.setShifts(shiftSorter(employee.getShifts()));
         employeeOutputDto.setAbsences(absenceSorter(employee.getAbsences()));
-        employeeOutputDto.setUsername(employee.getUser().getUsername());
-        employeeOutputDto.setAuthorities(employee.getUser().getAuthorities());
+//        employeeOutputDto.setUsername(employee.getUser().getUsername());
+//        employeeOutputDto.setAuthorities(employee.getUser().getAuthorities());
 
         return employeeOutputDto;
     }
@@ -159,7 +159,7 @@ public class EmployeeService {
         employee.setDob(employeeInputDto.getDob());
         employee.setPhoneNumber(employeeInputDto.getPhoneNumber());
         employee.setUser(user);
-        employee.setIsActive(employeeInputDto.getIsEmployed());
+        employee.setIsActive(employeeInputDto.getIsActive());
         employee.setTeam(team);
         user.setEmployee(employee);
         return employee;

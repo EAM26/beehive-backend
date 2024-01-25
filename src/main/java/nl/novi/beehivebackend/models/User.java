@@ -35,7 +35,7 @@ public class User {
             fetch = FetchType.EAGER)
     private Set<Authority> authorities = new HashSet<>();
 
-    @OneToOne
+    @OneToOne(mappedBy = "user")
     @JsonIgnore
     private Employee employee;
 

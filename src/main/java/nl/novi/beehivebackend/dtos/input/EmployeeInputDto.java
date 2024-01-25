@@ -3,7 +3,6 @@ package nl.novi.beehivebackend.dtos.input;
 import jakarta.validation.constraints.*;
 import lombok.Getter;
 import lombok.Setter;
-import nl.novi.beehivebackend.models.Team;
 
 
 import java.time.LocalDate;
@@ -14,6 +13,7 @@ public class EmployeeInputDto {
 
     @NotBlank(message = "First name is required.")
     public String firstName;
+
     public String preposition;
 
     @NotBlank(message = "Last name is required.")
@@ -25,8 +25,9 @@ public class EmployeeInputDto {
     public String shortName;
 
 
-    @Past(message = "Dob should be in the past.")
+//    @Past(message = "Dob should be in the past.")
     public LocalDate dob;
+
 
     public String phoneNumber;
 
@@ -36,7 +37,7 @@ public class EmployeeInputDto {
 
 
     @NotNull(message="Employed field is required.")
-    public Boolean isEmployed;
+    public Boolean isActive;
 
     @NotNull(message="Team field is required.")
     public String teamName;

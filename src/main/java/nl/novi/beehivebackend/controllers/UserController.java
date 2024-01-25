@@ -44,6 +44,12 @@ public class UserController {
         return ResponseEntity.ok().body(optionalUser);
     }
 
+    @GetMapping(value = "/self")
+    public ResponseEntity<UserOutputDto> getSelfAsUser(@PathVariable("username") String username) {
+        UserOutputDto optionalUser = userService.getSingleUser(username);
+        return ResponseEntity.ok().body(optionalUser);
+    }
+
 
     @PostMapping(value = "")
     public ResponseEntity<String> createUser(@Valid @RequestBody UserInputDto userInputDto, BindingResult bindingResult) {
