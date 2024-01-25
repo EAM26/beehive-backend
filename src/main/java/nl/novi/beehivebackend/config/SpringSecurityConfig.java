@@ -113,7 +113,9 @@ public class SpringSecurityConfig {
 
                 //                ROSTER REQUESTS
 
+                .requestMatchers(HttpMethod.GET, "/rosters").hasAnyRole("ADMIN", "MANAGER")
                 .requestMatchers(HttpMethod.GET, "/rosters/{id}").hasAnyRole("ADMIN", "MANAGER")
+                .requestMatchers(HttpMethod.POST, "/rosters").hasAnyRole("ADMIN", "MANAGER")
                 .requestMatchers(HttpMethod.DELETE, "/rosters/{id}").hasAnyRole("ADMIN", "MANAGER")
 
 

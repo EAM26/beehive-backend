@@ -10,6 +10,7 @@ import java.util.List;
 @Getter
 @Setter
 public class RosterOutputDto {
+    private Long id;
     private String name;
     private List<LocalDate> weekDates;
     private List<Shift> shifts;

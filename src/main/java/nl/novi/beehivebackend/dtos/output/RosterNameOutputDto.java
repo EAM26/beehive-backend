@@ -5,7 +5,8 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class RosterOutputDtoExShift {
-    private Long id;
+public class RosterNameOutputDto {
+
     private String name;
+
 }

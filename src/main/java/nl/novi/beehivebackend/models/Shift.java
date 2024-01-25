@@ -5,14 +5,13 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
+
 
 @Getter
 @Setter
 @Entity
-@Table(name="shifts")
+@Table(name = "shifts")
 public class Shift {
 
     @Id
@@ -43,9 +42,8 @@ public class Shift {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnore
-    @JoinColumn(name = "roster_name")
+    @JoinColumn(name = "roster_id")
     private Roster roster;
-
 
 
 }

@@ -1,9 +1,14 @@
 package nl.novi.beehivebackend.services;
 
+import nl.novi.beehivebackend.dtos.input.RosterInputDto;
+import nl.novi.beehivebackend.dtos.output.RosterNameOutputDto;
 import nl.novi.beehivebackend.dtos.output.RosterOutputDto;
 import nl.novi.beehivebackend.exceptions.BadRequestException;
 import nl.novi.beehivebackend.models.Roster;
+import nl.novi.beehivebackend.models.Team;
 import nl.novi.beehivebackend.repositories.RosterRepository;
+import nl.novi.beehivebackend.repositories.TeamRepository;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -17,35 +22,53 @@ import java.util.Locale;
 public class RosterService {
 
     private final RosterRepository rosterRepository;
+    private final TeamRepository teamRepository;
 
-    public RosterService(RosterRepository rosterRepository) {
+    public RosterService(RosterRepository rosterRepository, TeamRepository teamRepository) {
         this.rosterRepository = rosterRepository;
+        this.teamRepository = teamRepository;
     }
 
-    public RosterOutputDto getSingleRoster(String rosterName) {
-        Roster roster = rosterRepository.findById(rosterName).orElseThrow(() -> new BadRequestException("No Roster found with name: " + rosterName));
+    public Iterable<RosterNameOutputDto> getAllRosters() {
+        List<RosterNameOutputDto> rosters = new ArrayList<>();
+        for (Roster roster : rosterRepository.findAll(Sort.by("id"))) {
+            rosters.add(transferRosterNameToDto(roster));
+        }
+        return rosters;
+    }
+
+    public Iterable<RosterNameOutputDto> getAllRosters(String teamName) {
+        Team team = teamRepository.findById(teamName).orElseThrow(() -> new BadRequestException("No team found with name: " + teamName));
+        List<RosterNameOutputDto> rosters = new ArrayList<>();
+        for (Roster roster : rosterRepository.findAllByTeam(team, Sort.by("id"))) {
+            rosters.add(transferRosterNameToDto(roster));
+        }
+        return rosters;
+    }
+
+    public RosterOutputDto getSingleRoster(Long id) {
+        Roster roster = rosterRepository.findById(id).orElseThrow(() -> new BadRequestException("No Roster found with id: " + id));
 
         return transferRosterToOutputDto(roster);
     }
 
-    public void deleteRoster(String rosterName) {
-        Roster roster = rosterRepository.findById(rosterName).orElseThrow(() -> new BadRequestException("No roster found with name: " + rosterName));
+    public RosterOutputDto createRoster(RosterInputDto rosterInputDto) {
+        Roster roster = rosterRepository.save(transferInputDtoToRoster(rosterInputDto));
+        return transferRosterToOutputDto(roster);
+    }
+
+    public void deleteRoster(Long id) {
+        Roster roster = rosterRepository.findById(id).orElseThrow(() -> new BadRequestException("No roster found with id: " + id));
         if (roster.getShifts() != null && !roster.getShifts().isEmpty()) {
             throw new BadRequestException("Roster has Shifts");
         }
         rosterRepository.delete(roster);
     }
 
-    private List<LocalDate> getDatesOfWeek(String rosterName) {
-        String[] partsName = rosterName.split("-");
-        int weekNumber = Integer.parseInt(partsName[0]);
-        int year = Integer.parseInt(partsName[1]);
-
-//        Get first day of year and adjust to weekNumber and year of rosterName
+    private List<LocalDate> getDatesOfWeek(int weekNumber, int year) {
         LocalDate startOfWeek = LocalDate.ofYearDay(year, 1)
                 .with(WeekFields.of(Locale.getDefault()).weekOfYear(), weekNumber)
                 .with(TemporalAdjusters.previousOrSame(WeekFields.of(Locale.getDefault()).getFirstDayOfWeek()));
-
         List<LocalDate> weekDates = new ArrayList<>();
         for (int i = 0; i < 7; i++) {
             weekDates.add(startOfWeek.plusDays(i));
@@ -55,11 +78,55 @@ public class RosterService {
 
     }
 
+    private Roster transferInputDtoToRoster(RosterInputDto rosterInputDto) {
+        Roster roster = new Roster();
+        Team team = teamRepository.findById(rosterInputDto.getTeamName()).orElseThrow(()->new BadRequestException("No team found with that name."));
+
+        if (!isValidWeek(rosterInputDto.getWeek(), rosterInputDto.getYear())) {
+            throw new BadRequestException("Week and year combination doesn't exist.");
+
+        }
+
+        if(rosterExists(rosterInputDto, team)) {
+            throw new BadRequestException("Roster already exists");
+        }
+
+        roster.setWeek(rosterInputDto.getWeek());
+        roster.setYear(rosterInputDto.getYear());
+        roster.setTeam(team);
+
+        return roster;
+    }
+
+    private boolean rosterExists(RosterInputDto rosterInputDto, Team team) {
+        for(Roster roster: rosterRepository.findAll()) {
+            if(roster.getYear() == rosterInputDto.getYear() && roster.getWeek() == rosterInputDto.getWeek() && roster.getTeam() == team)  {
+                return true;
+            }
+        }
+        return false;
+    }
+    private boolean isValidWeek(int weekNumber, int year) {
+        WeekFields weekFields = WeekFields.of(Locale.getDefault());
+        LocalDate endOfYear = LocalDate.of(year, 12, 31);
+        int lastWeekOfYear = endOfYear.get(weekFields.weekOfWeekBasedYear());
+
+        return weekNumber >= 1 && weekNumber <= lastWeekOfYear;
+    }
+
     private RosterOutputDto transferRosterToOutputDto(Roster roster) {
         RosterOutputDto rosterOutputDto = new RosterOutputDto();
-        rosterOutputDto.setName(roster.getName());
+        rosterOutputDto.setId(roster.getId());
+        rosterOutputDto.setName(roster.createRosterName());
         rosterOutputDto.setShifts(roster.getShifts());
-        rosterOutputDto.setWeekDates(getDatesOfWeek(roster.getName()));
+        rosterOutputDto.setWeekDates(getDatesOfWeek(roster.getWeek(), roster.getYear()));
         return rosterOutputDto;
+    }
+
+    private RosterNameOutputDto transferRosterNameToDto(Roster roster) {
+        RosterNameOutputDto rosterDto = new RosterNameOutputDto();
+        rosterDto.setName(roster.createRosterName());
+
+        return rosterDto;
     }
 }
