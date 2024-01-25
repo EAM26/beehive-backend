@@ -13,17 +13,11 @@ import java.util.List;
 @Table(name = "rosters")
 public class Roster {
 
-    //    public Roster(String name, Team team) {
-//        this.name = name;
-//        this.team = team;
-//    }
-    public Roster() {
-
-    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
 
     private int week;
     private int year;
