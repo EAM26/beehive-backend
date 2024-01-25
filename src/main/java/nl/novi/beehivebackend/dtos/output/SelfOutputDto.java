@@ -3,17 +3,23 @@ package nl.novi.beehivebackend.dtos.output;
 import lombok.Getter;
 import lombok.Setter;
 import nl.novi.beehivebackend.models.Absence;
+import nl.novi.beehivebackend.models.Authority;
 import nl.novi.beehivebackend.models.Shift;
 import nl.novi.beehivebackend.models.Team;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
-public class EmployeeOutputDto {
+public class SelfOutputDto {
 
-    private Long id;
+    private String username;
+    private String email;
+    private Set<Authority> authorities;
+
+    private Long employeeId;
     private String firstName;
     private String preposition;
     private String lastName;
@@ -25,8 +31,4 @@ public class EmployeeOutputDto {
     private List<Shift> shifts;
     private List<Absence> absences;
 
-    //    from user
-//    public String username;
-//    public String email;
-//    public Set<Authority> authorities;
 }

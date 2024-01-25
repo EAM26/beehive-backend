@@ -3,11 +3,15 @@ package nl.novi.beehivebackend.services;
 
 import nl.novi.beehivebackend.dtos.input.UserInputDto;
 import nl.novi.beehivebackend.dtos.output.UserOutputDto;
+import nl.novi.beehivebackend.dtos.output.SelfOutputDto;
 import nl.novi.beehivebackend.exceptions.*;
 import nl.novi.beehivebackend.models.Authority;
+import nl.novi.beehivebackend.models.Employee;
 import nl.novi.beehivebackend.models.User;
 import nl.novi.beehivebackend.models.UserRole;
+import nl.novi.beehivebackend.repositories.EmployeeRepository;
 import nl.novi.beehivebackend.repositories.UserRepository;
+import nl.novi.beehivebackend.utils.UserData;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -21,10 +25,12 @@ import java.util.Set;
 public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final UserData userData;
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, UserData userData) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.userData = userData;
     }
 
 
@@ -49,6 +55,11 @@ public class UserService {
     public UserOutputDto getSingleUser(String username) {
         User user = userRepository.findById(username).orElseThrow(() -> new RecordNotFoundException("No user found with name: " + username));
         return transferUserToUserOutputDto(user);
+    }
+
+    public SelfOutputDto getSelfAsUser() {
+        User user = userData.getLoggedInUser();
+        return createSelfProfile(user);
     }
 
 
@@ -84,6 +95,32 @@ public class UserService {
 
 //    Helper methods
 
+
+    private SelfOutputDto createSelfProfile (User user) {
+//        User data
+        SelfOutputDto selfOutputDto = new SelfOutputDto();
+        selfOutputDto.setUsername(user.getUsername());
+        selfOutputDto.setEmail(user.getEmail());
+        selfOutputDto.setAuthorities(user.getAuthorities());
+
+//        Employee data
+        if(user.getEmployee() != null) {
+            Employee employee = user.getEmployee();
+            selfOutputDto.setEmployeeId(employee.getId());
+            selfOutputDto.setFirstName(employee.getFirstName());
+            selfOutputDto.setPreposition(employee.getPreposition());
+            selfOutputDto.setLastName(employee.getLastName());
+            selfOutputDto.setShortName(employee.getShortName());
+            selfOutputDto.setDob(employee.getDob());
+            selfOutputDto.setPhoneNumber(employee.getPhoneNumber());
+            selfOutputDto.setIsActive(employee.getIsActive());
+            selfOutputDto.setTeam(employee.getTeam());
+            selfOutputDto.setShifts(employee.getShifts());
+            selfOutputDto.setAbsences(employee.getAbsences());
+        }
+
+        return selfOutputDto;
+    }
     private boolean userExists(String username) {
         return userRepository.existsById(username);
     }
@@ -175,13 +212,6 @@ public class UserService {
             }
         }
         return false;
-    }
-
-
-
-    private Set<Authority> addAuthoritySet(User user, String highestRole) {
-        Set<Authority> authorities = new HashSet<>();
-        return authorities;
     }
 
     private String getCurrentUserId() {

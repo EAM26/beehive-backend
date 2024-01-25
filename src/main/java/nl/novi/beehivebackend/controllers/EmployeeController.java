@@ -57,7 +57,7 @@ public class EmployeeController {
             return ResponseEntity.badRequest().body(validationUtil.validationMessage(bindingResult).toString());
         }
         EmployeeOutputDto employeeOutputDto = employeeService.createEmployee(employeeInputDto);
-        URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentRequest().path("/" + employeeOutputDto.id).toUriString());
+        URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentRequest().path("/" + employeeOutputDto.getId()).toUriString());
         return ResponseEntity.created(uri).body(employeeOutputDto);
     }
 
