@@ -64,7 +64,7 @@ public class EmployeeService {
             Long empId = userData.getLoggedInUser().getEmployeeId();
             return getSingleEmployee(empId);
         } catch (Exception exception) {
-            throw new RecordNotFoundException("No employee found with that username");
+            throw new RecordNotFoundException("No employee found for that user.");
         }
     }
 
@@ -115,13 +115,13 @@ public class EmployeeService {
         employeeOutputDto.setShortName(employee.getShortName());
         employeeOutputDto.setDob(employee.getDob());
         employeeOutputDto.setPhoneNumber(employee.getPhoneNumber());
-        employeeOutputDto.setEmail(employee.getUser().getEmail());
-        employeeOutputDto.setIsEmployed(employee.getIsActive());
+//        employeeOutputDto.setEmail(employee.getUser().getEmail());
+        employeeOutputDto.setIsActive(employee.getIsActive());
         employeeOutputDto.setTeam(employee.getTeam());
         employeeOutputDto.setShifts(shiftSorter(employee.getShifts()));
         employeeOutputDto.setAbsences(absenceSorter(employee.getAbsences()));
-        employeeOutputDto.setUsername(employee.getUser().getUsername());
-        employeeOutputDto.setAuthorities(employee.getUser().getAuthorities());
+//        employeeOutputDto.setUsername(employee.getUser().getUsername());
+//        employeeOutputDto.setAuthorities(employee.getUser().getAuthorities());
 
         return employeeOutputDto;
     }
@@ -159,7 +159,7 @@ public class EmployeeService {
         employee.setDob(employeeInputDto.getDob());
         employee.setPhoneNumber(employeeInputDto.getPhoneNumber());
         employee.setUser(user);
-        employee.setIsActive(employeeInputDto.getIsEmployed());
+        employee.setIsActive(employeeInputDto.getIsActive());
         employee.setTeam(team);
         user.setEmployee(employee);
         return employee;
