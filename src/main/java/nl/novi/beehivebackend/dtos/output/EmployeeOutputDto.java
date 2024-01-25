@@ -11,21 +11,19 @@ import java.util.List;
 
 @Getter
 @Setter
-
 public class EmployeeOutputDto {
 
-    public Long id;
-    public String firstName;
-    public String preposition;
-    public String lastName;
-    public String shortName;
-    public LocalDate dob;
-    public String phoneNumber;
-    public Boolean isActive;
-
-    public Team team;
-    public List<Shift> shifts;
-    public List<Absence> absences;
+    private Long id;
+    private String firstName;
+    private String preposition;
+    private String lastName;
+    private String shortName;
+    private LocalDate dob;
+    private String phoneNumber;
+    private Boolean isActive;
+    private Team team;
+    private List<Shift> shifts;
+    private List<Absence> absences;
 
     //    from user
 //    public String username;
