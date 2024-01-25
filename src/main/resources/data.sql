@@ -37,7 +37,8 @@ VALUES ('drone', '$2a$12$3seFwZfJ/gm3E2VFHqz7g.T465Jw/IDe8.sibEOE9RsmCLzr6KUke',
        ('user118', '$2a$12$3seFwZfJ/gm3E2VFHqz7g.T465Jw/IDe8.sibEOE9RsmCLzr6KUke', 'user118@test.nl', false),
        ('user119', '$2a$12$3seFwZfJ/gm3E2VFHqz7g.T465Jw/IDe8.sibEOE9RsmCLzr6KUke', 'user119@test.nl', false),
        ('user120', '$2a$12$3seFwZfJ/gm3E2VFHqz7g.T465Jw/IDe8.sibEOE9RsmCLzr6KUke', 'user120@test.nl', false),
-       ('user121', '$2a$12$3seFwZfJ/gm3E2VFHqz7g.T465Jw/IDe8.sibEOE9RsmCLzr6KUke', 'user121@test.nl', true);
+       ('user121', '$2a$12$3seFwZfJ/gm3E2VFHqz7g.T465Jw/IDe8.sibEOE9RsmCLzr6KUke', 'user121@test.nl', true),
+       ('userNoEmp', '$2a$12$3seFwZfJ/gm3E2VFHqz7g.T465Jw/IDe8.sibEOE9RsmCLzr6KUke', 'userNoEmp@test.nl', false);
 
 
 INSERT INTO employees (id, first_name, preposition, last_name, short_name, dob, phone_number,
@@ -92,7 +93,8 @@ VALUES ('drone', 'ROLE_USER'),
        ('user118', 'ROLE_USER'),
        ('user119', 'ROLE_USER'),
        ('user120', 'ROLE_USER'),
-       ('user121', 'ROLE_USER');
+       ('user121', 'ROLE_USER'),
+       ('userNoEmp', 'ROLE_USER');
 
 
 INSERT INTO shifts (id, start_shift, end_shift, team_name, employee_id, roster_name, week_number, year)

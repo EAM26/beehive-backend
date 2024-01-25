@@ -13,13 +13,13 @@ import java.util.Set;
 
 @Getter
 @Setter
-public class selfOutputDto {
+public class SelfOutputDto {
 
     private String username;
     private String email;
     private Set<Authority> authorities;
 
-    private Long id;
+    private Long employeeId;
     private String firstName;
     private String preposition;
     private String lastName;

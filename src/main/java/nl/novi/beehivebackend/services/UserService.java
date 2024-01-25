@@ -3,15 +3,16 @@ package nl.novi.beehivebackend.services;
 
 import nl.novi.beehivebackend.dtos.input.UserInputDto;
 import nl.novi.beehivebackend.dtos.output.UserOutputDto;
-import nl.novi.beehivebackend.dtos.output.selfOutputDto;
+import nl.novi.beehivebackend.dtos.output.SelfOutputDto;
 import nl.novi.beehivebackend.exceptions.*;
 import nl.novi.beehivebackend.models.Authority;
+import nl.novi.beehivebackend.models.Employee;
 import nl.novi.beehivebackend.models.User;
 import nl.novi.beehivebackend.models.UserRole;
+import nl.novi.beehivebackend.repositories.EmployeeRepository;
 import nl.novi.beehivebackend.repositories.UserRepository;
 import nl.novi.beehivebackend.utils.UserData;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -26,7 +27,7 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final UserData userData;
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, UserData userData) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, UserData userData, EmployeeRepository employeeRepository) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.userData = userData;
@@ -56,12 +57,9 @@ public class UserService {
         return transferUserToUserOutputDto(user);
     }
 
-    public selfOutputDto getSelfAsUser() {
+    public SelfOutputDto getSelfAsUser() {
         User user = userData.getLoggedInUser();
-        if(user.getEmployee() != null) {
-
-        }
-        return new selfOutputDto();
+        return createSelfProfile(user);
     }
 
 
@@ -98,6 +96,31 @@ public class UserService {
 //    Helper methods
 
 
+    private SelfOutputDto createSelfProfile (User user) {
+//        User data
+        SelfOutputDto selfOutputDto = new SelfOutputDto();
+        selfOutputDto.setUsername(user.getUsername());
+        selfOutputDto.setEmail(user.getEmail());
+        selfOutputDto.setAuthorities(user.getAuthorities());
+
+//        Employee data
+        if(user.getEmployee() != null) {
+            Employee employee = user.getEmployee();
+            selfOutputDto.setEmployeeId(employee.getId());
+            selfOutputDto.setFirstName(employee.getFirstName());
+            selfOutputDto.setPreposition(employee.getPreposition());
+            selfOutputDto.setLastName(employee.getLastName());
+            selfOutputDto.setShortName(employee.getShortName());
+            selfOutputDto.setDob(employee.getDob());
+            selfOutputDto.setPhoneNumber(employee.getPhoneNumber());
+            selfOutputDto.setIsActive(employee.getIsActive());
+            selfOutputDto.setTeam(employee.getTeam());
+            selfOutputDto.setShifts(employee.getShifts());
+            selfOutputDto.setAbsences(employee.getAbsences());
+        }
+
+        return selfOutputDto;
+    }
     private boolean userExists(String username) {
         return userRepository.existsById(username);
     }
