@@ -44,10 +44,6 @@ public class User {
         this.authorities.add(authority);
     }
 
-    public void removeAuthority(Authority authority) {
-        this.authorities.remove(authority);
-    }
-
     public Long getEmployeeId() {
         return employee.getId();
     }

@@ -27,7 +27,7 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final UserData userData;
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, UserData userData, EmployeeRepository employeeRepository) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, UserData userData) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.userData = userData;
@@ -212,13 +212,6 @@ public class UserService {
             }
         }
         return false;
-    }
-
-
-
-    private Set<Authority> addAuthoritySet(User user, String highestRole) {
-        Set<Authority> authorities = new HashSet<>();
-        return authorities;
     }
 
     private String getCurrentUserId() {
