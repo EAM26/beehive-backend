@@ -26,14 +26,14 @@ public class RosterController {
         return new ResponseEntity<>(rosterService.getAllRosters(), HttpStatus.OK);
     }
 
-    @GetMapping("/{rosterName}")
-    public ResponseEntity<RosterOutputDto> getRoster(@PathVariable String rosterName) {
-        return new ResponseEntity<>(rosterService.getSingleRoster(rosterName), HttpStatus.OK);
+    @GetMapping("/{id}")
+    public ResponseEntity<RosterOutputDto> getRoster(@PathVariable Long id) {
+        return new ResponseEntity<>(rosterService.getSingleRoster(id), HttpStatus.OK);
     }
 
-    @DeleteMapping("/{rosterName}")
-    public ResponseEntity<HttpStatus> deleteRoster(@PathVariable String rosterName) {
-        rosterService.deleteRoster(rosterName);
+    @DeleteMapping("/{id}")
+    public ResponseEntity<HttpStatus> deleteRoster(@PathVariable Long id) {
+        rosterService.deleteRoster(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

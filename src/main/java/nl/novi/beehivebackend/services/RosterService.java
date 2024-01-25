@@ -26,30 +26,30 @@ public class RosterService {
 
     public Iterable<RosterNameOutputDto> getAllRosters() {
         List<RosterNameOutputDto> rosters = new ArrayList<>();
-        for(Roster roster: rosterRepository.findAll(Sort.by("name"))){
+        for(Roster roster: rosterRepository.findAll(Sort.by("id"))){
             rosters.add(transferRosterNameToDto(roster));
         }
         return rosters;
     }
 
-    public RosterOutputDto getSingleRoster(String rosterName) {
-        Roster roster = rosterRepository.findById(rosterName).orElseThrow(() -> new BadRequestException("No Roster found with name: " + rosterName));
+    public RosterOutputDto getSingleRoster(Long id) {
+        Roster roster = rosterRepository.findById(id).orElseThrow(() -> new BadRequestException("No Roster found with id: " + id));
 
         return transferRosterToOutputDto(roster);
     }
 
-    public void deleteRoster(String rosterName) {
-        Roster roster = rosterRepository.findById(rosterName).orElseThrow(() -> new BadRequestException("No roster found with name: " + rosterName));
+    public void deleteRoster(Long id) {
+        Roster roster = rosterRepository.findById(id).orElseThrow(() -> new BadRequestException("No roster found with id: " + id));
         if (roster.getShifts() != null && !roster.getShifts().isEmpty()) {
             throw new BadRequestException("Roster has Shifts");
         }
         rosterRepository.delete(roster);
     }
 
-    private List<LocalDate> getDatesOfWeek(String rosterName) {
-        String[] partsName = rosterName.split("-");
-        int weekNumber = Integer.parseInt(partsName[0]);
-        int year = Integer.parseInt(partsName[1]);
+    private List<LocalDate> getDatesOfWeek(int weekNumber, int year) {
+//        String[] partsName = rosterName.split("-");
+//        int weekNumber = Integer.parseInt(partsName[0]);
+//        int year = Integer.parseInt(partsName[1]);
 
 //        Get first day of year and adjust to weekNumber and year of rosterName
         LocalDate startOfWeek = LocalDate.ofYearDay(year, 1)
@@ -67,14 +67,14 @@ public class RosterService {
 
     private RosterOutputDto transferRosterToOutputDto(Roster roster) {
         RosterOutputDto rosterOutputDto = new RosterOutputDto();
-        rosterOutputDto.setName(roster.getName());
+        rosterOutputDto.setName(roster.createRosterName());
         rosterOutputDto.setShifts(roster.getShifts());
-        rosterOutputDto.setWeekDates(getDatesOfWeek(roster.getName()));
+        rosterOutputDto.setWeekDates(getDatesOfWeek(roster.getWeek(), roster.getYear()));
         return rosterOutputDto;
     }
     private RosterNameOutputDto transferRosterNameToDto(Roster roster) {
         RosterNameOutputDto rosterDto = new RosterNameOutputDto();
-        rosterDto.setName(roster.getName());
+        rosterDto.setName(roster.createRosterName());
 
         return rosterDto;
     }

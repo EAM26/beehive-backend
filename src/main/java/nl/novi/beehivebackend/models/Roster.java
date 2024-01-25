@@ -13,15 +13,20 @@ import java.util.List;
 @Table(name = "rosters")
 public class Roster {
 
-    public Roster(String name, Team team) {
-        this.name = name;
-        this.team = team;
+    //    public Roster(String name, Team team) {
+//        this.name = name;
+//        this.team = team;
+//    }
+    public Roster() {
+
     }
 
-
-
     @Id
-    private String name;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private int week;
+    private int year;
 
     @OneToMany(mappedBy = "roster", fetch = FetchType.LAZY)
     @JsonIgnore
@@ -32,7 +37,8 @@ public class Roster {
     @JoinColumn(name = "team_name", nullable = false)
     private Team team;
 
-    public Roster() {
 
+    public String createRosterName() {
+        return (week + "-" + year + "-" + team.getTeamName());
     }
 }
