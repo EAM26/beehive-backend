@@ -178,10 +178,11 @@ public class ShiftService {
         shift.setStartShift(shiftInputDto.getStartShift());
         shift.setEndShift(shiftInputDto.getEndShift());
         shift.setTeam(team);
+        shift.setEmployee(employee);
 
-        if (employee != null) {
-            shift.setEmployee(employee);
-        }
+//        if (employee != null) {
+//            shift.setEmployee(employee);
+//        }
 
         shift.setWeekNumber(extractWeekNumber(shiftInputDto));
         shift.setYear(extractYear(shiftInputDto));
@@ -197,7 +198,7 @@ public class ShiftService {
         int year = shift.getYear();
         Team team = shift.getTeam();
         for(Roster roster: rosterRepository.findAll()) {
-            if(weekNumber == roster.getWeek() && year == roster.getYear() && team == roster.getTeam()) {
+            if(weekNumber == roster.getWeek() && year == roster.getYear() && team.getTeamName().equals(roster.getTeam().getTeamName())) {
                 return roster;
             }
         }
