@@ -30,6 +30,17 @@ public class Team {
     @OneToMany(mappedBy = "team")
     @JsonIgnore
     private List<Roster> rosters;
+
+    public Team(String teamName, Boolean isActive, List<Employee> employees, List<Shift> shifts, List<Roster> rosters) {
+        this.teamName = teamName;
+        this.isActive = isActive;
+        this.employees = employees;
+        this.shifts = shifts;
+        this.rosters = rosters;
+    }
+
+    public Team() {
+    }
 }
 
 

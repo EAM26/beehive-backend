@@ -36,14 +36,14 @@ public class TeamService {
     }
 
     public Iterable<TeamOutputDto> getAllTeams(Boolean isActive) {
-        List<TeamOutputDto> teamOutputDtoEmpIds = new ArrayList<>();
+        List<TeamOutputDto> teamOutputDtos = new ArrayList<>();
         for (Team team : teamRepository.findAll()) {
             if (team.getIsActive() == isActive) {
-                teamOutputDtoEmpIds.add(transferTeamToTeamOutputDto(team));
+                teamOutputDtos.add(transferTeamToTeamOutputDto(team));
             }
 
         }
-        return teamOutputDtoEmpIds;
+        return teamOutputDtos;
     }
 
     public TeamOutputDtoDetails getTeam(String id) {
@@ -70,13 +70,13 @@ public class TeamService {
         return transferTeamToTeamOutputDto(team);
     }
 
-    public void deleteTeam(String id) {
-        Team team = teamRepository.findById(id).orElseThrow(() -> new RecordNotFoundException("No team found with id: " + id));
-        if (!team.getEmployees().isEmpty()) {
-            throw new IsNotEmptyException("Team is not empty. First remove all employees");
-        }
-        teamRepository.deleteById(id);
-    }
+//    public void deleteTeam(String id) {
+//        Team team = teamRepository.findById(id).orElseThrow(() -> new RecordNotFoundException("No team found with id: " + id));
+//        if (!team.getEmployees().isEmpty()) {
+//            throw new IsNotEmptyException("Team is not empty. First remove all employees");
+//        }
+//        teamRepository.deleteById(id);
+//    }
 
 //  HELPER METHODS
 
