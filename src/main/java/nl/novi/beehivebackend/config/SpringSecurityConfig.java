@@ -125,7 +125,7 @@ public class SpringSecurityConfig {
 //                Employee requests
                 .requestMatchers(HttpMethod.GET, "/employees").hasAnyRole("ADMIN", "MANAGER")
 //                .requestMatchers(HttpMethod.GET, "/employees/profile").authenticated()
-                .requestMatchers(HttpMethod.GET, "/employees/profile/{id}").hasAnyRole("ADMIN", "MANAGER")
+//                .requestMatchers(HttpMethod.GET, "/employees/profile/{id}").hasAnyRole("ADMIN", "MANAGER")
                 .requestMatchers(HttpMethod.POST, "/employees").hasAnyRole("ADMIN", "MANAGER")
 
 

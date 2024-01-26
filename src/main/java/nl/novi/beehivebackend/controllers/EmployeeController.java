@@ -38,17 +38,17 @@ public class EmployeeController {
 
 
     // TODO: 28-6-2023 Add check to only see self
-    @GetMapping("/profile/{id}")
-    public ResponseEntity<EmployeeOutputDto> getSingleEmployee(@PathVariable Long id) {
-        return new ResponseEntity<>(employeeService.getSingleEmployee(id), HttpStatus.OK);
-    }
-    @GetMapping("/profile")
-    public ResponseEntity<EmployeeOutputDto> getOwnProfile() {
-        System.out.println("*****************");
-        System.out.println("employee profile controller running");
-        System.out.println("*****************");
-        return new ResponseEntity<>(employeeService.getOwnProfile(), HttpStatus.OK);
-    }
+//    @GetMapping("/profile/{id}")
+//    public ResponseEntity<EmployeeOutputDto> getSingleEmployee(@PathVariable Long id) {
+//        return new ResponseEntity<>(employeeService.getSingleEmployee(id), HttpStatus.OK);
+//    }
+//    @GetMapping("/profile")
+//    public ResponseEntity<EmployeeOutputDto> getOwnProfile() {
+//        System.out.println("*****************");
+//        System.out.println("employee profile controller running");
+//        System.out.println("*****************");
+//        return new ResponseEntity<>(employeeService.getOwnProfile(), HttpStatus.OK);
+//    }
 
 
     @PostMapping
@@ -61,13 +61,13 @@ public class EmployeeController {
         return ResponseEntity.created(uri).body(employeeOutputDto);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Object> updateEmployee(@PathVariable Long id, @Valid @RequestBody EmployeeInputDto employeeInputDto, BindingResult bindingResult) {
-        if (bindingResult.hasFieldErrors()) {
-            return ResponseEntity.badRequest().body(validationUtil.validationMessage(bindingResult).toString());
-        }
-        return new ResponseEntity<>(employeeService.updateEmployee(id, employeeInputDto), HttpStatus.ACCEPTED);
-    }
+//    @PutMapping("/{id}")
+//    public ResponseEntity<Object> updateEmployee(@PathVariable Long id, @Valid @RequestBody EmployeeInputDto employeeInputDto, BindingResult bindingResult) {
+//        if (bindingResult.hasFieldErrors()) {
+//            return ResponseEntity.badRequest().body(validationUtil.validationMessage(bindingResult).toString());
+//        }
+//        return new ResponseEntity<>(employeeService.updateEmployee(id, employeeInputDto), HttpStatus.ACCEPTED);
+//    }
 
 //    @DeleteMapping("/{id}")
 //    public ResponseEntity<Object> deleteEmployee(@PathVariable Long id) {
