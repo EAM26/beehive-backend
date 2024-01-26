@@ -9,6 +9,7 @@ import nl.novi.beehivebackend.models.Employee;
 import nl.novi.beehivebackend.models.Shift;
 import nl.novi.beehivebackend.repositories.AbsenceRepository;
 import nl.novi.beehivebackend.repositories.EmployeeRepository;
+import nl.novi.beehivebackend.repositories.ShiftRepository;
 import org.springframework.stereotype.Service;
 
 
@@ -21,10 +22,12 @@ public class AbsenceService {
 
     private final AbsenceRepository absenceRepository;
     private final EmployeeRepository employeeRepository;
+    private final ShiftRepository shiftRepository;
 
-    public AbsenceService(AbsenceRepository absenceRepository, EmployeeRepository employeeRepository) {
+    public AbsenceService(AbsenceRepository absenceRepository, EmployeeRepository employeeRepository, ShiftRepository shiftRepository) {
         this.absenceRepository = absenceRepository;
         this.employeeRepository = employeeRepository;
+        this.shiftRepository = shiftRepository;
     }
 
     public Iterable<AbsenceOutputDto> getAllAbsences() {
@@ -90,19 +93,19 @@ public class AbsenceService {
             if (!absenceInputDto.getStartDate().isAfter(existingAbsence.getEndDate()) && !absenceInputDto.getEndDate().isBefore(existingAbsence.getStartDate())) {
                 return true;
             }
-        }
+         }
         return false;
     }
 
     private boolean isAbsenceToShiftOverlap(AbsenceInputDto absenceInputDto, Employee employee) {
-        for(Shift shift: employee.getShifts()) {
+        List<Shift> existingShifts = shiftRepository.findByEmployeeId(employee.getId());
+        for(Shift shift: existingShifts) {
 
             LocalDate shiftStartDate = shift.getStartShift().toLocalDate();
             LocalDate shiftEndDate = shift.getEndShift().toLocalDate();
             if (!absenceInputDto.getStartDate().isAfter(shiftEndDate) && !absenceInputDto.getEndDate().isBefore(shiftStartDate)) {
                 return true;
             }
-
         }
         return false;
     }
