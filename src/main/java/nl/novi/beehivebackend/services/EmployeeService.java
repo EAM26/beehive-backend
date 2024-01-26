@@ -112,31 +112,6 @@ public class EmployeeService {
     }
 
 
-//    public EmployeeOutputDto updateEmployee(Long id, EmployeeInputDto employeeInputDto) {
-//        Employee employee = employeeRepository.findById(id).orElseThrow(() -> new RecordNotFoundException("No employee found with id: " + id));
-//        if (!employee.getShortName().equalsIgnoreCase(employeeInputDto.getShortName())) {
-//            if (employeeRepository.existsByShortNameIgnoreCase(employeeInputDto.getShortName())) {
-//                throw new IsNotUniqueException("Short name already exists.");
-//            }
-//        }
-//
-////        check if team exists
-//        Team team = teamRepository.findById(employeeInputDto.getTeamName()).orElseThrow(() -> new RecordNotFoundException("No team found with id: " + employeeInputDto.getTeamName()));
-//
-//
-//        transferEmployeeInputDtoToEmployee(employeeInputDto, employee, user);
-//        employeeRepository.save(employee);
-//        return transferEmployeeToEmployeeOutputDto(employee);
-//    }
-
-//    public void deleteEmployee(Long id) {
-//        Employee employee = employeeRepository.findById(id).orElseThrow(() -> new RecordNotFoundException("No employee found with id " + id));
-////        if (!employee.getShifts().isEmpty()) {
-////            throw new IsNotEmptyException("Employee is not empty. First remove all shifts");
-////        }
-//        employeeRepository.deleteById(id);
-//    }
-
 
     private EmployeeOutputDto transferEmployeeToEmployeeOutputDto(Employee employee) {
         EmployeeOutputDto employeeOutputDto = new EmployeeOutputDto();
@@ -169,16 +144,7 @@ public class EmployeeService {
         return absences;
     }
 
-//    Overload transfer for postmapping
 
-//    private Employee transferEmployeeInputDtoToEmployee(EmployeeInputDto employeeInputDto, Employee employee) {
-//
-//        transferEmployeeInputDtoToEmployee(employeeInputDto, employee, team);
-//        return employee;
-//    }
-
-
-    // Overload transfer for putmapping
     private Employee transferEmployeeInputDtoToEmployee(EmployeeInputDto employeeInputDto, Employee employee, User user, Team team) {
         employee.setFirstName(employeeInputDto.getFirstName());
         employee.setPreposition(employeeInputDto.getPreposition());

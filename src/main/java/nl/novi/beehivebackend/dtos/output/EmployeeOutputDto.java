@@ -25,8 +25,4 @@ public class EmployeeOutputDto {
     private List<Shift> shifts;
     private List<Absence> absences;
 
-    //    from user
-//    public String username;
-//    public String email;
-//    public Set<Authority> authorities;
 }
