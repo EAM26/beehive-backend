@@ -17,4 +17,14 @@ public class AbsenceOutputDto {
     private String employeeShortName;
 
 
+    public AbsenceOutputDto(Long id, LocalDate startDate, LocalDate endDate, Long employeeId, String employeeShortName) {
+        this.id = id;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.employeeId = employeeId;
+        this.employeeShortName = employeeShortName;
+    }
+
+    public AbsenceOutputDto() {
+    }
 }

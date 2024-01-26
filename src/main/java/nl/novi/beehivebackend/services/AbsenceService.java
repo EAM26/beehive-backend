@@ -53,7 +53,7 @@ public class AbsenceService {
     }
 
 
-    private AbsenceOutputDto transferAbsenceToAbsenceOutputDto(Absence absence) {
+    public AbsenceOutputDto transferAbsenceToAbsenceOutputDto(Absence absence) {
         AbsenceOutputDto absenceOutputDto = new AbsenceOutputDto();
         absenceOutputDto.setId(absence.getId());
         absenceOutputDto.setStartDate(absence.getStartDate());
@@ -64,7 +64,7 @@ public class AbsenceService {
         return absenceOutputDto;
     }
 
-    private Absence transferAbsenceInputDtoToAbsence(AbsenceInputDto absenceInputDto, Employee employee) {
+    public Absence transferAbsenceInputDtoToAbsence(AbsenceInputDto absenceInputDto, Employee employee) {
         if (isAbsenceToAbsenceOverlap(absenceInputDto, employee)) {
             throw new BadRequestException("Period is overlapping existing absence");
         }
