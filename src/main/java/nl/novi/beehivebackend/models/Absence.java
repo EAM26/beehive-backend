@@ -27,4 +27,16 @@ public class Absence {
     @JsonIgnore
     @JoinColumn(name = "employee_id", nullable = false)
     private Employee employee;
+
+
+    public Absence(Long id, LocalDate startDate, LocalDate endDate, Employee employee) {
+        this.id = id;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.employee = employee;
+    }
+
+    public Absence() {
+
+    }
 }

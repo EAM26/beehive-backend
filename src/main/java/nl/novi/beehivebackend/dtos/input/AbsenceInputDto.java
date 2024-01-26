@@ -19,6 +19,13 @@ public class AbsenceInputDto {
     @NotNull(message = "Employee id is required")
     private Long employeeId;
 
+    public AbsenceInputDto(LocalDate startDate, LocalDate endDate, Long employeeId) {
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.employeeId = employeeId;
+    }
+
+
     @AssertTrue(message = "End Date must be after or equal to Start Date")
     public boolean isEndDateValid() {
         return !endDate.isBefore(startDate);

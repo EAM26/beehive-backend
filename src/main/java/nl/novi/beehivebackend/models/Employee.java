@@ -16,6 +16,16 @@ import java.util.List;
 @Entity
 @Table(name="employees")
 public class Employee {
+    public Employee(Long id, String firstName, String preposition, String lastName, String shortName, LocalDate dob, String phoneNumber, Boolean isActive) {
+        this.id = id;
+        this.firstName = firstName;
+        this.preposition = preposition;
+        this.lastName = lastName;
+        this.shortName = shortName;
+        this.dob = dob;
+        this.phoneNumber = phoneNumber;
+        this.isActive = isActive;
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -59,4 +69,7 @@ public class Employee {
     @JsonIgnore
     private List<Absence> absences;
 
+    public Employee() {
+
+    }
 }

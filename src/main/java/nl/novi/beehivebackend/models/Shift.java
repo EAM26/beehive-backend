@@ -46,4 +46,17 @@ public class Shift {
     private Roster roster;
 
 
+    public Shift(Long id, LocalDateTime startShift, LocalDateTime endShift, int weekNumber, int year, Team team, Employee employee, Roster roster) {
+        this.id = id;
+        this.startShift = startShift;
+        this.endShift = endShift;
+        this.weekNumber = weekNumber;
+        this.year = year;
+        this.team = team;
+        this.employee = employee;
+        this.roster = roster;
+    }
+
+    public Shift() {
+    }
 }

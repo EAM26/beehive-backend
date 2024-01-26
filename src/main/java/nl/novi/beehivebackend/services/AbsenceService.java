@@ -9,6 +9,7 @@ import nl.novi.beehivebackend.models.Employee;
 import nl.novi.beehivebackend.models.Shift;
 import nl.novi.beehivebackend.repositories.AbsenceRepository;
 import nl.novi.beehivebackend.repositories.EmployeeRepository;
+import nl.novi.beehivebackend.repositories.ShiftRepository;
 import org.springframework.stereotype.Service;
 
 
@@ -21,10 +22,12 @@ public class AbsenceService {
 
     private final AbsenceRepository absenceRepository;
     private final EmployeeRepository employeeRepository;
+    private final ShiftRepository shiftRepository;
 
-    public AbsenceService(AbsenceRepository absenceRepository, EmployeeRepository employeeRepository) {
+    public AbsenceService(AbsenceRepository absenceRepository, EmployeeRepository employeeRepository, ShiftRepository shiftRepository) {
         this.absenceRepository = absenceRepository;
         this.employeeRepository = employeeRepository;
+        this.shiftRepository = shiftRepository;
     }
 
     public Iterable<AbsenceOutputDto> getAllAbsences() {
@@ -53,7 +56,7 @@ public class AbsenceService {
     }
 
 
-    private AbsenceOutputDto transferAbsenceToAbsenceOutputDto(Absence absence) {
+    public AbsenceOutputDto transferAbsenceToAbsenceOutputDto(Absence absence) {
         AbsenceOutputDto absenceOutputDto = new AbsenceOutputDto();
         absenceOutputDto.setId(absence.getId());
         absenceOutputDto.setStartDate(absence.getStartDate());
@@ -64,7 +67,7 @@ public class AbsenceService {
         return absenceOutputDto;
     }
 
-    private Absence transferAbsenceInputDtoToAbsence(AbsenceInputDto absenceInputDto, Employee employee) {
+    public Absence transferAbsenceInputDtoToAbsence(AbsenceInputDto absenceInputDto, Employee employee) {
         if (isAbsenceToAbsenceOverlap(absenceInputDto, employee)) {
             throw new BadRequestException("Period is overlapping existing absence");
         }
@@ -83,26 +86,26 @@ public class AbsenceService {
 
 //    Helper methods
 
-    private boolean isAbsenceToAbsenceOverlap(AbsenceInputDto absenceInputDto, Employee employee) {
+    public boolean isAbsenceToAbsenceOverlap(AbsenceInputDto absenceInputDto, Employee employee) {
         List<Absence> existingAbsences = absenceRepository.findByEmployeeId(employee.getId());
 
         for (Absence existingAbsence : existingAbsences) {
             if (!absenceInputDto.getStartDate().isAfter(existingAbsence.getEndDate()) && !absenceInputDto.getEndDate().isBefore(existingAbsence.getStartDate())) {
                 return true;
             }
-        }
+         }
         return false;
     }
 
     private boolean isAbsenceToShiftOverlap(AbsenceInputDto absenceInputDto, Employee employee) {
-        for(Shift shift: employee.getShifts()) {
+        List<Shift> existingShifts = shiftRepository.findByEmployeeId(employee.getId());
+        for(Shift shift: existingShifts) {
 
             LocalDate shiftStartDate = shift.getStartShift().toLocalDate();
             LocalDate shiftEndDate = shift.getEndShift().toLocalDate();
             if (!absenceInputDto.getStartDate().isAfter(shiftEndDate) && !absenceInputDto.getEndDate().isBefore(shiftStartDate)) {
                 return true;
             }
-
         }
         return false;
     }
