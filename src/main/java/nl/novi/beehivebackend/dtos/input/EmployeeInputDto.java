@@ -21,7 +21,7 @@ public class EmployeeInputDto {
 
 
     @NotBlank(message = "Short name is required")
-    @Size(max = 20, message = "Short name must be less than or equal to 20 characters")
+    @Size(max = 20, message = "Short name length max 20 characters")
     public String shortName;
 
 

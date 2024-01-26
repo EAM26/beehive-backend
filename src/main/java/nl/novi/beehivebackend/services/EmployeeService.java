@@ -10,7 +10,6 @@ import nl.novi.beehivebackend.models.*;
 import nl.novi.beehivebackend.repositories.EmployeeRepository;
 import nl.novi.beehivebackend.repositories.TeamRepository;
 import nl.novi.beehivebackend.repositories.UserRepository;
-import nl.novi.beehivebackend.utils.UserData;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -19,20 +18,19 @@ import java.util.Comparator;
 import java.util.List;
 
 
-
 @Service
 public class EmployeeService {
 
     private final EmployeeRepository employeeRepository;
     private final TeamRepository teamRepository;
     private final UserRepository userRepository;
-    private final UserData userData;
 
-    public EmployeeService(EmployeeRepository employeeRepository, TeamRepository teamRepository, UserRepository userRepository, UserData userData) {
+
+    public EmployeeService(EmployeeRepository employeeRepository, TeamRepository teamRepository, UserRepository userRepository) {
         this.employeeRepository = employeeRepository;
         this.teamRepository = teamRepository;
         this.userRepository = userRepository;
-        this.userData = userData;
+
     }
 
 
@@ -45,64 +43,73 @@ public class EmployeeService {
     }
 
     public Iterable<EmployeeOutputDto> getAllEmployees(String teamName) {
-        Team team = teamRepository.findById(teamName).orElseThrow(()-> new BadRequestException("No team with name: " + teamName));
+        Team team = teamRepository.findById(teamName).orElseThrow(() -> new BadRequestException("No team with name: " + teamName));
 
         List<EmployeeOutputDto> employeeOutputDtos = new ArrayList<>();
         for (Employee employee : employeeRepository.findAllByTeam(team, Sort.by("id"))) {
-                employeeOutputDtos.add(transferEmployeeToEmployeeOutputDto(employee));
+            employeeOutputDtos.add(transferEmployeeToEmployeeOutputDto(employee));
         }
         return employeeOutputDtos;
     }
 
-    public EmployeeOutputDto getSingleEmployee(Long id) {
-        Employee employee = employeeRepository.findById(id).orElseThrow(() -> new RecordNotFoundException("No employee found with id: " + id));
-        return transferEmployeeToEmployeeOutputDto(employee);
-    }
-
-    public EmployeeOutputDto getOwnProfile() {
-        try {
-            Long empId = userData.getLoggedInUser().getEmployeeId();
-            return getSingleEmployee(empId);
-        } catch (Exception exception) {
-            throw new RecordNotFoundException("No employee found for that user.");
-        }
-    }
-
     public EmployeeOutputDto createEmployee(EmployeeInputDto employeeInputDto) {
+
+//        get user
+        User user = getUser(employeeInputDto);
+        if(user.getEmployee() != null) {
+            throw new BadRequestException("User already has employee id.");
+        }
+//        check if short name is unique
         if (employeeRepository.existsByShortNameIgnoreCase(employeeInputDto.getShortName())) {
             throw new IsNotUniqueException("Short name already exists.");
         }
-//        check if team exists
-        Team team = teamRepository.findById(employeeInputDto.getTeamName()).orElseThrow(() -> new RecordNotFoundException("No team found with id: " + employeeInputDto.getTeamName()));
 
-        Employee employee = employeeRepository.save(transferEmployeeInputDtoToEmployee(employeeInputDto, team));
+//        get Team
+        Team team = getTeam(employeeInputDto);
+
+
+        Employee employee = new Employee();
+        employeeRepository.save(transferEmployeeInputDtoToEmployee(employeeInputDto, employee, user, team));
         return transferEmployeeToEmployeeOutputDto(employee);
     }
 
-    public EmployeeOutputDto updateEmployee(Long id, EmployeeInputDto employeeInputDto) {
-        Employee employee = employeeRepository.findById(id).orElseThrow(() -> new RecordNotFoundException("No employee found with id: " + id));
-        if (!employee.getShortName().equalsIgnoreCase(employeeInputDto.getShortName())) {
+    public EmployeeOutputDto updateEmployee(EmployeeInputDto employeeInputDto, Long empId) {
+        Employee employee = employeeRepository.findById(empId).orElseThrow(() -> new RecordNotFoundException("No employee found with id: " + empId) );
+
+        User orignalUser = employee.getUser();
+        User userToTest = getUser(employeeInputDto);
+
+//        if user is changed, check is user already has employee
+        if(orignalUser != userToTest && userToTest.getEmployee()!= null) {
+            throw new BadRequestException("User already has employee id.");
+        }
+
+//        if original shortname is not equal to new shortname, check for unique
+        if(!employee.getShortName().equalsIgnoreCase(employeeInputDto.getShortName())) {
             if (employeeRepository.existsByShortNameIgnoreCase(employeeInputDto.getShortName())) {
                 throw new IsNotUniqueException("Short name already exists.");
             }
         }
 
-//        check if team exists
-        Team team = teamRepository.findById(employeeInputDto.getTeamName()).orElseThrow(() -> new RecordNotFoundException("No team found with id: " + employeeInputDto.getTeamName()));
+//        Team can not change
+        if(!employee.getTeam().getTeamName().equals(employeeInputDto.getTeamName())) {
+            throw new BadRequestException("Not allowed to change team");
+        }
 
-
-        transferEmployeeInputDtoToEmployee(employeeInputDto, employee, team);
-        employeeRepository.save(employee);
+        employeeRepository.save(transferEmployeeInputDtoToEmployee(employeeInputDto, employee, orignalUser, employee.getTeam()));
         return transferEmployeeToEmployeeOutputDto(employee);
     }
 
-//    public void deleteEmployee(Long id) {
-//        Employee employee = employeeRepository.findById(id).orElseThrow(() -> new RecordNotFoundException("No employee found with id " + id));
-////        if (!employee.getShifts().isEmpty()) {
-////            throw new IsNotEmptyException("Employee is not empty. First remove all shifts");
-////        }
-//        employeeRepository.deleteById(id);
-//    }
+
+
+    private User getUser(EmployeeInputDto employeeInputDto) {
+        return userRepository.findById(employeeInputDto.getUsername()).orElseThrow(() -> new RecordNotFoundException("No user found with name: " + employeeInputDto.getUsername()));
+    }
+
+
+    private Team getTeam(EmployeeInputDto employeeInputDto) {
+        return teamRepository.findById(employeeInputDto.getTeamName()).orElseThrow(() -> new RecordNotFoundException("No team found with id: " + employeeInputDto.getTeamName()));
+    }
 
 
 
@@ -115,52 +122,39 @@ public class EmployeeService {
         employeeOutputDto.setShortName(employee.getShortName());
         employeeOutputDto.setDob(employee.getDob());
         employeeOutputDto.setPhoneNumber(employee.getPhoneNumber());
-//        employeeOutputDto.setEmail(employee.getUser().getEmail());
         employeeOutputDto.setIsActive(employee.getIsActive());
         employeeOutputDto.setTeam(employee.getTeam());
         employeeOutputDto.setShifts(shiftSorter(employee.getShifts()));
         employeeOutputDto.setAbsences(absenceSorter(employee.getAbsences()));
-//        employeeOutputDto.setUsername(employee.getUser().getUsername());
-//        employeeOutputDto.setAuthorities(employee.getUser().getAuthorities());
 
         return employeeOutputDto;
     }
 
     private List<Shift> shiftSorter(List<Shift> shifts) {
-        if(shifts != null) {
+        if (shifts != null) {
             shifts.sort(Comparator.comparing(Shift::getStartShift));
         }
         return shifts;
     }
 
     private List<Absence> absenceSorter(List<Absence> absences) {
-        if(absences != null) {
-            absences.sort(Comparator.comparing(Absence:: getStartDate));
+        if (absences != null) {
+            absences.sort(Comparator.comparing(Absence::getStartDate));
         }
         return absences;
     }
 
-//    Overload transfer for postmapping
 
-    private Employee transferEmployeeInputDtoToEmployee(EmployeeInputDto employeeInputDto, Team team) {
-        Employee employee = new Employee();
-        transferEmployeeInputDtoToEmployee(employeeInputDto, employee, team);
-        return employee;
-    }
-
-
-    // Overload transfer for putmapping
-    private Employee transferEmployeeInputDtoToEmployee(EmployeeInputDto employeeInputDto, Employee employee, Team team) {
-        User user = userRepository.findById(employeeInputDto.getUsername()).orElseThrow(() -> new RecordNotFoundException("No user found with username: " + employeeInputDto.getUsername()));
+    private Employee transferEmployeeInputDtoToEmployee(EmployeeInputDto employeeInputDto, Employee employee, User user, Team team) {
         employee.setFirstName(employeeInputDto.getFirstName());
         employee.setPreposition(employeeInputDto.getPreposition());
         employee.setLastName(employeeInputDto.getLastName());
         employee.setShortName(employeeInputDto.getShortName());
         employee.setDob(employeeInputDto.getDob());
         employee.setPhoneNumber(employeeInputDto.getPhoneNumber());
-        employee.setUser(user);
         employee.setIsActive(employeeInputDto.getIsActive());
         employee.setTeam(team);
+        employee.setUser(user);
         user.setEmployee(employee);
         return employee;
     }

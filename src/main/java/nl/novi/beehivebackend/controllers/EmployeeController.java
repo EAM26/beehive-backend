@@ -38,17 +38,17 @@ public class EmployeeController {
 
 
     // TODO: 28-6-2023 Add check to only see self
-    @GetMapping("/profile/{id}")
-    public ResponseEntity<EmployeeOutputDto> getSingleEmployee(@PathVariable Long id) {
-        return new ResponseEntity<>(employeeService.getSingleEmployee(id), HttpStatus.OK);
-    }
-    @GetMapping("/profile")
-    public ResponseEntity<EmployeeOutputDto> getOwnProfile() {
-        System.out.println("*****************");
-        System.out.println("employee profile controller running");
-        System.out.println("*****************");
-        return new ResponseEntity<>(employeeService.getOwnProfile(), HttpStatus.OK);
-    }
+//    @GetMapping("/profile/{id}")
+//    public ResponseEntity<EmployeeOutputDto> getSingleEmployee(@PathVariable Long id) {
+//        return new ResponseEntity<>(employeeService.getSingleEmployee(id), HttpStatus.OK);
+//    }
+//    @GetMapping("/profile")
+//    public ResponseEntity<EmployeeOutputDto> getOwnProfile() {
+//        System.out.println("*****************");
+//        System.out.println("employee profile controller running");
+//        System.out.println("*****************");
+//        return new ResponseEntity<>(employeeService.getOwnProfile(), HttpStatus.OK);
+//    }
 
 
     @PostMapping
@@ -66,7 +66,7 @@ public class EmployeeController {
         if (bindingResult.hasFieldErrors()) {
             return ResponseEntity.badRequest().body(validationUtil.validationMessage(bindingResult).toString());
         }
-        return new ResponseEntity<>(employeeService.updateEmployee(id, employeeInputDto), HttpStatus.ACCEPTED);
+        return new ResponseEntity<>(employeeService.updateEmployee(employeeInputDto, id), HttpStatus.ACCEPTED);
     }
 
 //    @DeleteMapping("/{id}")
