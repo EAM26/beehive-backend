@@ -61,13 +61,13 @@ public class EmployeeController {
         return ResponseEntity.created(uri).body(employeeOutputDto);
     }
 
-//    @PutMapping("/{id}")
-//    public ResponseEntity<Object> updateEmployee(@PathVariable Long id, @Valid @RequestBody EmployeeInputDto employeeInputDto, BindingResult bindingResult) {
-//        if (bindingResult.hasFieldErrors()) {
-//            return ResponseEntity.badRequest().body(validationUtil.validationMessage(bindingResult).toString());
-//        }
-//        return new ResponseEntity<>(employeeService.updateEmployee(id, employeeInputDto), HttpStatus.ACCEPTED);
-//    }
+    @PutMapping("/{id}")
+    public ResponseEntity<Object> updateEmployee(@PathVariable Long id, @Valid @RequestBody EmployeeInputDto employeeInputDto, BindingResult bindingResult) {
+        if (bindingResult.hasFieldErrors()) {
+            return ResponseEntity.badRequest().body(validationUtil.validationMessage(bindingResult).toString());
+        }
+        return new ResponseEntity<>(employeeService.updateEmployee(employeeInputDto, id), HttpStatus.ACCEPTED);
+    }
 
 //    @DeleteMapping("/{id}")
 //    public ResponseEntity<Object> deleteEmployee(@PathVariable Long id) {

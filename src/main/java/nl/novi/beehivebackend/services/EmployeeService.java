@@ -64,8 +64,6 @@ public class EmployeeService {
             throw new IsNotUniqueException("Short name already exists.");
         }
 
-
-
 //        get Team
         Team team = getTeam(employeeInputDto);
 
@@ -75,11 +73,39 @@ public class EmployeeService {
         return transferEmployeeToEmployeeOutputDto(employee);
     }
 
+    public EmployeeOutputDto updateEmployee(EmployeeInputDto employeeInputDto, Long empId) {
+        Employee employee = employeeRepository.findById(empId).orElseThrow(() -> new RecordNotFoundException("No employee found with id: " + empId) );
+
+        User orignalUser = employee.getUser();
+        User userToTest = getUser(employeeInputDto);
+
+//        if user is changed, check is user already has employee
+        if(orignalUser != userToTest && userToTest.getEmployee()!= null) {
+            throw new BadRequestException("User already has employee id.");
+        }
+
+//        if original shortname is not equal to new shortname, check for unique
+        if(!employee.getShortName().equalsIgnoreCase(employeeInputDto.getShortName())) {
+            if (employeeRepository.existsByShortNameIgnoreCase(employeeInputDto.getShortName())) {
+                throw new IsNotUniqueException("Short name already exists.");
+            }
+        }
+
+//        Team can not change
+        if(!employee.getTeam().getTeamName().equals(employeeInputDto.getTeamName())) {
+            throw new BadRequestException("Not allowed to change team");
+        }
+
+        employeeRepository.save(transferEmployeeInputDtoToEmployee(employeeInputDto, employee, orignalUser, employee.getTeam()));
+        return transferEmployeeToEmployeeOutputDto(employee);
+    }
+
 
 
     private User getUser(EmployeeInputDto employeeInputDto) {
         return userRepository.findById(employeeInputDto.getUsername()).orElseThrow(() -> new RecordNotFoundException("No user found with name: " + employeeInputDto.getUsername()));
     }
+
 
     private Team getTeam(EmployeeInputDto employeeInputDto) {
         return teamRepository.findById(employeeInputDto.getTeamName()).orElseThrow(() -> new RecordNotFoundException("No team found with id: " + employeeInputDto.getTeamName()));
