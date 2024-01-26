@@ -6,11 +6,13 @@ import nl.novi.beehivebackend.exceptions.BadRequestException;
 import nl.novi.beehivebackend.exceptions.RecordNotFoundException;
 import nl.novi.beehivebackend.models.Absence;
 import nl.novi.beehivebackend.models.Employee;
+import nl.novi.beehivebackend.models.Shift;
 import nl.novi.beehivebackend.repositories.AbsenceRepository;
 import nl.novi.beehivebackend.repositories.EmployeeRepository;
 import org.springframework.stereotype.Service;
 
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -63,8 +65,12 @@ public class AbsenceService {
     }
 
     private Absence transferAbsenceInputDtoToAbsence(AbsenceInputDto absenceInputDto, Employee employee) {
-        if(isAbsenceOverlap(absenceInputDto, employee)) {
+        if (isAbsenceToAbsenceOverlap(absenceInputDto, employee)) {
             throw new BadRequestException("Period is overlapping existing absence");
+        }
+
+        if(isAbsenceToShiftOverlap(absenceInputDto, employee)) {
+            throw new BadRequestException("Period is overlapping shift");
         }
         Absence absence = new Absence();
         absence.setStartDate(absenceInputDto.getStartDate());
@@ -72,11 +78,12 @@ public class AbsenceService {
         absence.setEmployee(employee);
 
         return absenceRepository.save(absence);
+
     }
 
 //    Helper methods
 
-    public boolean isAbsenceOverlap(AbsenceInputDto absenceInputDto, Employee employee) {
+    private boolean isAbsenceToAbsenceOverlap(AbsenceInputDto absenceInputDto, Employee employee) {
         List<Absence> existingAbsences = absenceRepository.findByEmployeeId(employee.getId());
 
         for (Absence existingAbsence : existingAbsences) {
@@ -86,4 +93,19 @@ public class AbsenceService {
         }
         return false;
     }
+
+    private boolean isAbsenceToShiftOverlap(AbsenceInputDto absenceInputDto, Employee employee) {
+        for(Shift shift: employee.getShifts()) {
+
+            LocalDate shiftStartDate = shift.getStartShift().toLocalDate();
+            LocalDate shiftEndDate = shift.getEndShift().toLocalDate();
+            if (!absenceInputDto.getStartDate().isAfter(shiftEndDate) && !absenceInputDto.getEndDate().isBefore(shiftStartDate)) {
+                return true;
+            }
+
+        }
+        return false;
+    }
+
+
 }
