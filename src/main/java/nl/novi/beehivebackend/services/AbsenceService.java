@@ -83,7 +83,7 @@ public class AbsenceService {
 
 //    Helper methods
 
-    private boolean isAbsenceToAbsenceOverlap(AbsenceInputDto absenceInputDto, Employee employee) {
+    public boolean isAbsenceToAbsenceOverlap(AbsenceInputDto absenceInputDto, Employee employee) {
         List<Absence> existingAbsences = absenceRepository.findByEmployeeId(employee.getId());
 
         for (Absence existingAbsence : existingAbsences) {
