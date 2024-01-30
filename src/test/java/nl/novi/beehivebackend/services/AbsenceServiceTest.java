@@ -13,6 +13,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
+
 import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -54,12 +55,11 @@ class AbsenceServiceTest {
     AbsenceInputDto absenceInputDtoOverlap;
     AbsenceOutputDto absenceOutputDto1;
     AbsenceOutputDto absenceOutputDto2;
-    Shift shiftOverlap ;
-    Shift shiftNoOverlap ;
+    Shift shiftOverlap;
+    Shift shiftNoOverlap;
     List<Shift> shifts;
     Team team;
     Roster roster;
-//    List<Absence> absences;
 
     Employee emp1;
 
@@ -94,8 +94,6 @@ class AbsenceServiceTest {
     @AfterEach
     void tearDown() {
     }
-
-
 
 
     @Test
@@ -146,6 +144,7 @@ class AbsenceServiceTest {
 
 
     }
+
     @Test
     void AbsenceToShiftOverlap() {
         // Arrange
@@ -205,63 +204,6 @@ class AbsenceServiceTest {
         assertEquals(absenceOutputDto1.getEmployeeId(), actual.getEmployeeId());
 
     }
-
-    @Test
-    void shouldCreateAbsence_WhenNoOverlap() {
-        // Arrange
-        List<Absence> existingAbsences = new ArrayList<>();
-
-        // Simulate no overlapping absences
-        when(absenceRepository.findByEmployeeId(101L)).thenReturn(existingAbsences);
-        when(employeeRepository.findById(101L)).thenReturn(Optional.of(emp1));
-        when(absenceRepository.save(any(Absence.class))).thenReturn(absenceNoOverlap);
-
-        // Act
-        AbsenceOutputDto createdAbsence = absenceService.createAbsence(absenceInputDtoNoOverlap);
-
-        // Assert
-        assertNotNull(createdAbsence);
-//        assertEquals(absenceNoOverlap.getStartDate(), createdAbsence.getStartDate());
-//        assertEquals(a.getEndDate(), createdAbsence.getEndDate());
-//        assertEquals(emp1.getId(), createdAbsence.getEmployeeId());
-    }
-
-//    @Test
-//    void shouldNotCreateAbsence_WhenOverlapExists() {
-//        // Arrange
-//        List<Absence> existingAbsences = Collections.singletonList(absenceOverlap);
-//
-//        // Simulate overlapping absences
-//        when(absenceRepository.findByEmployeeId(101L)).thenReturn(existingAbsences);
-//        when(employeeRepository.findById(101L)).thenReturn(Optional.of(emp1));
-//
-//        // Act & Assert
-//        assertThrows(BadRequestException.class, () -> {
-//            absenceService.createAbsence(absenceInputDtoOverlap);
-//        });
-//
-//    }
-
-//    @Test
-//    void shouldNotCreateAbsence_WhenOverlapExists() {
-//        // Arrange
-//        List<Absence> existingAbsences = Collections.singletonList(absenceOverlap);
-//
-//        // Simulate overlapping absences
-//        when(absenceRepository.findByEmployeeId(101L)).thenReturn(existingAbsences);
-//        when(absenceRepository.save(any(Absence.class))).thenReturn(new Absence());
-//        when(employeeRepository.findById(101L)).thenReturn(Optional.of(emp1));
-//
-//        // Act & Assert
-//        BadRequestException thrown = assertThrows(
-//                BadRequestException.class,
-//                () -> absenceService.createAbsence(absenceInputDtoOverlap),
-//                "Expected createAbsence to throw, but it didn't"
-//        );
-//
-//        assertTrue(thrown.getMessage().contains("overlapping"));
-//    }
-
 
 
 

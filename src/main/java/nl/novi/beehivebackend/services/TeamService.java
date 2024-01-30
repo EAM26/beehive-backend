@@ -4,7 +4,6 @@ import nl.novi.beehivebackend.dtos.input.TeamInputDto;
 import nl.novi.beehivebackend.dtos.output.TeamOutputDtoDetails;
 import nl.novi.beehivebackend.dtos.output.TeamOutputDto;
 import nl.novi.beehivebackend.exceptions.BadRequestException;
-import nl.novi.beehivebackend.exceptions.IsNotEmptyException;
 import nl.novi.beehivebackend.exceptions.RecordNotFoundException;
 import nl.novi.beehivebackend.models.Team;
 import nl.novi.beehivebackend.repositories.EmployeeRepository;
@@ -36,14 +35,14 @@ public class TeamService {
     }
 
     public Iterable<TeamOutputDto> getAllTeams(Boolean isActive) {
-        List<TeamOutputDto> teamOutputDtoEmpIds = new ArrayList<>();
+        List<TeamOutputDto> teamOutputDtos = new ArrayList<>();
         for (Team team : teamRepository.findAll()) {
             if (team.getIsActive() == isActive) {
-                teamOutputDtoEmpIds.add(transferTeamToTeamOutputDto(team));
+                teamOutputDtos.add(transferTeamToTeamOutputDto(team));
             }
 
         }
-        return teamOutputDtoEmpIds;
+        return teamOutputDtos;
     }
 
     public TeamOutputDtoDetails getTeam(String id) {
@@ -70,13 +69,6 @@ public class TeamService {
         return transferTeamToTeamOutputDto(team);
     }
 
-    public void deleteTeam(String id) {
-        Team team = teamRepository.findById(id).orElseThrow(() -> new RecordNotFoundException("No team found with id: " + id));
-        if (!team.getEmployees().isEmpty()) {
-            throw new IsNotEmptyException("Team is not empty. First remove all employees");
-        }
-        teamRepository.deleteById(id);
-    }
 
 //  HELPER METHODS
 

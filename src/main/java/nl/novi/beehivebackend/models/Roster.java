@@ -13,6 +13,13 @@ import java.util.List;
 @Table(name = "rosters")
 public class Roster {
 
+    public Roster(Long id, int week, int year, List<Shift> shifts, Team team) {
+        this.id = id;
+        this.week = week;
+        this.year = year;
+        this.shifts = shifts;
+        this.team = team;
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,6 +37,9 @@ public class Roster {
     @JsonIgnore
     @JoinColumn(name = "team_name", nullable = false)
     private Team team;
+
+    public Roster() {
+    }
 
 
     public String createRosterName() {

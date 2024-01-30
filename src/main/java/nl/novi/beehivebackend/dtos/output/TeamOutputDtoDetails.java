@@ -14,5 +14,15 @@ public class TeamOutputDtoDetails {
     private Boolean isActive;
     private List<Employee> employees;
     private List<Roster> rosters;
+
+    public TeamOutputDtoDetails() {
+    }
+
+    public TeamOutputDtoDetails(String teamName, Boolean isActive, List<Employee> employees, List<Roster> rosters) {
+        this.teamName = teamName;
+        this.isActive = isActive;
+        this.employees = employees;
+        this.rosters = rosters;
+    }
 }
 
