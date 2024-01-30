@@ -41,6 +41,9 @@ public class Team {
 
     public Team() {
     }
+
+    public Team(String teamName, boolean isActive) {
+    }
 }
 
 
