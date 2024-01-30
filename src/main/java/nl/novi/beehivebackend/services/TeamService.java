@@ -4,7 +4,6 @@ import nl.novi.beehivebackend.dtos.input.TeamInputDto;
 import nl.novi.beehivebackend.dtos.output.TeamOutputDtoDetails;
 import nl.novi.beehivebackend.dtos.output.TeamOutputDto;
 import nl.novi.beehivebackend.exceptions.BadRequestException;
-import nl.novi.beehivebackend.exceptions.IsNotEmptyException;
 import nl.novi.beehivebackend.exceptions.RecordNotFoundException;
 import nl.novi.beehivebackend.models.Team;
 import nl.novi.beehivebackend.repositories.EmployeeRepository;

@@ -46,7 +46,6 @@ class TeamServiceTest {
     ArgumentCaptor<Team> captor;
 
     Employee emp1;
-    Employee emp2;
     List<Employee> employees = new ArrayList<>();
     List<Shift> shifts;
     List<Roster> rosters = new ArrayList<>();
@@ -236,7 +235,7 @@ class TeamServiceTest {
 
         // Assert
         assertEquals(teamOutputDtoDetails1.getTeamName(), actual.getTeamName());
-        ;
+
         assertEquals(teamOutputDtoDetails1.getEmployees(), actual.getEmployees());
         System.out.println(teamOutputDtoDetails1.getRosters());
         System.out.println(actual.getRosters());
