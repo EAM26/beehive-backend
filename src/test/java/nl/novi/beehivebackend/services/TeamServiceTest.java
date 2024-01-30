@@ -1,6 +1,5 @@
 package nl.novi.beehivebackend.services;
 
-import nl.novi.beehivebackend.dtos.output.AbsenceOutputDto;
 import nl.novi.beehivebackend.dtos.output.TeamOutputDto;
 import nl.novi.beehivebackend.dtos.output.TeamOutputDtoDetails;
 import nl.novi.beehivebackend.models.Employee;
@@ -46,7 +45,7 @@ class TeamServiceTest {
     Employee emp2;
     List<Employee> employees = new ArrayList<>();
     List<Shift> shifts;
-    List<Roster> rosters;
+    List<Roster> rosters = new ArrayList<>();
     Roster roster;
     Shift shift1;
     Shift shift2;
@@ -67,6 +66,7 @@ class TeamServiceTest {
         shift1 = new Shift(201L, MyDateTimeFormatter.getDateTime("2023-02-20 09:00:00"), MyDateTimeFormatter.getDateTime("2023-02-20 17:00:00"), 1, 2023, team1, emp1, roster);
         shift2 = new Shift(202L, MyDateTimeFormatter.getDateTime("2023-02-21 09:00:00"), MyDateTimeFormatter.getDateTime("2023-02-21 17:00:00"), 1, 2023, team1, emp1, roster);
         roster = new Roster(601L, 52, 2022, shifts, team1);
+        rosters.add(roster);
         team1 = new Team("Kitchen", true, employees, shifts, rosters);
         team2 = new Team("Kitchen", false, employees, shifts, rosters);
         teamOutputDto1 = new TeamOutputDto("Kitchen", true);
@@ -153,23 +153,29 @@ class TeamServiceTest {
 
 
 
-//    @Test
-//    void shouldGetTeamByTeamName() {
-//        // Arrange
-//
-//        when(teamRepository.findById(team1.getTeamName())).thenReturn(Optional.of(team1));
-//        List<Employee> employees1 = Collections.singletonList(emp1);
-//        when(employeeRepository.findAllByTeam(team1)).thenReturn((employees1));
-//
-//        // Act
-//        TeamOutputDtoDetails actual = teamService.getTeam(team1.getTeamName());
-//
-//        // Assert
-//        assertEquals(teamOutputDtoDetails1.getTeamName(), actual.getTeamName());;
-//        assertEquals(teamOutputDtoDetails1.getEmployees(), actual.getEmployees());
-//        assertEquals(teamOutputDtoDetails1.getRosters(), actual.getRosters());
-//        assertEquals(teamOutputDtoDetails1.getIsActive(), actual.getIsActive());
-//    }
+    @Test
+    void shouldGetTeamByTeamName() {
+        // Arrange
+
+        when(teamRepository.findById(team1.getTeamName())).thenReturn(Optional.of(team1));
+        List<Employee> employees1 = Collections.singletonList(emp1);
+        when(employeeRepository.findAllByTeam(team1)).thenReturn(employees1);
+        List<Roster> rosters1 = Collections.singletonList(roster);
+        when(rosterRepository.findAllByTeam(team1)).thenReturn(rosters1);
+
+        // Act
+        TeamOutputDtoDetails actual = teamService.getTeam(team1.getTeamName());
+
+        // Assert
+        assertEquals(teamOutputDtoDetails1.getTeamName(), actual.getTeamName());;
+        assertEquals(teamOutputDtoDetails1.getEmployees(), actual.getEmployees());
+        System.out.println(teamOutputDtoDetails1.getRosters());
+        System.out.println(actual.getRosters());
+        System.out.println(teamOutputDtoDetails1.getEmployees());
+        System.out.println(actual.getEmployees());
+        assertEquals(teamOutputDtoDetails1.getRosters(), actual.getRosters());
+        assertEquals(teamOutputDtoDetails1.getIsActive(), actual.getIsActive());
+    }
 
     @Test
     void createTeam() {
