@@ -42,7 +42,7 @@ public class Team {
     public Team() {
     }
 
-    public Team(String teamName, boolean b) {
+    public Team(String teamName, boolean isActive) {
     }
 }
 

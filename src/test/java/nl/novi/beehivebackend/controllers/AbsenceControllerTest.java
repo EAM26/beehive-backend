@@ -6,7 +6,6 @@ import nl.novi.beehivebackend.models.Team;
 import nl.novi.beehivebackend.repositories.AbsenceRepository;
 import nl.novi.beehivebackend.repositories.EmployeeRepository;
 import nl.novi.beehivebackend.repositories.TeamRepository;
-import nl.novi.beehivebackend.services.AbsenceService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -19,7 +18,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.time.LocalDate;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 @AutoConfigureMockMvc(addFilters = false)
@@ -30,8 +29,7 @@ class AbsenceControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @Autowired
-    private AbsenceService absenceService;
+
 
     @Autowired
     private EmployeeRepository employeeRepository;
@@ -76,7 +74,7 @@ class AbsenceControllerTest {
 
     @AfterEach
     void tearDown() {
-
+        absenceRepository.deleteAll();
     }
 
     @Test
@@ -84,29 +82,29 @@ class AbsenceControllerTest {
 
         mockMvc.perform(MockMvcRequestBuilders.get("/absences"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].id").value(absence1.getId()))
-                .andExpect(jsonPath("$[0].startDate".toString()).value(absence1.getStartDate().toString()))
-                .andExpect(jsonPath("$[0].endDate".toString()).value(absence1.getEndDate().toString()))
+                .andExpect(jsonPath("$", hasSize(2)))
+                .andExpect(jsonPath("$[0].startDate").value(absence1.getStartDate().toString()))
+                .andExpect(jsonPath("$[0].endDate").value(absence1.getEndDate().toString()))
                 .andExpect(jsonPath("$[0].employeeId").value(absence1.getEmployee().getId()))
                 .andExpect(jsonPath("$[0].employeeShortName").value(absence1.getEmployee().getShortName()))
-                .andExpect(jsonPath("$[1].startDate".toString()).value(absence2.getStartDate().toString()))
-                .andExpect(jsonPath("$[1].endDate".toString()).value(absence2.getEndDate().toString()))
+                .andExpect(jsonPath("$[1].startDate").value(absence2.getStartDate().toString()))
+                .andExpect(jsonPath("$[1].endDate").value(absence2.getEndDate().toString()))
                 .andExpect(jsonPath("$[1].employeeId").value(absence2.getEmployee().getId()))
                 .andExpect(jsonPath("$[1].employeeShortName").value(absence2.getEmployee().getShortName()))
-
         ;
 
     }
 
     @Test
-    void getSingleAbsence() {
+    void getSingleAbsence() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get("/absences/"+ absence1.getId()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(absence1.getId()))
+                .andExpect(jsonPath("$.startDate").value(absence1.getStartDate().toString()))
+                .andExpect(jsonPath("$.endDate").value(absence1.getEndDate().toString()))
+                .andExpect(jsonPath("$.employeeId").value(absence1.getEmployee().getId()))
+                .andExpect(jsonPath("$.employeeShortName").value(absence1.getEmployee().getShortName()));
     }
 
-    @Test
-    void createAbsence() {
-    }
 
-    @Test
-    void deleteAbsence() {
-    }
 }
