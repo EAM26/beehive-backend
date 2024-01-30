@@ -76,7 +76,7 @@ class TeamServiceTest {
         team1 = new Team("Kitchen", true, employees, shifts, rosters);
         team2 = new Team("Kitchen", false, employees, shifts, rosters);
         teamInputDto1 = new TeamInputDto("Kitchen", true);
-        teamInputDto2 = new TeamInputDto("Kitchen", true);
+        teamInputDto2 = new TeamInputDto("Kitchen", false);
         teamOutputDto1 = new TeamOutputDto("Kitchen", true);
         teamOutputDto2 = new TeamOutputDto("Kitchen", false);
         teamOutputDtoDetails1 = new TeamOutputDtoDetails("Kitchen", true, employees, rosters);
@@ -84,6 +84,40 @@ class TeamServiceTest {
 
     @AfterEach
     void tearDown() {
+    }
+
+    @Test
+    void updateTeamShouldThrowException() {
+//        Arrange
+        String originalTeamName = "Kitchen";
+        teamInputDto1.setTeamName("badTeamName");
+        when(teamRepository.findById(originalTeamName)).thenReturn(Optional.of(team1));
+
+//        Act and Assert
+        BadRequestException thrownException = assertThrows(BadRequestException.class, () -> teamService.updateTeam(originalTeamName, teamInputDto1));
+        assertEquals("Not allowed to change the Team name.", thrownException.getMessage());
+    }
+
+
+    @Test
+    void shouldUpdateTeam() {
+//        Arrange
+        String teamName = "Kitchen";
+        when(teamRepository.findById(teamName)).thenReturn(Optional.of(team1));
+        when(teamRepository.save(any(Team.class))).thenReturn(team2);
+
+//        Act
+        TeamOutputDto actual = teamService.updateTeam(teamInputDto2.getTeamName(), teamInputDto2);
+
+//        Assert
+        verify(teamRepository).save(captor.capture());
+        Team capturedTeam = captor.getValue();
+        assertNotNull(capturedTeam);
+        assertEquals(teamName, capturedTeam.getTeamName());
+        assertEquals(teamInputDto2.getIsActive(), capturedTeam.getIsActive());
+        assertNotNull(actual);
+        assertEquals(teamName, actual.getTeamName());
+        assertEquals(teamInputDto2.getIsActive(), actual.getIsActive());
     }
 
     @Test
@@ -95,7 +129,6 @@ class TeamServiceTest {
 
 //        Assert
         verify(teamRepository, times(1)).save(captor.capture());
-//        verify(teamRepository, times(1)).save(captor.capture());
         Team actual = captor.getValue();
 
         assertNotNull(actual);
@@ -214,11 +247,6 @@ class TeamServiceTest {
     }
 
 
-    @Test
-    void updateTeam() {
-    }
 
-    @Test
-    void deleteTeam() {
-    }
+
 }
