@@ -1,20 +1,23 @@
 package nl.novi.beehivebackend.services;
 
+import nl.novi.beehivebackend.dtos.input.TeamInputDto;
 import nl.novi.beehivebackend.dtos.output.TeamOutputDto;
 import nl.novi.beehivebackend.dtos.output.TeamOutputDtoDetails;
-import nl.novi.beehivebackend.models.Employee;
-import nl.novi.beehivebackend.models.Roster;
-import nl.novi.beehivebackend.models.Shift;
-import nl.novi.beehivebackend.models.Team;
+import nl.novi.beehivebackend.exceptions.BadRequestException;
+import nl.novi.beehivebackend.models.*;
 import nl.novi.beehivebackend.repositories.EmployeeRepository;
 import nl.novi.beehivebackend.repositories.RosterRepository;
 import nl.novi.beehivebackend.repositories.TeamRepository;
 import nl.novi.beehivebackend.utils.MyDateTimeFormatter;
+
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
+
+import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -22,7 +25,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class TeamServiceTest {
@@ -39,7 +42,8 @@ class TeamServiceTest {
     @InjectMocks
     TeamService teamService;
 
-    ArgumentCaptor<Team> team;
+    @Captor
+    ArgumentCaptor<Team> captor;
 
     Employee emp1;
     Employee emp2;
@@ -51,6 +55,8 @@ class TeamServiceTest {
     Shift shift2;
     Team team1;
     Team team2;
+    TeamInputDto teamInputDto1;
+    TeamInputDto teamInputDto2;
     TeamOutputDto teamOutputDto1;
     TeamOutputDto teamOutputDto2;
     TeamOutputDtoDetails teamOutputDtoDetails1;
@@ -69,6 +75,8 @@ class TeamServiceTest {
         rosters.add(roster);
         team1 = new Team("Kitchen", true, employees, shifts, rosters);
         team2 = new Team("Kitchen", false, employees, shifts, rosters);
+        teamInputDto1 = new TeamInputDto("Kitchen", true);
+        teamInputDto2 = new TeamInputDto("Kitchen", true);
         teamOutputDto1 = new TeamOutputDto("Kitchen", true);
         teamOutputDto2 = new TeamOutputDto("Kitchen", false);
         teamOutputDtoDetails1 = new TeamOutputDtoDetails("Kitchen", true, employees, rosters);
@@ -76,6 +84,34 @@ class TeamServiceTest {
 
     @AfterEach
     void tearDown() {
+    }
+
+    @Test
+    void shouldCreateTeam() {
+//        Arrange
+        when(teamRepository.save(any(Team.class))).thenReturn(team1);
+//        Act
+        teamService.createTeam(teamInputDto1);
+
+//        Assert
+        verify(teamRepository, times(1)).save(captor.capture());
+//        verify(teamRepository, times(1)).save(captor.capture());
+        Team actual = captor.getValue();
+
+        assertNotNull(actual);
+        assertEquals(team1.getTeamName(), actual.getTeamName());
+        assertEquals(team1.getIsActive(), actual.getIsActive());
+    }
+
+
+    @Test
+    void createTeamShouldThrowException() {
+//        Arrange
+        when(teamRepository.existsById(teamInputDto2.getTeamName())).thenReturn(true);
+
+//        Act and Assert
+        BadRequestException thrownException = assertThrows(BadRequestException.class, () -> teamService.createTeam(teamInputDto2));
+        assertEquals("A team with that name already exists.", thrownException.getMessage());
     }
 
     @Test
@@ -152,7 +188,6 @@ class TeamServiceTest {
     }
 
 
-
     @Test
     void shouldGetTeamByTeamName() {
         // Arrange
@@ -167,7 +202,8 @@ class TeamServiceTest {
         TeamOutputDtoDetails actual = teamService.getTeam(team1.getTeamName());
 
         // Assert
-        assertEquals(teamOutputDtoDetails1.getTeamName(), actual.getTeamName());;
+        assertEquals(teamOutputDtoDetails1.getTeamName(), actual.getTeamName());
+        ;
         assertEquals(teamOutputDtoDetails1.getEmployees(), actual.getEmployees());
         System.out.println(teamOutputDtoDetails1.getRosters());
         System.out.println(actual.getRosters());
@@ -177,9 +213,6 @@ class TeamServiceTest {
         assertEquals(teamOutputDtoDetails1.getIsActive(), actual.getIsActive());
     }
 
-    @Test
-    void createTeam() {
-    }
 
     @Test
     void updateTeam() {

@@ -70,13 +70,6 @@ public class TeamService {
         return transferTeamToTeamOutputDto(team);
     }
 
-//    public void deleteTeam(String id) {
-//        Team team = teamRepository.findById(id).orElseThrow(() -> new RecordNotFoundException("No team found with id: " + id));
-//        if (!team.getEmployees().isEmpty()) {
-//            throw new IsNotEmptyException("Team is not empty. First remove all employees");
-//        }
-//        teamRepository.deleteById(id);
-//    }
 
 //  HELPER METHODS
 

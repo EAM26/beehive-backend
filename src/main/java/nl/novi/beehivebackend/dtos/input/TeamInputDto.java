@@ -10,10 +10,18 @@ import lombok.Setter;
 @Setter
 public class TeamInputDto {
 
+
     @NotBlank(message = "Team name is required.")
     private String teamName;
 
     @NotNull(message = "Team status is required")
     private Boolean isActive;
 
+    public TeamInputDto(String teamName, Boolean isActive) {
+        this.teamName = teamName;
+        this.isActive = isActive;
+    }
+
+    public TeamInputDto() {
+    }
 }
