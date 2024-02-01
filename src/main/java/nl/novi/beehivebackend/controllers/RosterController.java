@@ -46,7 +46,7 @@ public class RosterController {
         }
         RosterOutputDto rosterOutputDto = rosterService.createRoster(rosterInputDto);
         URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentRequest().path("/" + rosterOutputDto.getId()).toUriString());
-        return ResponseEntity.created(uri).body(rosterOutputDto.getId() + " created");
+        return ResponseEntity.created(uri).body("Roster created id: " + rosterOutputDto.getId());
     }
 
     @DeleteMapping("/{id}")
