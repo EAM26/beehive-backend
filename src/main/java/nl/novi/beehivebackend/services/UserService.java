@@ -3,13 +3,12 @@ package nl.novi.beehivebackend.services;
 
 import nl.novi.beehivebackend.dtos.input.UserInputDto;
 import nl.novi.beehivebackend.dtos.output.UserOutputDto;
-import nl.novi.beehivebackend.dtos.output.SelfOutputDto;
+import nl.novi.beehivebackend.dtos.output.UserOutputDtoDetails;
 import nl.novi.beehivebackend.exceptions.*;
 import nl.novi.beehivebackend.models.Authority;
 import nl.novi.beehivebackend.models.Employee;
 import nl.novi.beehivebackend.models.User;
 import nl.novi.beehivebackend.models.UserRole;
-import nl.novi.beehivebackend.repositories.EmployeeRepository;
 import nl.novi.beehivebackend.repositories.UserRepository;
 import nl.novi.beehivebackend.utils.UserData;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -17,9 +16,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Service
 public class UserService {
@@ -34,32 +31,44 @@ public class UserService {
     }
 
 
-    public List<UserOutputDto> getUsers() {
-        List<UserOutputDto> allUsersList = new ArrayList<>();
-        for (User user : userRepository.findAll()) {
-            allUsersList.add(transferUserToUserOutputDto(user));
+    public List<UserOutputDto> getUsers(Boolean hasEmployee, Boolean isDeleted) {
+        List<User> users = userRepository.findAll();
+        List<UserOutputDto> filteredUsersList = new ArrayList<>();
+//        all Users
+        if (hasEmployee == null && isDeleted == null) {
+            for (User user : users) {
+                filteredUsersList.add(transferUserToUserOutputDto(user));
+            }
+        } else if (hasEmployee == null && isDeleted != null) {
+            for (User user : users) {
+                if (user.getIsDeleted().equals(isDeleted)) {
+                    filteredUsersList.add(transferUserToUserOutputDto(user));
+                }
+            }
+        } else if (hasEmployee != null && isDeleted == null) {
+            for (User user : users) {
+                if (userHasEmployee(user) == hasEmployee) {
+                    filteredUsersList.add(transferUserToUserOutputDto(user));
+                }
+            }
+        } else {
+            for (User user : users) {
+                if (userHasEmployee(user) == hasEmployee && user.getIsDeleted().equals(isDeleted)) {
+                    filteredUsersList.add(transferUserToUserOutputDto(user));
+                }
+            }
         }
-        return allUsersList;
+        return filteredUsersList;
     }
-
-    public List<UserOutputDto> getUsers(Boolean isDeleted) {
-        List<UserOutputDto> allUsersList = new ArrayList<>();
-        for (User user : userRepository.findAllByIsDeleted(isDeleted)) {
-            allUsersList.add(transferUserToUserOutputDto(user));
-        }
-        return allUsersList;
-
-
-    }
-
-    public UserOutputDto getSingleUser(String username) {
+    
+    public UserOutputDtoDetails getSingleUser(String username) {
         User user = userRepository.findById(username).orElseThrow(() -> new RecordNotFoundException("No user found with name: " + username));
-        return transferUserToUserOutputDto(user);
+        return createProfile(user);
     }
 
-    public SelfOutputDto getSelfAsUser() {
+    public UserOutputDtoDetails getSelfAsUser() {
         User user = userData.getLoggedInUser();
-        return createSelfProfile(user);
+        return createProfile(user);
     }
 
 
@@ -90,37 +99,35 @@ public class UserService {
     }
 
 
-
-
-
 //    Helper methods
 
 
-    private SelfOutputDto createSelfProfile (User user) {
+    private UserOutputDtoDetails createProfile(User user) {
 //        User data
-        SelfOutputDto selfOutputDto = new SelfOutputDto();
-        selfOutputDto.setUsername(user.getUsername());
-        selfOutputDto.setEmail(user.getEmail());
-        selfOutputDto.setAuthorities(user.getAuthorities());
+        UserOutputDtoDetails userOutputDtoDetails = new UserOutputDtoDetails();
+        userOutputDtoDetails.setUsername(user.getUsername());
+        userOutputDtoDetails.setEmail(user.getEmail());
+        userOutputDtoDetails.setAuthorities(user.getAuthorities());
 
 //        Employee data
-        if(user.getEmployee() != null) {
+        if (user.getEmployee() != null) {
             Employee employee = user.getEmployee();
-            selfOutputDto.setEmployeeId(employee.getId());
-            selfOutputDto.setFirstName(employee.getFirstName());
-            selfOutputDto.setPreposition(employee.getPreposition());
-            selfOutputDto.setLastName(employee.getLastName());
-            selfOutputDto.setShortName(employee.getShortName());
-            selfOutputDto.setDob(employee.getDob());
-            selfOutputDto.setPhoneNumber(employee.getPhoneNumber());
-            selfOutputDto.setIsActive(employee.getIsActive());
-            selfOutputDto.setTeam(employee.getTeam());
-            selfOutputDto.setShifts(employee.getShifts());
-            selfOutputDto.setAbsences(employee.getAbsences());
+            userOutputDtoDetails.setEmployeeId(employee.getId());
+            userOutputDtoDetails.setFirstName(employee.getFirstName());
+            userOutputDtoDetails.setPreposition(employee.getPreposition());
+            userOutputDtoDetails.setLastName(employee.getLastName());
+            userOutputDtoDetails.setShortName(employee.getShortName());
+            userOutputDtoDetails.setDob(employee.getDob());
+            userOutputDtoDetails.setPhoneNumber(employee.getPhoneNumber());
+            userOutputDtoDetails.setIsActive(employee.getIsActive());
+            userOutputDtoDetails.setTeam(employee.getTeam());
+            userOutputDtoDetails.setShifts(employee.getShifts());
+            userOutputDtoDetails.setAbsences(employee.getAbsences());
         }
 
-        return selfOutputDto;
+        return userOutputDtoDetails;
     }
+
     private boolean userExists(String username) {
         return userRepository.existsById(username);
     }
@@ -145,7 +152,7 @@ public class UserService {
     private User dtoToUserAsAdmin(User user, UserInputDto userInputDto) {
 
 //        Check username for new user
-        if(user.getUsername() == null && userExists(userInputDto.getUsername())) {
+        if (user.getUsername() == null && userExists(userInputDto.getUsername())) {
             throw new IsNotUniqueException("Username is not unique");
         }
 
@@ -155,8 +162,8 @@ public class UserService {
 
 //        Check email for new user
         userInputDto.setEmail(userInputDto.getEmail().toLowerCase());
-        if(user.getEmail() == null) {
-            if(emailExists(userInputDto.getEmail())) {
+        if (user.getEmail() == null) {
+            if (emailExists(userInputDto.getEmail())) {
                 throw new BadRequestException("Email is not unique");
             }
         }
@@ -246,6 +253,10 @@ public class UserService {
         User updatedUser = dtoToUserAsSelf(userToUpdate, userInputDto);
         userRepository.save(updatedUser);
         return transferUserToUserOutputDto(updatedUser);
+    }
+
+    private boolean userHasEmployee(User user) {
+        return user.getEmployee() != null;
     }
 
 }

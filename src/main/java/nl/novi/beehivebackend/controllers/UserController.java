@@ -4,7 +4,7 @@ package nl.novi.beehivebackend.controllers;
 import jakarta.validation.Valid;
 import nl.novi.beehivebackend.dtos.input.UserInputDto;
 import nl.novi.beehivebackend.dtos.output.UserOutputDto;
-import nl.novi.beehivebackend.dtos.output.SelfOutputDto;
+import nl.novi.beehivebackend.dtos.output.UserOutputDtoDetails;
 import nl.novi.beehivebackend.services.UserService;
 import nl.novi.beehivebackend.utils.ValidationUtil;
 import org.springframework.http.HttpStatus;
@@ -31,23 +31,20 @@ public class UserController {
     }
 
     @GetMapping(value = "")
-    public ResponseEntity<List<UserOutputDto>> getUsers(@RequestParam(required = false) Boolean isDeleted) {
-        if(isDeleted == null) {
-            return ResponseEntity.ok().body(userService.getUsers());
-        }
+    public ResponseEntity<List<UserOutputDto>> getUsers(@RequestParam(required = false)Boolean hasEmployee, @RequestParam(required = false) Boolean isDeleted) {
 
-        return ResponseEntity.ok().body(userService.getUsers(isDeleted));
+        return ResponseEntity.ok().body(userService.getUsers(hasEmployee, isDeleted));
     }
 
     @GetMapping(value = "/{username}")
-    public ResponseEntity<UserOutputDto> getSingleUser(@PathVariable("username") String username) {
-        UserOutputDto optionalUser = userService.getSingleUser(username);
+    public ResponseEntity<UserOutputDtoDetails> getSingleUser(@PathVariable("username") String username) {
+        UserOutputDtoDetails optionalUser = userService.getSingleUser(username);
         return ResponseEntity.ok().body(optionalUser);
     }
 
     @GetMapping(value = "/self")
-    public ResponseEntity<SelfOutputDto> getSelfAsUser() {
-        SelfOutputDto selfAsUser = userService.getSelfAsUser();
+    public ResponseEntity<UserOutputDtoDetails> getSelfAsUser() {
+        UserOutputDtoDetails selfAsUser = userService.getSelfAsUser();
         return ResponseEntity.ok().body(selfAsUser);
     }
 
