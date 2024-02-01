@@ -126,6 +126,7 @@ public class RosterService {
     private RosterNameOutputDto transferRosterNameToDto(Roster roster) {
         RosterNameOutputDto rosterDto = new RosterNameOutputDto();
         rosterDto.setName(roster.createRosterName());
+        rosterDto.setId(roster.getId());
 
         return rosterDto;
     }
