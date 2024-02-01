@@ -13,7 +13,7 @@ import java.util.Set;
 
 @Getter
 @Setter
-public class SelfOutputDto {
+public class UserOutputDtoDetails {
 
     private String username;
     private String email;
