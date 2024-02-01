@@ -31,12 +31,9 @@ public class UserController {
     }
 
     @GetMapping(value = "")
-    public ResponseEntity<List<UserOutputDto>> getUsers(@RequestParam(required = false) Boolean isDeleted) {
-        if(isDeleted == null) {
-            return ResponseEntity.ok().body(userService.getUsers());
-        }
+    public ResponseEntity<List<UserOutputDto>> getUsers(@RequestParam(required = false)Boolean hasEmployee, @RequestParam(required = false) Boolean isDeleted) {
 
-        return ResponseEntity.ok().body(userService.getUsers(isDeleted));
+        return ResponseEntity.ok().body(userService.getUsers(hasEmployee, isDeleted));
     }
 
     @GetMapping(value = "/{username}")

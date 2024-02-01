@@ -31,24 +31,36 @@ public class UserService {
     }
 
 
-    public List<UserOutputDto> getUsers() {
-        List<UserOutputDto> allUsersList = new ArrayList<>();
-        for (User user : userRepository.findAll()) {
-            allUsersList.add(transferUserToUserOutputDto(user));
+    public List<UserOutputDto> getUsers(Boolean hasEmployee, Boolean isDeleted) {
+        List<User> users = userRepository.findAll();
+        List<UserOutputDto> filteredUsersList = new ArrayList<>();
+//        all Users
+        if (hasEmployee == null && isDeleted == null) {
+            for (User user : users) {
+                filteredUsersList.add(transferUserToUserOutputDto(user));
+            }
+        } else if (hasEmployee == null && isDeleted != null) {
+            for (User user : users) {
+                if (user.getIsDeleted().equals(isDeleted)) {
+                    filteredUsersList.add(transferUserToUserOutputDto(user));
+                }
+            }
+        } else if (hasEmployee != null && isDeleted == null) {
+            for (User user : users) {
+                if (userHasEmployee(user) == hasEmployee) {
+                    filteredUsersList.add(transferUserToUserOutputDto(user));
+                }
+            }
+        } else {
+            for (User user : users) {
+                if (userHasEmployee(user) == hasEmployee && user.getIsDeleted().equals(isDeleted)) {
+                    filteredUsersList.add(transferUserToUserOutputDto(user));
+                }
+            }
         }
-        return allUsersList;
+        return filteredUsersList;
     }
-
-    public List<UserOutputDto> getUsers(Boolean isDeleted) {
-        List<UserOutputDto> allUsersList = new ArrayList<>();
-        for (User user : userRepository.findAllByIsDeleted(isDeleted)) {
-            allUsersList.add(transferUserToUserOutputDto(user));
-        }
-        return allUsersList;
-
-
-    }
-
+    
     public UserOutputDtoDetails getSingleUser(String username) {
         User user = userRepository.findById(username).orElseThrow(() -> new RecordNotFoundException("No user found with name: " + username));
         return createProfile(user);
@@ -87,9 +99,6 @@ public class UserService {
     }
 
 
-
-
-
 //    Helper methods
 
 
@@ -101,7 +110,7 @@ public class UserService {
         userOutputDtoDetails.setAuthorities(user.getAuthorities());
 
 //        Employee data
-        if(user.getEmployee() != null) {
+        if (user.getEmployee() != null) {
             Employee employee = user.getEmployee();
             userOutputDtoDetails.setEmployeeId(employee.getId());
             userOutputDtoDetails.setFirstName(employee.getFirstName());
@@ -118,6 +127,7 @@ public class UserService {
 
         return userOutputDtoDetails;
     }
+
     private boolean userExists(String username) {
         return userRepository.existsById(username);
     }
@@ -142,7 +152,7 @@ public class UserService {
     private User dtoToUserAsAdmin(User user, UserInputDto userInputDto) {
 
 //        Check username for new user
-        if(user.getUsername() == null && userExists(userInputDto.getUsername())) {
+        if (user.getUsername() == null && userExists(userInputDto.getUsername())) {
             throw new IsNotUniqueException("Username is not unique");
         }
 
@@ -152,8 +162,8 @@ public class UserService {
 
 //        Check email for new user
         userInputDto.setEmail(userInputDto.getEmail().toLowerCase());
-        if(user.getEmail() == null) {
-            if(emailExists(userInputDto.getEmail())) {
+        if (user.getEmail() == null) {
+            if (emailExists(userInputDto.getEmail())) {
                 throw new BadRequestException("Email is not unique");
             }
         }
@@ -243,6 +253,10 @@ public class UserService {
         User updatedUser = dtoToUserAsSelf(userToUpdate, userInputDto);
         userRepository.save(updatedUser);
         return transferUserToUserOutputDto(updatedUser);
+    }
+
+    private boolean userHasEmployee(User user) {
+        return user.getEmployee() != null;
     }
 
 }
