@@ -8,5 +8,6 @@ import lombok.Setter;
 public class RosterNameOutputDto {
 
     private String name;
+    private Long id;
 
 }

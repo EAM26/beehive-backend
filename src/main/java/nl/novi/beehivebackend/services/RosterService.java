@@ -111,6 +111,11 @@ public class RosterService {
         LocalDate endOfYear = LocalDate.of(year, 12, 31);
         int lastWeekOfYear = endOfYear.get(weekFields.weekOfWeekBasedYear());
 
+//        Check if last day of year is not in week 1 of next year
+        if (lastWeekOfYear == 1) {
+            lastWeekOfYear = endOfYear.minusWeeks(1).get(weekFields.weekOfWeekBasedYear());
+        }
+
         return weekNumber >= 1 && weekNumber <= lastWeekOfYear;
     }
 
@@ -126,6 +131,7 @@ public class RosterService {
     private RosterNameOutputDto transferRosterNameToDto(Roster roster) {
         RosterNameOutputDto rosterDto = new RosterNameOutputDto();
         rosterDto.setName(roster.createRosterName());
+        rosterDto.setId(roster.getId());
 
         return rosterDto;
     }
