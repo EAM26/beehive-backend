@@ -206,7 +206,7 @@ public class ShiftService {
 
     }
 
-    private ShiftOutputDto transferShiftToShiftOutputDto(Shift shift) {
+    public ShiftOutputDto transferShiftToShiftOutputDto(Shift shift) {
         ShiftOutputDto shiftOutputDto = new ShiftOutputDto();
         shiftOutputDto.setId(shift.getId());
         shiftOutputDto.setStartShift(shift.getStartShift());

@@ -14,5 +14,5 @@ public class RosterOutputDto {
     private String name;
     private String teamName;
     private List<LocalDate> weekDates;
-    private List<Shift> shifts;
+    private List<ShiftOutputDto> shiftOutputDtos;
 }
