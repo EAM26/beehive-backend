@@ -12,6 +12,7 @@ import java.util.List;
 public class RosterOutputDto {
     private Long id;
     private String name;
+    private String teamName;
     private List<LocalDate> weekDates;
-    private List<Shift> shifts;
+    private List<ShiftOutputDto> shiftOutputDtos;
 }

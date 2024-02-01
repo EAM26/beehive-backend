@@ -3,8 +3,10 @@ package nl.novi.beehivebackend.services;
 import nl.novi.beehivebackend.dtos.input.RosterInputDto;
 import nl.novi.beehivebackend.dtos.output.RosterNameOutputDto;
 import nl.novi.beehivebackend.dtos.output.RosterOutputDto;
+import nl.novi.beehivebackend.dtos.output.ShiftOutputDto;
 import nl.novi.beehivebackend.exceptions.BadRequestException;
 import nl.novi.beehivebackend.models.Roster;
+import nl.novi.beehivebackend.models.Shift;
 import nl.novi.beehivebackend.models.Team;
 import nl.novi.beehivebackend.repositories.RosterRepository;
 import nl.novi.beehivebackend.repositories.TeamRepository;
@@ -23,10 +25,12 @@ public class RosterService {
 
     private final RosterRepository rosterRepository;
     private final TeamRepository teamRepository;
+    private final ShiftService shiftService;
 
-    public RosterService(RosterRepository rosterRepository, TeamRepository teamRepository) {
+    public RosterService(RosterRepository rosterRepository, TeamRepository teamRepository, ShiftService shiftService) {
         this.rosterRepository = rosterRepository;
         this.teamRepository = teamRepository;
+        this.shiftService = shiftService;
     }
 
     public Iterable<RosterNameOutputDto> getAllRosters() {
@@ -121,9 +125,14 @@ public class RosterService {
 
     private RosterOutputDto transferRosterToOutputDto(Roster roster) {
         RosterOutputDto rosterOutputDto = new RosterOutputDto();
+        List<ShiftOutputDto> shiftOutputDtos = new ArrayList<>();
         rosterOutputDto.setId(roster.getId());
         rosterOutputDto.setName(roster.createRosterName());
-        rosterOutputDto.setShifts(roster.getShifts());
+        rosterOutputDto.setTeamName(roster.getTeam().getTeamName());
+        for(Shift shift: roster.getShifts()) {
+            shiftOutputDtos.add(shiftService.transferShiftToShiftOutputDto(shift));
+        }
+        rosterOutputDto.setShiftOutputDtos(shiftOutputDtos);
         rosterOutputDto.setWeekDates(getDatesOfWeek(roster.getWeek(), roster.getYear()));
         return rosterOutputDto;
     }
@@ -131,6 +140,7 @@ public class RosterService {
     private RosterNameOutputDto transferRosterNameToDto(Roster roster) {
         RosterNameOutputDto rosterDto = new RosterNameOutputDto();
         rosterDto.setName(roster.createRosterName());
+        rosterDto.setTeamName(roster.getTeam().getTeamName());
         rosterDto.setId(roster.getId());
 
         return rosterDto;
