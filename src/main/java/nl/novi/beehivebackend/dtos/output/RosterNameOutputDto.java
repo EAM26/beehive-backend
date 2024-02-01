@@ -9,5 +9,6 @@ public class RosterNameOutputDto {
 
     private String name;
     private Long id;
+    private String teamName;
 
 }

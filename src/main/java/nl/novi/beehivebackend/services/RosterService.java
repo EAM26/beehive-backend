@@ -123,6 +123,7 @@ public class RosterService {
         RosterOutputDto rosterOutputDto = new RosterOutputDto();
         rosterOutputDto.setId(roster.getId());
         rosterOutputDto.setName(roster.createRosterName());
+        rosterOutputDto.setTeamName(roster.getTeam().getTeamName());
         rosterOutputDto.setShifts(roster.getShifts());
         rosterOutputDto.setWeekDates(getDatesOfWeek(roster.getWeek(), roster.getYear()));
         return rosterOutputDto;
@@ -131,6 +132,7 @@ public class RosterService {
     private RosterNameOutputDto transferRosterNameToDto(Roster roster) {
         RosterNameOutputDto rosterDto = new RosterNameOutputDto();
         rosterDto.setName(roster.createRosterName());
+        rosterDto.setTeamName(roster.getTeam().getTeamName());
         rosterDto.setId(roster.getId());
 
         return rosterDto;
