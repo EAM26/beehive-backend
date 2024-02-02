@@ -109,6 +109,7 @@ public class UserService {
         userOutputDtoDetails.setUsername(user.getUsername());
         userOutputDtoDetails.setEmail(user.getEmail());
         userOutputDtoDetails.setAuthorities(user.getAuthorities());
+        userOutputDtoDetails.setIsDeleted(user.getIsDeleted());
 
 //        Employee data
         if (user.getEmployee() != null) {
