@@ -113,14 +113,8 @@ public class UserService {
 //        Employee data
         if (user.getEmployee() != null) {
             Employee employee = user.getEmployee();
-            userOutputDtoDetails.setEmployeeId(employee.getId());
-            userOutputDtoDetails.setFirstName(employee.getFirstName());
-            userOutputDtoDetails.setPreposition(employee.getPreposition());
-            userOutputDtoDetails.setLastName(employee.getLastName());
-            userOutputDtoDetails.setShortName(employee.getShortName());
-            userOutputDtoDetails.setDob(employee.getDob());
-            userOutputDtoDetails.setPhoneNumber(employee.getPhoneNumber());
-            userOutputDtoDetails.setIsActive(employee.getIsActive());
+            userOutputDtoDetails.setEmployee(employee);
+
             userOutputDtoDetails.setTeam(employee.getTeam());
             userOutputDtoDetails.setShifts(employee.getShifts());
             userOutputDtoDetails.setAbsences(employee.getAbsences());
