@@ -11,6 +11,7 @@ import nl.novi.beehivebackend.models.User;
 import nl.novi.beehivebackend.models.UserRole;
 import nl.novi.beehivebackend.repositories.UserRepository;
 import nl.novi.beehivebackend.utils.UserData;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -32,7 +33,7 @@ public class UserService {
 
 
     public List<UserOutputDto> getUsers(Boolean hasEmployee, Boolean isDeleted) {
-        List<User> users = userRepository.findAll();
+        List<User> users = userRepository.findAll(Sort.by("username"));
         List<UserOutputDto> filteredUsersList = new ArrayList<>();
 //        all Users
         if (hasEmployee == null && isDeleted == null) {
@@ -108,18 +109,13 @@ public class UserService {
         userOutputDtoDetails.setUsername(user.getUsername());
         userOutputDtoDetails.setEmail(user.getEmail());
         userOutputDtoDetails.setAuthorities(user.getAuthorities());
+        userOutputDtoDetails.setIsDeleted(user.getIsDeleted());
 
 //        Employee data
         if (user.getEmployee() != null) {
             Employee employee = user.getEmployee();
-            userOutputDtoDetails.setEmployeeId(employee.getId());
-            userOutputDtoDetails.setFirstName(employee.getFirstName());
-            userOutputDtoDetails.setPreposition(employee.getPreposition());
-            userOutputDtoDetails.setLastName(employee.getLastName());
-            userOutputDtoDetails.setShortName(employee.getShortName());
-            userOutputDtoDetails.setDob(employee.getDob());
-            userOutputDtoDetails.setPhoneNumber(employee.getPhoneNumber());
-            userOutputDtoDetails.setIsActive(employee.getIsActive());
+            userOutputDtoDetails.setEmployee(employee);
+
             userOutputDtoDetails.setTeam(employee.getTeam());
             userOutputDtoDetails.setShifts(employee.getShifts());
             userOutputDtoDetails.setAbsences(employee.getAbsences());
