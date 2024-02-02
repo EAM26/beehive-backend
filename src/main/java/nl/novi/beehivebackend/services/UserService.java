@@ -11,6 +11,7 @@ import nl.novi.beehivebackend.models.User;
 import nl.novi.beehivebackend.models.UserRole;
 import nl.novi.beehivebackend.repositories.UserRepository;
 import nl.novi.beehivebackend.utils.UserData;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -32,7 +33,7 @@ public class UserService {
 
 
     public List<UserOutputDto> getUsers(Boolean hasEmployee, Boolean isDeleted) {
-        List<User> users = userRepository.findAll();
+        List<User> users = userRepository.findAll(Sort.by("username"));
         List<UserOutputDto> filteredUsersList = new ArrayList<>();
 //        all Users
         if (hasEmployee == null && isDeleted == null) {
