@@ -143,8 +143,7 @@ public class UserService {
         outputDto.setEmail(user.getEmail());
         outputDto.setAuthorities(user.getAuthorities());
         if (user.getEmployee() != null) {
-            outputDto.setEmployeeId(user.getEmployee().getId());
-            outputDto.setShortName(user.getEmployee().getShortName());
+            outputDto.setEmployee(user.getEmployee());
         }
         return outputDto;
     }
