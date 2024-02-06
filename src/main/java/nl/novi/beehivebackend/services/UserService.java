@@ -74,13 +74,16 @@ public class UserService {
 
 
     public UserOutputDto createUser(UserInputDto userInputDto) {
-
+        if(userInputDto.getPassword() == null) {
+            throw new BadRequestException("Password is required.");
+        }
         User user = dtoToUserAsAdmin(new User(), userInputDto);
         userRepository.save(user);
         return transferUserToUserOutputDto(user);
     }
 
     public UserOutputDto updateUser(String username, UserInputDto userInputDto) {
+
         User userToUpdate = userRepository.findById(username).orElseThrow(() -> new RecordNotFoundException("User with name " + username + " doesn't exist."));
         User currentUser = userRepository.findByUsername(getCurrentUserId());
 
@@ -175,7 +178,11 @@ public class UserService {
         }
 
         user.setUsername(userInputDto.getUsername());
-        user.setPassword(passwordEncoder.encode(userInputDto.getPassword()));
+//        If password == null in update -> keep old password
+        if(userInputDto.getPassword() != null) {
+            user.setPassword(passwordEncoder.encode(userInputDto.getPassword()));
+        }
+
         user.setEmail(userInputDto.getEmail());
         if (userInputDto.getIsDeleted() != null) {
             user.setIsDeleted(userInputDto.getIsDeleted());
@@ -202,7 +209,11 @@ public class UserService {
         if (!hasRole(currentUser, userInputDto.getUserRole())) {
             throw new AccessDeniedException("Not allowed to change authority");
         }
-        currentUser.setPassword(passwordEncoder.encode(userInputDto.getPassword()));
+
+//        If password == null in update -> keep old password
+        if (userInputDto.getPassword() != null) {
+            currentUser.setPassword(passwordEncoder.encode(userInputDto.getPassword()));
+        }
         currentUser.setEmail(userInputDto.getEmail());
         return currentUser;
     }

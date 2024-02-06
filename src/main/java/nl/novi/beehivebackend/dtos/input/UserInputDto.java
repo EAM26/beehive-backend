@@ -17,7 +17,7 @@ public class UserInputDto {
     @Email(message = "Valid email is required.")
     private String email;
 
-    @NotBlank(message = "Password is required.")
+//    @NotBlank(message = "Password is required.")
     @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#&()\\[{}\\]:;',?/*~$^+=<>]).{8,20}$", message =
             "1. Password must contain at least one digit [0-9].\n" +
                     "2. Password must contain at least one lowercase Latin character [a-z].\n" +
