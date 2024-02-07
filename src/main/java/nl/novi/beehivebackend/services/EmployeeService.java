@@ -113,7 +113,7 @@ public class EmployeeService {
 
 
 
-    private EmployeeOutputDto transferEmployeeToEmployeeOutputDto(Employee employee) {
+    public EmployeeOutputDto transferEmployeeToEmployeeOutputDto(Employee employee) {
         EmployeeOutputDto employeeOutputDto = new EmployeeOutputDto();
         employeeOutputDto.setId(employee.getId());
         employeeOutputDto.setFirstName(employee.getFirstName());
@@ -126,6 +126,7 @@ public class EmployeeService {
         employeeOutputDto.setTeam(employee.getTeam());
         employeeOutputDto.setShifts(shiftSorter(employee.getShifts()));
         employeeOutputDto.setAbsences(absenceSorter(employee.getAbsences()));
+        employeeOutputDto.setUserName(employee.getUser().getUsername());
 
         return employeeOutputDto;
     }

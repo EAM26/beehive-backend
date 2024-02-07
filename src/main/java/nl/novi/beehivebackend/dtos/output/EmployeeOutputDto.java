@@ -24,5 +24,6 @@ public class EmployeeOutputDto {
     private Team team;
     private List<Shift> shifts;
     private List<Absence> absences;
+    private String userName;
 
 }

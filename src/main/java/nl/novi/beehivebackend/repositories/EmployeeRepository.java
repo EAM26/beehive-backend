@@ -1,5 +1,6 @@
 package nl.novi.beehivebackend.repositories;
 
+import nl.novi.beehivebackend.dtos.output.EmployeeOutputDto;
 import nl.novi.beehivebackend.models.Employee;
 import nl.novi.beehivebackend.models.Team;
 import org.springframework.data.domain.Sort;
