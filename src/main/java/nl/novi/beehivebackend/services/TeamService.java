@@ -1,10 +1,14 @@
 package nl.novi.beehivebackend.services;
 
 import nl.novi.beehivebackend.dtos.input.TeamInputDto;
+import nl.novi.beehivebackend.dtos.output.EmployeeOutputDto;
+import nl.novi.beehivebackend.dtos.output.RosterOutputDto;
 import nl.novi.beehivebackend.dtos.output.TeamOutputDtoDetails;
 import nl.novi.beehivebackend.dtos.output.TeamOutputDto;
 import nl.novi.beehivebackend.exceptions.BadRequestException;
 import nl.novi.beehivebackend.exceptions.RecordNotFoundException;
+import nl.novi.beehivebackend.models.Employee;
+import nl.novi.beehivebackend.models.Roster;
 import nl.novi.beehivebackend.models.Team;
 import nl.novi.beehivebackend.repositories.EmployeeRepository;
 import nl.novi.beehivebackend.repositories.RosterRepository;
@@ -19,11 +23,16 @@ public class TeamService {
     private final TeamRepository teamRepository;
     private final EmployeeRepository employeeRepository;
     private final RosterRepository rosterRepository;
+    private final EmployeeService employeeService;
+    private final RosterService rosterService;
 
-    public TeamService(TeamRepository teamRepository, EmployeeRepository employeeRepository, RosterRepository rosterRepository) {
+    public TeamService(TeamRepository teamRepository, EmployeeRepository employeeRepository, RosterRepository rosterRepository, EmployeeService employeeService, RosterService rosterService) {
         this.employeeRepository = employeeRepository;
         this.teamRepository = teamRepository;
         this.rosterRepository = rosterRepository;
+        this.employeeService = employeeService;
+
+        this.rosterService = rosterService;
     }
 
     public Iterable<TeamOutputDto> getAllTeams() {
@@ -96,9 +105,27 @@ public class TeamService {
         TeamOutputDtoDetails teamOutputDtoDetails = new TeamOutputDtoDetails();
         teamOutputDtoDetails.setTeamName(team.getTeamName());
         teamOutputDtoDetails.setIsActive(team.getIsActive());
-        teamOutputDtoDetails.setEmployees(employeeRepository.findAllByTeam(team));
-        teamOutputDtoDetails.setRosters(rosterRepository.findAllByTeam(team));
+
+        teamOutputDtoDetails.setEmployeesOutputDtos(transferEmployeesToDtos(employeeRepository.findAllByTeam(team)));
+        teamOutputDtoDetails.setRostersOutputDtos(tranferRostersToDtos(rosterRepository.findAllByTeam(team)));
+//        teamOutputDtoDetails.setRostersOutputDtos(rosterRepository.findAllByTeam(team));
 
         return teamOutputDtoDetails;
+    }
+
+    private List<EmployeeOutputDto> transferEmployeesToDtos (List<Employee> employees) {
+        List<EmployeeOutputDto> employeeOutputDtos = new ArrayList<>();
+        for(Employee employee: employees) {
+            employeeOutputDtos.add(employeeService.transferEmployeeToEmployeeOutputDto(employee));
+        }
+        return employeeOutputDtos;
+    }
+
+    private List<RosterOutputDto> tranferRostersToDtos (List<Roster> rosters) {
+        List<RosterOutputDto> rosterOutputDtos = new ArrayList<>();
+        for(Roster roster: rosters) {
+            rosterOutputDtos.add(rosterService.transferRosterToOutputDto(roster));
+        }
+        return rosterOutputDtos;
     }
 }

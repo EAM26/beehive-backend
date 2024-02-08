@@ -123,7 +123,7 @@ public class RosterService {
         return weekNumber >= 1 && weekNumber <= lastWeekOfYear;
     }
 
-    private RosterOutputDto transferRosterToOutputDto(Roster roster) {
+    public RosterOutputDto transferRosterToOutputDto(Roster roster) {
         RosterOutputDto rosterOutputDto = new RosterOutputDto();
         List<ShiftOutputDto> shiftOutputDtos = new ArrayList<>();
         rosterOutputDto.setId(roster.getId());
