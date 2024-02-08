@@ -90,11 +90,6 @@ public class UserService {
 
     }
 
-//    private UserOutputDto updateAsSelf(User userToUpdate, UserInputDto userInputDto) {
-//        User updatedUser = dtoToUserAsSelf(userToUpdate, userInputDto);
-//        userRepository.save(updatedUser);
-//        return transferUserToUserOutputDto(updatedUser);
-//    }
 
     public UserOutputDto updateUser(String username, UserInputDto userInputDto) {
 
@@ -107,15 +102,17 @@ public class UserService {
         }
 
 //      Check is Self or Admin
-
         if (isSelf(userToUpdate)) {
             return updateSelf(userInputDto);
         } else if (isAdmin(currentUser)) {
-            return updateAsAdmin(userToUpdate, userInputDto);
+            User updatedUser = dtoToUserAsAdmin(userToUpdate, userInputDto);
+            userRepository.save(updatedUser);
+            return transferUserToUserOutputDto(updatedUser);
         } else {
             throw new AccessDeniedException("Insufficient permission for updating user.");
         }
     }
+
 
 
 //    Helper methods
@@ -270,11 +267,7 @@ public class UserService {
         return (user.getUsername().equals(getCurrentUserId()));
     }
 
-    private UserOutputDto updateAsAdmin(User user, UserInputDto userInputDto) {
-        User updatedUser = dtoToUserAsAdmin(user, userInputDto);
-        userRepository.save(updatedUser);
-        return transferUserToUserOutputDto(updatedUser);
-    }
+
 
 
     private boolean userHasEmployee(User user) {
