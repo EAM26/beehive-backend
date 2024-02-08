@@ -126,7 +126,7 @@ public class EmployeeService {
         employeeOutputDto.setTeam(employee.getTeam());
         employeeOutputDto.setShifts(shiftSorter(employee.getShifts()));
         employeeOutputDto.setAbsences(absenceSorter(employee.getAbsences()));
-        employeeOutputDto.setUserName(employee.getUser().getUsername());
+        employeeOutputDto.setUsername(employee.getUser().getUsername());
 
         return employeeOutputDto;
     }
