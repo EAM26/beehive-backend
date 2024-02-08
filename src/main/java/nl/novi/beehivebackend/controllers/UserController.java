@@ -70,6 +70,15 @@ public class UserController {
         return new ResponseEntity<>(userOutputDto.getUsername() + " updated.", HttpStatus.OK);
     }
 
+    @PutMapping(value = "/self")
+    public ResponseEntity<String> updateSelf(@Valid @RequestBody UserInputDto userInputDto, BindingResult bindingResult) {
+        if (bindingResult.hasFieldErrors()) {
+            return ResponseEntity.badRequest().body(validationUtil.validationMessage(bindingResult).toString());
+        }
+        UserOutputDto userOutputDto = userService.updateSelf(userInputDto);
+        return new ResponseEntity<>(userOutputDto.getUsername() + " updated.", HttpStatus.OK);
+    }
+
 
 
 

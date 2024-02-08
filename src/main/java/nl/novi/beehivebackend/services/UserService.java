@@ -61,7 +61,7 @@ public class UserService {
         }
         return filteredUsersList;
     }
-    
+
     public UserOutputDtoDetails getSingleUser(String username) {
         User user = userRepository.findById(username).orElseThrow(() -> new RecordNotFoundException("No user found with name: " + username));
         return createProfile(user);
@@ -74,7 +74,7 @@ public class UserService {
 
 
     public UserOutputDto createUser(UserInputDto userInputDto) {
-        if(userInputDto.getPassword() == null) {
+        if (userInputDto.getPassword() == null) {
             throw new BadRequestException("Password is required.");
         }
         User user = dtoToUserAsAdmin(new User(), userInputDto);
@@ -82,11 +82,26 @@ public class UserService {
         return transferUserToUserOutputDto(user);
     }
 
+    public UserOutputDto updateSelf(UserInputDto userInputDto) {
+        User currentUser = userRepository.findByUsername(getCurrentUserId());
+        User updatedUser = dtoToUserAsSelf(currentUser, userInputDto);
+        userRepository.save(updatedUser);
+        return transferUserToUserOutputDto(updatedUser);
+
+    }
+
+//    private UserOutputDto updateAsSelf(User userToUpdate, UserInputDto userInputDto) {
+//        User updatedUser = dtoToUserAsSelf(userToUpdate, userInputDto);
+//        userRepository.save(updatedUser);
+//        return transferUserToUserOutputDto(updatedUser);
+//    }
+
     public UserOutputDto updateUser(String username, UserInputDto userInputDto) {
 
         User userToUpdate = userRepository.findById(username).orElseThrow(() -> new RecordNotFoundException("User with name " + username + " doesn't exist."));
         User currentUser = userRepository.findByUsername(getCurrentUserId());
 
+//        username is fixed once set
         if (!username.equals(userInputDto.getUsername())) {
             throw new AccessDeniedException("Not allowed to change username.");
         }
@@ -94,7 +109,7 @@ public class UserService {
 //      Check is Self or Admin
 
         if (isSelf(userToUpdate)) {
-            return updateAsSelf(userToUpdate, userInputDto);
+            return updateSelf(userInputDto);
         } else if (isAdmin(currentUser)) {
             return updateAsAdmin(userToUpdate, userInputDto);
         } else {
@@ -179,7 +194,7 @@ public class UserService {
 
         user.setUsername(userInputDto.getUsername());
 //        If password == null in update -> keep old password
-        if(userInputDto.getPassword() != null) {
+        if (userInputDto.getPassword() != null) {
             user.setPassword(passwordEncoder.encode(userInputDto.getPassword()));
         }
 
@@ -194,14 +209,15 @@ public class UserService {
     }
 
     private User dtoToUserAsSelf(User currentUser, UserInputDto userInputDto) {
-        if (currentUser.getIsDeleted() != userInputDto.getIsDeleted()) {
-            throw new AccessDeniedException("Not allowed to change user status.");
+        if(!currentUser.getUsername().equals(userInputDto.getUsername())) {
+            throw new BadRequestException("Not allowed to change user name.");
         }
 
-        userInputDto.setEmail(userInputDto.getEmail().toLowerCase());
-        if (!userInputDto.getEmail().equals(currentUser.getEmail()) && emailExists(userInputDto.getEmail())) {
-            throw new IsNotUniqueException("Email is not unique");
+//          If password == null in update -> keep old password
+        if (userInputDto.getPassword() != null) {
+            currentUser.setPassword(passwordEncoder.encode(userInputDto.getPassword()));
         }
+
         if (!isRole(userInputDto.getUserRole())) {
             throw new BadRequestException("Unknown user role");
         }
@@ -210,10 +226,15 @@ public class UserService {
             throw new AccessDeniedException("Not allowed to change authority");
         }
 
-//        If password == null in update -> keep old password
-        if (userInputDto.getPassword() != null) {
-            currentUser.setPassword(passwordEncoder.encode(userInputDto.getPassword()));
+        userInputDto.setEmail(userInputDto.getEmail().toLowerCase());
+        if (!userInputDto.getEmail().equals(currentUser.getEmail()) && emailExists(userInputDto.getEmail())) {
+            throw new IsNotUniqueException("Email is not unique");
         }
+
+        if (currentUser.getIsDeleted() != userInputDto.getIsDeleted()) {
+            throw new AccessDeniedException("Not allowed to change user status.");
+        }
+
         currentUser.setEmail(userInputDto.getEmail());
         return currentUser;
     }
@@ -255,11 +276,6 @@ public class UserService {
         return transferUserToUserOutputDto(updatedUser);
     }
 
-    private UserOutputDto updateAsSelf(User userToUpdate, UserInputDto userInputDto) {
-        User updatedUser = dtoToUserAsSelf(userToUpdate, userInputDto);
-        userRepository.save(updatedUser);
-        return transferUserToUserOutputDto(updatedUser);
-    }
 
     private boolean userHasEmployee(User user) {
         return user.getEmployee() != null;
