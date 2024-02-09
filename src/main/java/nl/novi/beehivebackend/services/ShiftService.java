@@ -42,6 +42,14 @@ public class ShiftService {
         return shiftOutputDtos;
     }
 
+    public Iterable<ShiftOutputDto> getAllShiftsByRoster(Long id) {
+        ArrayList<ShiftOutputDto> shiftOutputDtos = new ArrayList<>();
+        for (Shift shift : shiftRepository.findByRosterId(id)) {
+            shiftOutputDtos.add(transferShiftToShiftOutputDto(shift));
+        }
+        return shiftOutputDtos;
+    }
+
     public ShiftOutputDto getShift(Long id) {
         Shift shift = shiftRepository.findById(id).orElseThrow(() -> new RecordNotFoundException("No shift found with id: " + id));
         return transferShiftToShiftOutputDto(shift);

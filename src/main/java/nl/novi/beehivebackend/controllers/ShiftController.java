@@ -36,6 +36,11 @@ public class ShiftController {
         return new ResponseEntity<>(shiftService.getShift(id), HttpStatus.OK);
     }
 
+    @GetMapping("/roster/{id}")
+    public ResponseEntity<Iterable<ShiftOutputDto>> getAllShiftsByRoster(@PathVariable Long id) {
+        return new ResponseEntity<>(shiftService.getAllShiftsByRoster(id), HttpStatus.OK);
+    }
+
     @PostMapping
     public ResponseEntity<Object> createShift(@Valid @RequestBody ShiftInputDto shiftInputDto, BindingResult bindingResult) {
         if (bindingResult.hasFieldErrors()) {
@@ -55,14 +60,7 @@ public class ShiftController {
 
         return new ResponseEntity<>(shiftService.updateShift(id, shiftInputDto), HttpStatus.OK);
     }
-//
-//    @PutMapping("/{id}") ResponseEntity<Object> updateShift(@PathVariable Long id, @Valid @RequestBody ShiftInputDto shiftInputDto, BindingResult bindingResult) {
-//        if (bindingResult.hasFieldErrors()) {
-//            return ResponseEntity.badRequest().body(validationUtil.validationMessage(bindingResult).toString());
-//        }
-//        return new ResponseEntity<>(shiftService.updateShift(id, shiftInputDto), HttpStatus.ACCEPTED);
-//    }
-//
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Object> deleteShift(@PathVariable Long id) {
         shiftService.deleteShift(id);
