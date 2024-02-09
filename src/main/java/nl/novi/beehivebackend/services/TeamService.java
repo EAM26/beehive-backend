@@ -105,27 +105,17 @@ public class TeamService {
         TeamOutputDtoDetails teamOutputDtoDetails = new TeamOutputDtoDetails();
         teamOutputDtoDetails.setTeamName(team.getTeamName());
         teamOutputDtoDetails.setIsActive(team.getIsActive());
-
-        teamOutputDtoDetails.setEmployeesOutputDtos(transferEmployeesToDtos(employeeRepository.findAllByTeam(team)));
-        teamOutputDtoDetails.setRostersOutputDtos(tranferRostersToDtos(rosterRepository.findAllByTeam(team)));
-//        teamOutputDtoDetails.setRostersOutputDtos(rosterRepository.findAllByTeam(team));
+        List<Employee> employees = employeeRepository.findAllByTeam(team);
+        List<String> names = new ArrayList<>();
+        for(Employee employee: employees) {
+            System.out.println(employee.getShortName());
+            names.add(employee.getShortName());
+        }
+        teamOutputDtoDetails.setEmployeeNames(names);
 
         return teamOutputDtoDetails;
     }
 
-    private List<EmployeeOutputDto> transferEmployeesToDtos (List<Employee> employees) {
-        List<EmployeeOutputDto> employeeOutputDtos = new ArrayList<>();
-        for(Employee employee: employees) {
-            employeeOutputDtos.add(employeeService.transferEmployeeToEmployeeOutputDto(employee));
-        }
-        return employeeOutputDtos;
-    }
 
-    private List<RosterOutputDto> tranferRostersToDtos (List<Roster> rosters) {
-        List<RosterOutputDto> rosterOutputDtos = new ArrayList<>();
-        for(Roster roster: rosters) {
-            rosterOutputDtos.add(rosterService.transferRosterToOutputDto(roster));
-        }
-        return rosterOutputDtos;
-    }
+
 }
