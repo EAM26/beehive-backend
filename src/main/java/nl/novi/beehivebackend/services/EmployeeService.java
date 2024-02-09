@@ -8,6 +8,7 @@ import nl.novi.beehivebackend.exceptions.RecordNotFoundException;
 import nl.novi.beehivebackend.dtos.output.EmployeeOutputDto;
 import nl.novi.beehivebackend.models.*;
 import nl.novi.beehivebackend.repositories.EmployeeRepository;
+import nl.novi.beehivebackend.repositories.ShiftRepository;
 import nl.novi.beehivebackend.repositories.TeamRepository;
 import nl.novi.beehivebackend.repositories.UserRepository;
 import org.springframework.data.domain.Sort;
@@ -24,13 +25,14 @@ public class EmployeeService {
     private final EmployeeRepository employeeRepository;
     private final TeamRepository teamRepository;
     private final UserRepository userRepository;
+    private final ShiftRepository shiftRepository;
 
 
-    public EmployeeService(EmployeeRepository employeeRepository, TeamRepository teamRepository, UserRepository userRepository) {
+    public EmployeeService(EmployeeRepository employeeRepository, TeamRepository teamRepository, UserRepository userRepository, ShiftRepository shiftRepository) {
         this.employeeRepository = employeeRepository;
         this.teamRepository = teamRepository;
         this.userRepository = userRepository;
-
+        this.shiftRepository = shiftRepository;
     }
 
 
@@ -40,6 +42,11 @@ public class EmployeeService {
             employeeOutputDtos.add(transferEmployeeToEmployeeOutputDto(employee));
         }
         return employeeOutputDtos;
+    }
+
+    public EmployeeOutputDto getSingleEmployee(Long id) {
+        Employee employee = employeeRepository.findById(id).orElseThrow(()-> new RecordNotFoundException("No employee found with id: " + id));
+        return transferEmployeeToEmployeeOutputDto(employee);
     }
 
     public Iterable<EmployeeOutputDto> getAllEmployees(String teamName) {
@@ -52,6 +59,32 @@ public class EmployeeService {
         return employeeOutputDtos;
     }
 
+    public Iterable<EmployeeOutputDto>getAvailableEmployees(Long id) {
+        Shift shift = shiftRepository.findById(id).orElseThrow(()-> new RecordNotFoundException("No shift found with id: " + id));
+
+        List<EmployeeOutputDto> availableEmployees = new ArrayList<>();
+        for (Employee employee : employeeRepository.findAllByTeam(shift.getTeam())) {
+            if(!isOverlapShift(shift, employee)) {
+                availableEmployees.add(transferEmployeeForRoster(employee));
+            }
+        }
+        return availableEmployees ;
+    }
+
+    private boolean isOverlapShift(Shift shift, Employee employee) {
+        List<Shift> employeeShifts = shiftRepository.findByEmployeeId(employee.getId());
+        if (employeeShifts.isEmpty()) {
+            return false;
+        }
+        for (Shift plannedShift : employeeShifts) {
+            if (plannedShift.getStartShift().isBefore(shift.getEndShift()) &&
+                    plannedShift.getEndShift().isAfter(shift.getStartShift())) {
+                return true;
+            }
+
+        }
+        return false;
+    }
     public EmployeeOutputDto createEmployee(EmployeeInputDto employeeInputDto) {
 
 //        get user
@@ -126,6 +159,20 @@ public class EmployeeService {
         employeeOutputDto.setTeam(employee.getTeam());
         employeeOutputDto.setShifts(shiftSorter(employee.getShifts()));
         employeeOutputDto.setAbsences(absenceSorter(employee.getAbsences()));
+        employeeOutputDto.setUsername(employee.getUser().getUsername());
+
+        return employeeOutputDto;
+    }
+    public EmployeeOutputDto transferEmployeeForRoster(Employee employee) {
+        EmployeeOutputDto employeeOutputDto = new EmployeeOutputDto();
+        employeeOutputDto.setId(employee.getId());
+        employeeOutputDto.setFirstName(employee.getFirstName());
+        employeeOutputDto.setPreposition(employee.getPreposition());
+        employeeOutputDto.setLastName(employee.getLastName());
+        employeeOutputDto.setShortName(employee.getShortName());
+        employeeOutputDto.setDob(employee.getDob());
+        employeeOutputDto.setPhoneNumber(employee.getPhoneNumber());
+        employeeOutputDto.setIsActive(employee.getIsActive());
         employeeOutputDto.setUsername(employee.getUser().getUsername());
 
         return employeeOutputDto;

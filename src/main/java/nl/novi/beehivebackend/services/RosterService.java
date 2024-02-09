@@ -129,8 +129,11 @@ public class RosterService {
         rosterOutputDto.setId(roster.getId());
         rosterOutputDto.setName(roster.createRosterName());
         rosterOutputDto.setTeamName(roster.getTeam().getTeamName());
-        for(Shift shift: roster.getShifts()) {
-            shiftOutputDtos.add(shiftService.transferShiftToShiftOutputDto(shift));
+        if(roster.getShifts()!= null) {
+            for(Shift shift: roster.getShifts()) {
+                shiftOutputDtos.add(shiftService.transferShiftToShiftOutputDto(shift));
+            }
+
         }
         rosterOutputDto.setShiftOutputDtos(shiftOutputDtos);
         rosterOutputDto.setWeekDates(getDatesOfWeek(roster.getWeek(), roster.getYear()));
