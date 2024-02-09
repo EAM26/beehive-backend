@@ -7,10 +7,7 @@ import nl.novi.beehivebackend.exceptions.IsNotUniqueException;
 import nl.novi.beehivebackend.exceptions.RecordNotFoundException;
 import nl.novi.beehivebackend.dtos.output.EmployeeOutputDto;
 import nl.novi.beehivebackend.models.*;
-import nl.novi.beehivebackend.repositories.EmployeeRepository;
-import nl.novi.beehivebackend.repositories.ShiftRepository;
-import nl.novi.beehivebackend.repositories.TeamRepository;
-import nl.novi.beehivebackend.repositories.UserRepository;
+import nl.novi.beehivebackend.repositories.*;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -26,13 +23,16 @@ public class EmployeeService {
     private final TeamRepository teamRepository;
     private final UserRepository userRepository;
     private final ShiftRepository shiftRepository;
+    private final AbsenceRepository absenceRepository;
+    private final ShiftService shiftService;
 
-
-    public EmployeeService(EmployeeRepository employeeRepository, TeamRepository teamRepository, UserRepository userRepository, ShiftRepository shiftRepository) {
+    public EmployeeService(EmployeeRepository employeeRepository, TeamRepository teamRepository, UserRepository userRepository, ShiftRepository shiftRepository, AbsenceRepository absenceRepository, ShiftService shiftService) {
         this.employeeRepository = employeeRepository;
         this.teamRepository = teamRepository;
         this.userRepository = userRepository;
         this.shiftRepository = shiftRepository;
+        this.absenceRepository = absenceRepository;
+        this.shiftService = shiftService;
     }
 
 
@@ -64,11 +64,26 @@ public class EmployeeService {
 
         List<EmployeeOutputDto> availableEmployees = new ArrayList<>();
         for (Employee employee : employeeRepository.findAllByTeam(shift.getTeam())) {
-            if(!isOverlapShift(shift, employee)) {
+            if(!isOverlapShift(shift, employee) && !isOverlapAbsence(shift, employee)) {
                 availableEmployees.add(transferEmployeeForRoster(employee));
             }
         }
         return availableEmployees ;
+    }
+
+    private boolean isOverlapAbsence(Shift shift, Employee employee) {
+        if(shiftService.shiftToAbsenceOverlap(shift.getStartShift(), employee) || shiftService.shiftToAbsenceOverlap(shift.getEndShift(), employee)) {
+            return true;
+        }
+//        shiftToAbsenceOverlap(shiftInputDto.getStartShift(), employee) || shiftToAbsenceOverlap(shiftInputDto.getEndShift(), employee)
+//        List<Absence> employeeAbsences = absenceRepository.findByEmployeeId(employee.getId());
+//        if(employeeAbsences.isEmpty()) {
+//            return false;
+//        }
+//        for (Absence absence: employeeAbsences) {
+//
+//        }
+        return false;
     }
 
     private boolean isOverlapShift(Shift shift, Employee employee) {
