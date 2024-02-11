@@ -90,6 +90,7 @@ public class SpringSecurityConfig {
 
 //              SHIFT REQUESTS
                 .requestMatchers(HttpMethod.GET, "/shifts").hasAnyRole("ADMIN", "MANAGER")
+                .requestMatchers(HttpMethod.GET, "/shifts/roster/{id}").hasAnyRole("ADMIN", "MANAGER")
                 .requestMatchers(HttpMethod.GET, "/shifts/{id}").hasAnyRole("ADMIN", "MANAGER")
 
                 .requestMatchers(HttpMethod.POST, "/shifts").hasAnyRole("ADMIN", "MANAGER")
@@ -127,7 +128,8 @@ public class SpringSecurityConfig {
 //                Employee requests
                 .requestMatchers(HttpMethod.GET, "/employees").hasAnyRole("ADMIN", "MANAGER")
 //                .requestMatchers(HttpMethod.GET, "/employees/profile").authenticated()
-//                .requestMatchers(HttpMethod.GET, "/employees/profile/{id}").hasAnyRole("ADMIN", "MANAGER")
+                .requestMatchers(HttpMethod.GET, "/employees/{id}").hasAnyRole("ADMIN", "MANAGER")
+                .requestMatchers(HttpMethod.GET, "/employees/shift/{id}").hasAnyRole("ADMIN", "MANAGER")
                 .requestMatchers(HttpMethod.POST, "/employees").hasAnyRole("ADMIN", "MANAGER")
                 .requestMatchers(HttpMethod.PUT, "/employees/{id}").hasRole("ADMIN")
 

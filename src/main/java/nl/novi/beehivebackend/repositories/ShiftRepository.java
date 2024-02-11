@@ -9,4 +9,6 @@ public interface ShiftRepository extends JpaRepository<Shift, Long> {
 
     List<Shift> findByEmployeeId(Long id);
 
+    List<Shift> findByRosterId(Long id);
+
 }

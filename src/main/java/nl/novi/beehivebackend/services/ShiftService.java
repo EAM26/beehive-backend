@@ -42,6 +42,14 @@ public class ShiftService {
         return shiftOutputDtos;
     }
 
+    public Iterable<ShiftOutputDto> getAllShiftsByRoster(Long id) {
+        ArrayList<ShiftOutputDto> shiftOutputDtos = new ArrayList<>();
+        for (Shift shift : shiftRepository.findByRosterId(id)) {
+            shiftOutputDtos.add(transferShiftToShiftOutputDto(shift));
+        }
+        return shiftOutputDtos;
+    }
+
     public ShiftOutputDto getShift(Long id) {
         Shift shift = shiftRepository.findById(id).orElseThrow(() -> new RecordNotFoundException("No shift found with id: " + id));
         return transferShiftToShiftOutputDto(shift);
@@ -145,7 +153,7 @@ public class ShiftService {
     }
 
     //   Checks if date of shift overlaps absences of employee
-    private Boolean shiftToAbsenceOverlap(LocalDateTime shiftDateTime, Employee employee) {
+    public Boolean shiftToAbsenceOverlap(LocalDateTime shiftDateTime, Employee employee) {
         LocalDate shiftDate = shiftDateTime.toLocalDate();
         for (Absence absence : absenceRepository.findByEmployeeId(employee.getId())) {
             if (!shiftDate.isBefore(absence.getStartDate()) && !shiftDate.isAfter(absence.getEndDate())) {

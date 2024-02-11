@@ -10,17 +10,20 @@ import java.util.List;
 public class TeamOutputDtoDetails {
     private String teamName;
     private Boolean isActive;
-    private List<EmployeeOutputDto> employeesOutputDtos;
-    private List<RosterOutputDto> rostersOutputDtos;
+    private List <String> employeeNames;
 
-    public TeamOutputDtoDetails() {
-    }
-
-    public TeamOutputDtoDetails(String teamName, Boolean isActive, List<EmployeeOutputDto> employeesOutputDtos, List<RosterOutputDto> rostersOutputDtos) {
+    public TeamOutputDtoDetails(String teamName, boolean isActive, List<String> employeeNames) {
         this.teamName = teamName;
         this.isActive = isActive;
-        this.employeesOutputDtos = employeesOutputDtos;
-        this.rostersOutputDtos = rostersOutputDtos;
+        this.employeeNames = employeeNames;
     }
+
+    public TeamOutputDtoDetails() {
+
+    }
+//    private List<EmployeeOutputDto> employeesOutputDtos;
+//    private List<RosterOutputDto> rostersOutputDtos;
+
+
 }
 

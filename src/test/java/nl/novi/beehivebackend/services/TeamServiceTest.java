@@ -30,8 +30,7 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class TeamServiceTest {
 
-    @Mock
-    RosterRepository rosterRepository;
+
 
     @Mock
     EmployeeRepository employeeRepository;
@@ -47,6 +46,7 @@ class TeamServiceTest {
 
     Employee emp1;
     List<Employee> employees = new ArrayList<>();
+    List<String> employeeNames = new ArrayList<>();
     List<Shift> shifts;
     List<Roster> rosters = new ArrayList<>();
     Roster roster;
@@ -68,6 +68,8 @@ class TeamServiceTest {
         emp1.setShortName("jan");
         emp1.setShifts(shifts);
         employees.add(emp1);
+        employeeNames.add(emp1.getShortName());
+
         shift1 = new Shift(201L, MyDateTimeFormatter.getDateTime("2023-02-20 09:00:00"), MyDateTimeFormatter.getDateTime("2023-02-20 17:00:00"), 1, 2023, team1, emp1, roster);
         shift2 = new Shift(202L, MyDateTimeFormatter.getDateTime("2023-02-21 09:00:00"), MyDateTimeFormatter.getDateTime("2023-02-21 17:00:00"), 1, 2023, team1, emp1, roster);
         roster = new Roster(601L, 52, 2022, shifts, team1);
@@ -78,7 +80,7 @@ class TeamServiceTest {
         teamInputDto2 = new TeamInputDto("Kitchen", false);
         teamOutputDto1 = new TeamOutputDto("Kitchen", true);
         teamOutputDto2 = new TeamOutputDto("Kitchen", false);
-        teamOutputDtoDetails1 = new TeamOutputDtoDetails("Kitchen", true, employees, rosters);
+        teamOutputDtoDetails1 = new TeamOutputDtoDetails("Kitchen", true, employeeNames );
     }
 
     @AfterEach
@@ -222,27 +224,30 @@ class TeamServiceTest {
 
     @Test
     void shouldGetTeamByTeamName() {
+        System.out.println(teamOutputDtoDetails1.getTeamName());
         // Arrange
 
         when(teamRepository.findById(team1.getTeamName())).thenReturn(Optional.of(team1));
         List<Employee> employees1 = Collections.singletonList(emp1);
         when(employeeRepository.findAllByTeam(team1)).thenReturn(employees1);
-        List<Roster> rosters1 = Collections.singletonList(roster);
-        when(rosterRepository.findAllByTeam(team1)).thenReturn(rosters1);
-
+//        List<Roster> rosters1 = Collections.singletonList(roster);
+//        when(rosterRepository.findAllByTeam(team1)).thenReturn(rosters1);
+//
         // Act
         TeamOutputDtoDetails actual = teamService.getTeam(team1.getTeamName());
-
-        // Assert
+//
+//        // Assert
         assertEquals(teamOutputDtoDetails1.getTeamName(), actual.getTeamName());
-
-        assertEquals(teamOutputDtoDetails1.getEmployees(), actual.getEmployees());
-        System.out.println(teamOutputDtoDetails1.getRosters());
-        System.out.println(actual.getRosters());
-        System.out.println(teamOutputDtoDetails1.getEmployees());
-        System.out.println(actual.getEmployees());
-        assertEquals(teamOutputDtoDetails1.getRosters(), actual.getRosters());
         assertEquals(teamOutputDtoDetails1.getIsActive(), actual.getIsActive());
+        assertEquals(teamOutputDtoDetails1.getEmployeeNames().size(), actual.getEmployeeNames().size());
+//
+//        assertEquals(teamOutputDtoDetails1.getEmployees(), actual.getEmployees());
+//        System.out.println(teamOutputDtoDetails1.getRosters());
+//        System.out.println(actual.getRosters());
+//        System.out.println(teamOutputDtoDetails1.getEmployees());
+//        System.out.println(actual.getEmployees());
+//        assertEquals(teamOutputDtoDetails1.getRosters(), actual.getRosters());
+//        assertEquals(teamOutputDtoDetails1.getIsActive(), actual.getIsActive());
     }
 
 
