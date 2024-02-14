@@ -10,12 +10,14 @@ import java.util.List;
 public class TeamOutputDtoDetails {
     private String teamName;
     private Boolean isActive;
-    private List <String> employeeNames;
+    private List <String> employeesData;
+    private List<String> rosterData;
 
-    public TeamOutputDtoDetails(String teamName, boolean isActive, List<String> employeeNames) {
+    public TeamOutputDtoDetails(String teamName, boolean isActive, List<String> employeesData, List<String> rosterData) {
         this.teamName = teamName;
         this.isActive = isActive;
-        this.employeeNames = employeeNames;
+        this.employeesData = employeesData;
+        this.rosterData = rosterData;
     }
 
     public TeamOutputDtoDetails() {

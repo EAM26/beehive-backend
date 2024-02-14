@@ -1,8 +1,6 @@
 package nl.novi.beehivebackend.services;
 
 import nl.novi.beehivebackend.dtos.input.TeamInputDto;
-import nl.novi.beehivebackend.dtos.output.EmployeeOutputDto;
-import nl.novi.beehivebackend.dtos.output.RosterOutputDto;
 import nl.novi.beehivebackend.dtos.output.TeamOutputDtoDetails;
 import nl.novi.beehivebackend.dtos.output.TeamOutputDto;
 import nl.novi.beehivebackend.exceptions.BadRequestException;
@@ -106,13 +104,18 @@ public class TeamService {
         teamOutputDtoDetails.setTeamName(team.getTeamName());
         teamOutputDtoDetails.setIsActive(team.getIsActive());
         List<Employee> employees = employeeRepository.findAllByTeam(team);
-        List<String> names = new ArrayList<>();
+        List<String> empsData = new ArrayList<>();
         for(Employee employee: employees) {
             System.out.println(employee.getShortName());
-            names.add(employee.getShortName());
+            empsData.add(employee.getShortName()+ ": " + employee.getId());
         }
-        teamOutputDtoDetails.setEmployeeNames(names);
-
+        teamOutputDtoDetails.setEmployeesData(empsData);
+        List<String> rosterData = new ArrayList<>();
+        for(Roster roster: rosterRepository.findAllByTeam(team)) {
+            System.out.println(roster.getWeek() + "-" + roster.getYear() + "-" + roster.getTeam().getTeamName());
+            rosterData.add(roster.getWeek() + "-" + roster.getYear() + "-" + roster.getTeam().getTeamName());
+        }
+        teamOutputDtoDetails.setRosterData(rosterData);
         return teamOutputDtoDetails;
     }
 
