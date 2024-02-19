@@ -1,5 +1,7 @@
 package nl.novi.beehivebackend.services;
 
+import jakarta.transaction.Transactional;
+import nl.novi.beehivebackend.exceptions.RecordNotFoundException;
 import nl.novi.beehivebackend.models.ImageData;
 import nl.novi.beehivebackend.models.User;
 import nl.novi.beehivebackend.repositories.ImageDataRepository;
@@ -22,10 +24,25 @@ public class ImageDataService {
         this.userRepository = userRepository;
     }
 
+@Transactional
     public String uploadImage(MultipartFile multipartFile, String username) throws IOException {
-        User user = userRepository.findByUsername(username);
+        User user = userRepository.findById(username).orElseThrow(() -> new RecordNotFoundException("No user found with name: " + username));
+//        ImageData imgData;
+//        if (imageDataRepository.existsByUser(user)) {
+//            imgData = imageDataRepository.findByUser(user).orElseThrow(() -> new RecordNotFoundException("No image found with username: " + user.getUsername()));
+//
+//        } else {
+//            imgData = new ImageData();
+//        }
 
-        ImageData imgData = new ImageData();
+
+        ImageData imgData;
+        Optional<ImageData> existingImageDataOpt = imageDataRepository.findByUser(user);
+        if(existingImageDataOpt.isPresent()) {
+            imgData = imageDataRepository.findByUser(user).orElseThrow(() -> new RecordNotFoundException("No file found with username: " + user.getUsername()));
+        } else {
+            imgData = new ImageData();
+        }
         imgData.setName(multipartFile.getName());
         imgData.setType(multipartFile.getContentType());
         imgData.setImageData(ImageUtil.compressImage(multipartFile.getBytes()));
@@ -37,4 +54,16 @@ public class ImageDataService {
 
         return savedImage.getName();
     }
+
+    public byte[] downloadImage(String username) {
+        User user = userRepository.findById(username).orElseThrow(() -> new RecordNotFoundException("No user found with name: " + username));
+        ImageData imageData = user.getImageData();
+        return ImageUtil.decompressImage(imageData.getImageData());
+
+    }
+//    public ImageData downloadImage2(String username) {
+//       User user =  userRepository.findByUsername(username);
+//       ImageData imageData = user.getImageData();
+//       return imageData;
+//    }
 }
