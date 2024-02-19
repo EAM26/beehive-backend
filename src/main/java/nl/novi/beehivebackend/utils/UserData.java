@@ -1,5 +1,6 @@
 package nl.novi.beehivebackend.utils;
 
+import nl.novi.beehivebackend.exceptions.RecordNotFoundException;
 import nl.novi.beehivebackend.models.User;
 import nl.novi.beehivebackend.repositories.UserRepository;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -17,7 +18,8 @@ public class UserData {
     }
 
     public  User getLoggedInUser() {
-        User user = userRepository.findByUsername(getLoggedInUsername());
+        User user = userRepository.findById(getLoggedInUsername()).orElseThrow(() -> new RecordNotFoundException("No user found with name: " + getLoggedInUsername()));
+//        User user = userRepository.findByUsername(getLoggedInUsername());
         return user;
     }
     private  String getLoggedInUsername() {

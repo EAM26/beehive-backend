@@ -2,6 +2,7 @@ package nl.novi.beehivebackend.services;
 
 
 import nl.novi.beehivebackend.exceptions.DisabledException;
+import nl.novi.beehivebackend.exceptions.RecordNotFoundException;
 import nl.novi.beehivebackend.models.Authority;
 import nl.novi.beehivebackend.models.User;
 import nl.novi.beehivebackend.repositories.UserRepository;
@@ -30,7 +31,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) {
-        User user = userRepository.findByUsername(username);
+        User user = userRepository.findById(username).orElseThrow(() -> new RecordNotFoundException("User not found with name: " + username));
         Set<Authority> authorities = user.getAuthorities();
         List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
         for (Authority authority: authorities) {
