@@ -5,6 +5,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import nl.novi.beehivebackend.exceptions.RecordNotFoundException;
 import nl.novi.beehivebackend.models.User;
 import nl.novi.beehivebackend.repositories.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -57,7 +58,8 @@ public class JwtUtil {
     public String generateToken(UserDetails userDetails) {
         Map<String, Object> claims = new HashMap<>();
         claims.put("authority", userDetails.getAuthorities());
-        User user = userRepository.findByUsername(userDetails.getUsername());
+        User user = userRepository.findById(userDetails.getUsername()).orElseThrow(() -> new RecordNotFoundException("No user found with name: " + userDetails.getUsername()));
+//        User user = userRepository.findByUsername(userDetails.getUsername());
 
         if(user.getEmployee() != null) {
             claims.put("employeeId", user.getEmployeeId());

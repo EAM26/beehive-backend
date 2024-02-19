@@ -83,7 +83,8 @@ public class UserService {
     }
 
     public UserOutputDto updateSelf(UserInputDto userInputDto) {
-        User currentUser = userRepository.findByUsername(getCurrentUserId());
+        User currentUser = userRepository.findById(getCurrentUserId()).orElseThrow(() -> new RecordNotFoundException("No user found with name: " + getCurrentUserId()));
+//        User currentUser = userRepository.findByUsername(getCurrentUserId());
         User updatedUser = dtoToUserAsSelf(currentUser, userInputDto);
         userRepository.save(updatedUser);
         return transferUserToUserOutputDto(updatedUser);
@@ -94,7 +95,8 @@ public class UserService {
     public UserOutputDto updateUser(String username, UserInputDto userInputDto) {
 
         User userToUpdate = userRepository.findById(username).orElseThrow(() -> new RecordNotFoundException("User with name " + username + " doesn't exist."));
-        User currentUser = userRepository.findByUsername(getCurrentUserId());
+        User currentUser = userRepository.findById(getCurrentUserId()).orElseThrow(() -> new RecordNotFoundException("No user found with name: " + username));
+//        User currentUser = userRepository.findByUsername(getCurrentUserId());
 
 //        username is fixed once set
         if (!username.equals(userInputDto.getUsername())) {
