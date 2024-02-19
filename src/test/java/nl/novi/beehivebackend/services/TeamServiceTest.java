@@ -38,6 +38,9 @@ class TeamServiceTest {
     @Mock
     TeamRepository teamRepository;
 
+    @Mock
+    RosterRepository rosterRepository;
+
     @InjectMocks
     TeamService teamService;
 
@@ -46,9 +49,10 @@ class TeamServiceTest {
 
     Employee emp1;
     List<Employee> employees = new ArrayList<>();
-    List<String> employeeNames = new ArrayList<>();
+    List<String> employeesData = new ArrayList<>();
     List<Shift> shifts;
     List<Roster> rosters = new ArrayList<>();
+    List<String> rosterData = new ArrayList<>();
     Roster roster;
     Shift shift1;
     Shift shift2;
@@ -68,19 +72,20 @@ class TeamServiceTest {
         emp1.setShortName("jan");
         emp1.setShifts(shifts);
         employees.add(emp1);
-        employeeNames.add(emp1.getShortName());
+        employeesData.add(emp1.getShortName()+ ": " + emp1.getId());
 
         shift1 = new Shift(201L, MyDateTimeFormatter.getDateTime("2023-02-20 09:00:00"), MyDateTimeFormatter.getDateTime("2023-02-20 17:00:00"), 1, 2023, team1, emp1, roster);
         shift2 = new Shift(202L, MyDateTimeFormatter.getDateTime("2023-02-21 09:00:00"), MyDateTimeFormatter.getDateTime("2023-02-21 17:00:00"), 1, 2023, team1, emp1, roster);
-        roster = new Roster(601L, 52, 2022, shifts, team1);
-        rosters.add(roster);
         team1 = new Team("Kitchen", true, employees, shifts, rosters);
         team2 = new Team("Kitchen", false, employees, shifts, rosters);
+        roster = new Roster(601L, 52, 2022, shifts, team1);
+        rosters.add(roster);
+        rosterData. add(roster.getWeek() + "-" + roster.getYear() + "-" + roster.getTeam().getTeamName());
         teamInputDto1 = new TeamInputDto("Kitchen", true);
         teamInputDto2 = new TeamInputDto("Kitchen", false);
         teamOutputDto1 = new TeamOutputDto("Kitchen", true);
         teamOutputDto2 = new TeamOutputDto("Kitchen", false);
-        teamOutputDtoDetails1 = new TeamOutputDtoDetails("Kitchen", true, employeeNames );
+        teamOutputDtoDetails1 = new TeamOutputDtoDetails("Kitchen", true, employeesData, rosterData);
     }
 
     @AfterEach
@@ -207,7 +212,7 @@ class TeamServiceTest {
         List<TeamOutputDto> actualTeams = new ArrayList<>();
         actualTeamDtos.forEach(actualTeams::add);
 
-        // Assert
+//        Assert
         assertNotNull(actualTeams);
         assertEquals(expectedTeams.size(), actualTeams.size());
 
@@ -230,16 +235,18 @@ class TeamServiceTest {
         when(teamRepository.findById(team1.getTeamName())).thenReturn(Optional.of(team1));
         List<Employee> employees1 = Collections.singletonList(emp1);
         when(employeeRepository.findAllByTeam(team1)).thenReturn(employees1);
-//        List<Roster> rosters1 = Collections.singletonList(roster);
-//        when(rosterRepository.findAllByTeam(team1)).thenReturn(rosters1);
-//
-        // Act
+        List<Roster> rosters1 = Collections.singletonList(roster);
+        when(rosterRepository.findAllByTeam(team1)).thenReturn(rosters1);
+
+
+//       Act
         TeamOutputDtoDetails actual = teamService.getTeam(team1.getTeamName());
-//
-//        // Assert
+
+//        Assert
         assertEquals(teamOutputDtoDetails1.getTeamName(), actual.getTeamName());
         assertEquals(teamOutputDtoDetails1.getIsActive(), actual.getIsActive());
-        assertEquals(teamOutputDtoDetails1.getEmployeeNames().size(), actual.getEmployeeNames().size());
+        assertEquals(teamOutputDtoDetails1.getEmployeesData().size(), actual.getEmployeesData().size());
+        assertEquals(teamOutputDtoDetails1.getRosterData().size(), actual.getRosterData().size());
 //
 //        assertEquals(teamOutputDtoDetails1.getEmployees(), actual.getEmployees());
 //        System.out.println(teamOutputDtoDetails1.getRosters());
