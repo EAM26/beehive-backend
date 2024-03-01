@@ -1,5 +1,6 @@
 package nl.novi.beehivebackend.controllers;
 
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import nl.novi.beehivebackend.dtos.input.RosterInputDto;
 import nl.novi.beehivebackend.dtos.output.RosterNameOutputDto;
@@ -34,6 +35,7 @@ public class RosterController {
         return new ResponseEntity<>(rosterService.getAllRosters(), HttpStatus.OK);
     }
 
+    @Transactional
     @GetMapping("/{id}")
     public ResponseEntity<RosterOutputDto> getRoster(@PathVariable Long id) {
         return new ResponseEntity<>(rosterService.getSingleRoster(id), HttpStatus.OK);
