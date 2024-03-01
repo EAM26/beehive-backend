@@ -40,8 +40,8 @@ public class User {
     private Employee employee;
 
 
-    @OneToOne(mappedBy = "user")
-    private ImageData imageData;
+//    @OneToOne(mappedBy = "user")
+//    private ImageData imageData;
     public void addAuthority(Authority authority) {
         this.authorities.add(authority);
     }

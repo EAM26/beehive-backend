@@ -21,7 +21,11 @@ public class ImageData {
     @Lob
     private byte[] imageData;
 
+//    @OneToOne
+//    @JoinColumn(name  = "user_id", referencedColumnName = "username")
+//    private User user;
+
     @OneToOne
-    @JoinColumn(name  = "user_id", referencedColumnName = "username")
-    private User user;
+    @JoinColumn(name  = "employee_id", referencedColumnName = "id")
+    private Employee employee;
 }
