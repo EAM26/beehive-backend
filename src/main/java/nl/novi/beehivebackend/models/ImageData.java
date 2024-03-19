@@ -1,5 +1,6 @@
 package nl.novi.beehivebackend.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -21,7 +22,12 @@ public class ImageData {
     @Lob
     private byte[] imageData;
 
+//    @OneToOne
+//    @JoinColumn(name  = "user_id", referencedColumnName = "username")
+//    private User user;
+
+    @JsonIgnore
     @OneToOne
-    @JoinColumn(name  = "user_id", referencedColumnName = "username")
-    private User user;
+    @JoinColumn(name  = "employee_id", referencedColumnName = "id")
+    private Employee employee;
 }

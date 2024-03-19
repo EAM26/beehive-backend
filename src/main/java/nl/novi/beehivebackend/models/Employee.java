@@ -69,6 +69,10 @@ public class Employee {
     @JsonIgnore
     private List<Absence> absences;
 
+
+    @OneToOne(mappedBy = "employee")
+    private ImageData imageData;
+
     public Employee() {
 
     }

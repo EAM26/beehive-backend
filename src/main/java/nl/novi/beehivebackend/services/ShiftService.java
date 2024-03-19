@@ -1,5 +1,6 @@
 package nl.novi.beehivebackend.services;
 
+import jakarta.transaction.Transactional;
 import nl.novi.beehivebackend.dtos.input.ShiftInputDto;
 import nl.novi.beehivebackend.dtos.output.ShiftOutputDto;
 import nl.novi.beehivebackend.exceptions.BadRequestException;
@@ -50,6 +51,7 @@ public class ShiftService {
         return shiftOutputDtos;
     }
 
+    @Transactional
     public ShiftOutputDto getShift(Long id) {
         Shift shift = shiftRepository.findById(id).orElseThrow(() -> new RecordNotFoundException("No shift found with id: " + id));
         return transferShiftToShiftOutputDto(shift);

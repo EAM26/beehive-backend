@@ -1,5 +1,6 @@
 package nl.novi.beehivebackend.controllers;
 
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import nl.novi.beehivebackend.dtos.input.EmployeeInputDto;
 import nl.novi.beehivebackend.dtos.output.EmployeeOutputDto;
@@ -43,6 +44,7 @@ public class EmployeeController {
         return new ResponseEntity<>(employeeService.getSingleEmployee(id), HttpStatus.OK);
     }
 
+    @Transactional
     @GetMapping("/shift/{id}")
     public ResponseEntity<Iterable<EmployeeOutputDto>> getAvailableEmployees(@PathVariable Long id) {
         return new ResponseEntity<>(employeeService.getAvailableEmployees(id), HttpStatus.OK);
