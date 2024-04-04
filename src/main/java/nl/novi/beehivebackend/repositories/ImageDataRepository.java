@@ -10,7 +10,7 @@ import java.util.Optional;
 
 public interface ImageDataRepository extends JpaRepository<ImageData, Long> {
 
-
+    void deleteByEmployeeId(Long id);
     Optional<ImageData> findByEmployee(Employee employee);
 
 }
