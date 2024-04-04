@@ -141,6 +141,11 @@ public class EmployeeService {
         return transferEmployeeToEmployeeOutputDto(employee);
     }
 
+    public void deleteEmployee(Long id) {
+        Employee employee = employeeRepository.findById(id).orElseThrow(() -> new RecordNotFoundException("No employee found with id:  " + id));
+        employeeRepository.delete(employee);
+    }
+
 
 
     private User getUser(EmployeeInputDto employeeInputDto) {
@@ -151,6 +156,8 @@ public class EmployeeService {
     private Team getTeam(EmployeeInputDto employeeInputDto) {
         return teamRepository.findById(employeeInputDto.getTeamName()).orElseThrow(() -> new RecordNotFoundException("No team found with id: " + employeeInputDto.getTeamName()));
     }
+
+
 
 
 
@@ -220,6 +227,8 @@ public class EmployeeService {
         user.setEmployee(employee);
         return employee;
     }
+
+
 
 
 }
