@@ -75,14 +75,7 @@ public class EmployeeService {
         if(shiftService.shiftToAbsenceOverlap(shift.getStartShift(), employee) || shiftService.shiftToAbsenceOverlap(shift.getEndShift(), employee)) {
             return true;
         }
-//        shiftToAbsenceOverlap(shiftInputDto.getStartShift(), employee) || shiftToAbsenceOverlap(shiftInputDto.getEndShift(), employee)
-//        List<Absence> employeeAbsences = absenceRepository.findByEmployeeId(employee.getId());
-//        if(employeeAbsences.isEmpty()) {
-//            return false;
-//        }
-//        for (Absence absence: employeeAbsences) {
-//
-//        }
+
         return false;
     }
 
@@ -193,9 +186,7 @@ public class EmployeeService {
         employeeOutputDto.setPhoneNumber(employee.getPhoneNumber());
         employeeOutputDto.setIsActive(employee.getIsActive());
         employeeOutputDto.setUsername(employee.getUser().getUsername());
-        if(employee.getImageData() != null) {
-            employeeOutputDto.setImageId(employee.getImageData().getId());
-        }
+
 
 
         return employeeOutputDto;
