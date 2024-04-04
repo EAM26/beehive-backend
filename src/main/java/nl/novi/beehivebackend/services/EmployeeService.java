@@ -67,7 +67,7 @@ public class EmployeeService {
 
         List<EmployeeOutputDto> availableEmployees = new ArrayList<>();
         for (Employee employee : employeeRepository.findAllByTeam(shift.getTeam())) {
-            if(!isOverlapShift(shift, employee) && !isOverlapAbsence(shift, employee)) {
+            if(employee.getIsActive() && !isOverlapShift(shift, employee) && !isOverlapAbsence(shift, employee)) {
                 availableEmployees.add(transferEmployeeForRoster(employee));
             }
         }
