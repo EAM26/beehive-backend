@@ -193,6 +193,10 @@ public class EmployeeService {
         employeeOutputDto.setPhoneNumber(employee.getPhoneNumber());
         employeeOutputDto.setIsActive(employee.getIsActive());
         employeeOutputDto.setUsername(employee.getUser().getUsername());
+        if(employee.getImageData() != null) {
+            employeeOutputDto.setImageId(employee.getImageData().getId());
+        }
+
 
         return employeeOutputDto;
     }
