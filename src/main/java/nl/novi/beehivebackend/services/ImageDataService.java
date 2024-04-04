@@ -31,15 +31,6 @@ public class ImageDataService {
 @Transactional
     public String uploadImage(MultipartFile multipartFile, Long employeeId) throws IOException {
         Employee employee = employeeRepository.findById(employeeId).orElseThrow(() -> new RecordNotFoundException("No user found with name: " + employeeId));
-//        ImageData imgData;
-//        if (imageDataRepository.existsByUser(user)) {
-//            imgData = imageDataRepository.findByUser(user).orElseThrow(() -> new RecordNotFoundException("No image found with username: " + user.getUsername()));
-//
-//        } else {
-//            imgData = new ImageData();
-//        }
-
-
         ImageData imgData;
         Optional<ImageData> existingImageDataOpt = imageDataRepository.findByEmployee(employee);
         if(existingImageDataOpt.isPresent()) {
@@ -63,15 +54,19 @@ public class ImageDataService {
     }
 
     public byte[] downloadImage(Long employeeId) {
-//        User user = userRepository.findById(username).orElseThrow(() -> new RecordNotFoundException("No user found with name: " + username));
         Employee employee = employeeRepository.findById(employeeId).orElseThrow(() -> new RecordNotFoundException("No employee found with id: " + employeeId));
-        ImageData imageData = employee.getImageData();
-        return ImageUtil.decompressImage(imageData.getImageData());
+//        ImageData imageData = imageDataRepository.findByEmployee(employee).orElseThrow(() -> new RecordNotFoundException("No image found for employee with id: " + employeeId));
+        ImageData imageData;
+        if(employee.getImageData() != null) {
+            imageData = employee.getImageData();
+            return ImageUtil.decompressImage(imageData.getImageData());
+        }
+        throw new RecordNotFoundException("No image found for employee with id: " + employeeId);
 
     }
-//    public ImageData downloadImage2(String username) {
-//       User user =  userRepository.findByUsername(username);
-//       ImageData imageData = user.getImageData();
-//       return imageData;
-//    }
+
+    public void deleteImage(Long id) {
+        ImageData imageData = imageDataRepository.findById(id).orElseThrow(() -> new RecordNotFoundException("No image found with id: " + id));
+        imageDataRepository.delete(imageData);
+    }
 }

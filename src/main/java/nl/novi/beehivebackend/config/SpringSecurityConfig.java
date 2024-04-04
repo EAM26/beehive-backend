@@ -76,9 +76,10 @@ public class SpringSecurityConfig {
 //              ******************************************************
 
 
-//                UP- DOWNLOAD REQUESTS
+//                IMAGE REQUESTS
                 .requestMatchers(HttpMethod.GET, "/image/{username}").hasAnyRole("ADMIN", "MANAGER")
                 .requestMatchers(HttpMethod.POST, "/image").hasAnyRole("ADMIN", "MANAGER")
+                .requestMatchers(HttpMethod.DELETE, "/image/{id}").hasAnyRole("ADMIN", "MANAGER")
 //              ******************************************************
 
 
