@@ -38,7 +38,6 @@ public class EmployeeController {
     }
 
 
-    // TODO: 28-6-2023 Add check to only see self
     @GetMapping("/{id}")
     public ResponseEntity<EmployeeOutputDto> getSingleEmployee(@PathVariable Long id) {
         return new ResponseEntity<>(employeeService.getSingleEmployee(id), HttpStatus.OK);
@@ -70,11 +69,11 @@ public class EmployeeController {
         return new ResponseEntity<>(employeeService.updateEmployee(employeeInputDto, id), HttpStatus.ACCEPTED);
     }
 
-//    @DeleteMapping("/{id}")
-//    public ResponseEntity<Object> deleteEmployee(@PathVariable Long id) {
-//        employeeService.deleteEmployee(id);
-//        return ResponseEntity.noContent().build();
-//    }
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Object> deleteEmployee(@PathVariable Long id) {
+        employeeService.deleteEmployee(id);
+        return ResponseEntity.noContent().build();
+    }
 
 
 }

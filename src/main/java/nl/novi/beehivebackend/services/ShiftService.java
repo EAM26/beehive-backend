@@ -35,6 +35,7 @@ public class ShiftService {
         this.rosterRepository = rosterRepository;
     }
 
+    @Transactional
     public Iterable<ShiftOutputDto> getAllShifts() {
         ArrayList<ShiftOutputDto> shiftOutputDtos = new ArrayList<>();
         for (Shift shift : shiftRepository.findAll()) {
@@ -43,6 +44,7 @@ public class ShiftService {
         return shiftOutputDtos;
     }
 
+    @Transactional
     public Iterable<ShiftOutputDto> getAllShiftsByRoster(Long id) {
         ArrayList<ShiftOutputDto> shiftOutputDtos = new ArrayList<>();
         for (Shift shift : shiftRepository.findByRosterId(id)) {
@@ -75,9 +77,6 @@ public class ShiftService {
     }
 
 
-
-
-
     private Shift shiftManager(ShiftInputDto shiftInputDto, Shift shift) {
 //        check shift duration
         isValidShiftDuration(shiftInputDto);
@@ -95,7 +94,7 @@ public class ShiftService {
 //        Get employee and check match team
         Employee employee = employeeRepository.findById(shiftInputDto.getEmployeeId()).orElseThrow(() -> new RecordNotFoundException("No employee found with id: " + shiftInputDto.getEmployeeId()));
         isEmployeeActive(employee);
-        if(!isMatchEmployeeTeam(employee, team)) {
+        if (!isMatchEmployeeTeam(employee, team)) {
             throw new BadRequestException("Employee and team are no match");
         }
 
@@ -207,8 +206,8 @@ public class ShiftService {
         int weekNumber = shift.getWeekNumber();
         int year = shift.getYear();
         Team team = shift.getTeam();
-        for(Roster roster: rosterRepository.findAll()) {
-            if(weekNumber == roster.getWeek() && year == roster.getYear() && team.getTeamName().equals(roster.getTeam().getTeamName())) {
+        for (Roster roster : rosterRepository.findAll()) {
+            if (weekNumber == roster.getWeek() && year == roster.getYear() && team.getTeamName().equals(roster.getTeam().getTeamName())) {
                 return roster;
             }
         }

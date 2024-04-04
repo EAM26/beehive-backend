@@ -76,9 +76,10 @@ public class SpringSecurityConfig {
 //              ******************************************************
 
 
-//                UP- DOWNLOAD REQUESTS
+//                IMAGE REQUESTS
                 .requestMatchers(HttpMethod.GET, "/image/{username}").hasAnyRole("ADMIN", "MANAGER")
                 .requestMatchers(HttpMethod.POST, "/image").hasAnyRole("ADMIN", "MANAGER")
+                .requestMatchers(HttpMethod.DELETE, "/image/{id}").hasAnyRole("ADMIN", "MANAGER")
 //              ******************************************************
 
 
@@ -138,6 +139,7 @@ public class SpringSecurityConfig {
                 .requestMatchers(HttpMethod.GET, "/employees/shift/{id}").hasAnyRole("ADMIN", "MANAGER")
                 .requestMatchers(HttpMethod.POST, "/employees").hasAnyRole("ADMIN", "MANAGER")
                 .requestMatchers(HttpMethod.PUT, "/employees/{id}").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.DELETE, "/employees/{id}").hasRole("ADMIN")
 
 
                 .anyRequest().denyAll()

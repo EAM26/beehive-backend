@@ -1,5 +1,6 @@
 package nl.novi.beehivebackend.services;
 
+import jakarta.transaction.Transactional;
 import nl.novi.beehivebackend.dtos.input.TeamInputDto;
 import nl.novi.beehivebackend.dtos.output.TeamOutputDtoDetails;
 import nl.novi.beehivebackend.dtos.output.TeamOutputDto;
@@ -33,6 +34,7 @@ public class TeamService {
         this.rosterService = rosterService;
     }
 
+
     public Iterable<TeamOutputDto> getAllTeams() {
         List<TeamOutputDto> teamOutputDtoEmpIds = new ArrayList<>();
         for (Team team : teamRepository.findAll()) {
@@ -52,6 +54,7 @@ public class TeamService {
         return teamOutputDtos;
     }
 
+    @Transactional
     public TeamOutputDtoDetails getTeam(String id) {
         Team team = teamRepository.findById(id).orElseThrow(() -> new RecordNotFoundException("No Team found with name: " + id));
         return transferTeamToTeamOutputDtoDetails(team);

@@ -1,6 +1,7 @@
 package nl.novi.beehivebackend.services;
 
 
+import jakarta.transaction.Transactional;
 import nl.novi.beehivebackend.dtos.input.EmployeeInputDto;
 import nl.novi.beehivebackend.exceptions.BadRequestException;
 import nl.novi.beehivebackend.exceptions.IsNotUniqueException;
@@ -25,14 +26,16 @@ public class EmployeeService {
     private final ShiftRepository shiftRepository;
     private final AbsenceRepository absenceRepository;
     private final ShiftService shiftService;
+    private final ImageDataRepository imageDataRepository;
 
-    public EmployeeService(EmployeeRepository employeeRepository, TeamRepository teamRepository, UserRepository userRepository, ShiftRepository shiftRepository, AbsenceRepository absenceRepository, ShiftService shiftService) {
+    public EmployeeService(EmployeeRepository employeeRepository, TeamRepository teamRepository, UserRepository userRepository, ShiftRepository shiftRepository, AbsenceRepository absenceRepository, ShiftService shiftService, ImageDataRepository imageDataRepository) {
         this.employeeRepository = employeeRepository;
         this.teamRepository = teamRepository;
         this.userRepository = userRepository;
         this.shiftRepository = shiftRepository;
         this.absenceRepository = absenceRepository;
         this.shiftService = shiftService;
+        this.imageDataRepository = imageDataRepository;
     }
 
 
@@ -64,7 +67,7 @@ public class EmployeeService {
 
         List<EmployeeOutputDto> availableEmployees = new ArrayList<>();
         for (Employee employee : employeeRepository.findAllByTeam(shift.getTeam())) {
-            if(!isOverlapShift(shift, employee) && !isOverlapAbsence(shift, employee)) {
+            if(employee.getIsActive() && !isOverlapShift(shift, employee) && !isOverlapAbsence(shift, employee)) {
                 availableEmployees.add(transferEmployeeForRoster(employee));
             }
         }
@@ -75,14 +78,7 @@ public class EmployeeService {
         if(shiftService.shiftToAbsenceOverlap(shift.getStartShift(), employee) || shiftService.shiftToAbsenceOverlap(shift.getEndShift(), employee)) {
             return true;
         }
-//        shiftToAbsenceOverlap(shiftInputDto.getStartShift(), employee) || shiftToAbsenceOverlap(shiftInputDto.getEndShift(), employee)
-//        List<Absence> employeeAbsences = absenceRepository.findByEmployeeId(employee.getId());
-//        if(employeeAbsences.isEmpty()) {
-//            return false;
-//        }
-//        for (Absence absence: employeeAbsences) {
-//
-//        }
+
         return false;
     }
 
@@ -148,6 +144,39 @@ public class EmployeeService {
         return transferEmployeeToEmployeeOutputDto(employee);
     }
 
+    @Transactional
+    public void deleteEmployee(Long id) {
+        Employee employee = employeeRepository.findById(id).orElseThrow(() -> new RecordNotFoundException("No employee found with id:  " + id));
+
+//        delete absences
+        List<Long> absencesList = getAbsencesPerEmployee(id);
+        for(Long absenceId: absencesList) {
+            System.out.println("Absence id: " + absenceId);
+            absenceRepository.deleteById(absenceId);
+        }
+
+//        delete shifts
+        List<Long> shiftsList = getShiftsPerEmployee(id);
+        for(Long shiftId: shiftsList) {
+            System.out.println("Shift id: " + shiftId);
+            shiftRepository.deleteById(shiftId);
+        }
+
+
+//        delete Image
+        imageDataRepository.deleteByEmployeeId(id);
+
+        employeeRepository.delete(employee);
+
+
+
+//        try {
+//            imageDataRepository.deleteByEm;
+//        } catch () {
+//
+//        }
+    }
+
 
 
     private User getUser(EmployeeInputDto employeeInputDto) {
@@ -157,6 +186,22 @@ public class EmployeeService {
 
     private Team getTeam(EmployeeInputDto employeeInputDto) {
         return teamRepository.findById(employeeInputDto.getTeamName()).orElseThrow(() -> new RecordNotFoundException("No team found with id: " + employeeInputDto.getTeamName()));
+    }
+
+    private List<Long> getAbsencesPerEmployee(Long id) {
+        List<Long> absencesList = new ArrayList<>();
+        for (Absence absence: absenceRepository.findByEmployeeId(id)) {
+            absencesList.add(absence.getId());
+        }
+        return absencesList;
+    }
+
+    private List<Long> getShiftsPerEmployee(Long id) {
+        List<Long> shiftsList = new ArrayList<>();
+        for (Shift shift: shiftRepository.findByEmployeeId(id)) {
+            shiftsList.add(shift.getId());
+        }
+        return shiftsList;
     }
 
 
@@ -175,6 +220,10 @@ public class EmployeeService {
         employeeOutputDto.setShifts(shiftSorter(employee.getShifts()));
         employeeOutputDto.setAbsences(absenceSorter(employee.getAbsences()));
         employeeOutputDto.setUsername(employee.getUser().getUsername());
+        if(employee.getImageData() != null) {
+            employeeOutputDto.setImageId(employee.getImageData().getId());
+        }
+
 
         return employeeOutputDto;
     }
@@ -189,6 +238,8 @@ public class EmployeeService {
         employeeOutputDto.setPhoneNumber(employee.getPhoneNumber());
         employeeOutputDto.setIsActive(employee.getIsActive());
         employeeOutputDto.setUsername(employee.getUser().getUsername());
+
+
 
         return employeeOutputDto;
     }
@@ -221,6 +272,8 @@ public class EmployeeService {
         user.setEmployee(employee);
         return employee;
     }
+
+
 
 
 }

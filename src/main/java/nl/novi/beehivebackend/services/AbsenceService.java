@@ -1,5 +1,6 @@
 package nl.novi.beehivebackend.services;
 
+import jakarta.transaction.Transactional;
 import nl.novi.beehivebackend.dtos.input.AbsenceInputDto;
 import nl.novi.beehivebackend.dtos.output.AbsenceOutputDto;
 import nl.novi.beehivebackend.exceptions.BadRequestException;
@@ -30,6 +31,7 @@ public class AbsenceService {
         this.shiftRepository = shiftRepository;
     }
 
+    @Transactional
     public Iterable<AbsenceOutputDto> getAllAbsences() {
         List<AbsenceOutputDto> absenceOutputDtos = new ArrayList<>();
         for (Absence absence : absenceRepository.findAll()) {
@@ -38,6 +40,7 @@ public class AbsenceService {
         return absenceOutputDtos;
     }
 
+    @Transactional
     public AbsenceOutputDto getSingleAbsence(Long id) {
         Absence absence = absenceRepository.findById(id).orElseThrow(() -> new RecordNotFoundException("No absence found with id: " + id));
         return transferAbsenceToAbsenceOutputDto(absence);
