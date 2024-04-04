@@ -25,5 +25,6 @@ public class EmployeeOutputDto {
     private List<Shift> shifts;
     private List<Absence> absences;
     private String username;
+    private Long imageId;
 
 }

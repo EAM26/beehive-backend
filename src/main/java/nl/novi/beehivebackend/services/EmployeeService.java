@@ -175,6 +175,10 @@ public class EmployeeService {
         employeeOutputDto.setShifts(shiftSorter(employee.getShifts()));
         employeeOutputDto.setAbsences(absenceSorter(employee.getAbsences()));
         employeeOutputDto.setUsername(employee.getUser().getUsername());
+        if(employee.getImageData() != null) {
+            employeeOutputDto.setImageId(employee.getImageData().getId());
+        }
+
 
         return employeeOutputDto;
     }

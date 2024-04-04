@@ -38,7 +38,6 @@ public class EmployeeController {
     }
 
 
-    // TODO: 28-6-2023 Add check to only see self
     @GetMapping("/{id}")
     public ResponseEntity<EmployeeOutputDto> getSingleEmployee(@PathVariable Long id) {
         return new ResponseEntity<>(employeeService.getSingleEmployee(id), HttpStatus.OK);
