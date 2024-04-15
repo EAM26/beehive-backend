@@ -111,6 +111,9 @@ public class EmployeeService {
 
 //        get Team
         Team team = getTeam(employeeInputDto);
+        if(!team.getIsActive()) {
+            throw new BadRequestException("Team is not active.");
+        }
 
 
         Employee employee = new Employee();
