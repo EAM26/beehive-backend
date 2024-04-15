@@ -85,7 +85,9 @@ public class RosterService {
     private Roster transferInputDtoToRoster(RosterInputDto rosterInputDto) {
         Roster roster = new Roster();
         Team team = teamRepository.findById(rosterInputDto.getTeamName()).orElseThrow(()->new BadRequestException("No team found with that name."));
-
+        if(!team.getIsActive()) {
+            throw new BadRequestException("Team is not active.");
+        }
         if (!isValidWeek(rosterInputDto.getWeek(), rosterInputDto.getYear())) {
             throw new BadRequestException("Week and year combination doesn't exist.");
 
