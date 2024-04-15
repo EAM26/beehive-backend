@@ -96,9 +96,9 @@ public class UserService {
 
         User userToUpdate = userRepository.findById(username).orElseThrow(() -> new RecordNotFoundException("User with name " + username + " doesn't exist."));
         User currentUser = userRepository.findById(getCurrentUserId()).orElseThrow(() -> new RecordNotFoundException("No user found with name: " + username));
-//        User currentUser = userRepository.findByUsername(getCurrentUserId());
 
-//        username is fixed once set
+
+//        Check if username is not changed
         if (!username.equals(userInputDto.getUsername())) {
             throw new AccessDeniedException("Not allowed to change username.");
         }

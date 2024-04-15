@@ -165,7 +165,7 @@ public class ShiftService {
     }
 
 
-    //    Checks if shift < 24h and end of shift is after start
+    //    Checks if shift < 24h and end if shift is after start
     public boolean isValidShiftDuration(ShiftInputDto shiftInputDto) {
         if (shiftInputDto.getStartShift() == null || shiftInputDto.getEndShift() == null) {
             throw new BadRequestException("Start and End of shift are required");
@@ -188,15 +188,9 @@ public class ShiftService {
         shift.setEndShift(shiftInputDto.getEndShift());
         shift.setTeam(team);
         shift.setEmployee(employee);
-
-//        if (employee != null) {
-//            shift.setEmployee(employee);
-//        }
-
         shift.setWeekNumber(extractWeekNumber(shiftInputDto));
         shift.setYear(extractYear(shiftInputDto));
         Roster roster = rosterManager(shift);
-        rosterRepository.save(roster);
         shift.setRoster(roster);
 
         return shiftRepository.save(shift);

@@ -33,7 +33,7 @@ public class AuthenticationController {
 
 
     /*
-        Deze methode geeft de principal (basis user gegevens) terug van de ingelogde gebruiker
+        This method returns the principal (basic user data) of the logged in user
     */
     @GetMapping(value = "/authenticated")
     public ResponseEntity<Object> authenticated(Authentication authentication, Principal principal) {
@@ -41,7 +41,7 @@ public class AuthenticationController {
     }
 
     /*
-    Deze methode geeft het JWT token terug wanneer de gebruiker de juiste inloggegevens op geeft.
+    This method returns the JWT token when the user provides the correct login details.
      */
     @PostMapping(value = "/authenticate")
     public ResponseEntity<?> createAuthenticationToken(@RequestBody AuthenticationRequest authenticationRequest)  {
