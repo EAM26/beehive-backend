@@ -52,6 +52,7 @@ public class EmployeeService {
         return transferEmployeeToEmployeeOutputDto(employee);
     }
 
+    @Transactional
     public Iterable<EmployeeOutputDto> getAllEmployees(String teamName) {
         Team team = teamRepository.findById(teamName).orElseThrow(() -> new BadRequestException("No team with name: " + teamName));
 
@@ -165,16 +166,9 @@ public class EmployeeService {
 
 //        delete Image
         imageDataRepository.deleteByEmployeeId(id);
-
         employeeRepository.delete(employee);
 
 
-
-//        try {
-//            imageDataRepository.deleteByEm;
-//        } catch () {
-//
-//        }
     }
 
 
