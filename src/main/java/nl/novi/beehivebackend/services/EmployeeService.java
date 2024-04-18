@@ -125,9 +125,11 @@ public class EmployeeService {
         Employee employee = employeeRepository.findById(empId).orElseThrow(() -> new RecordNotFoundException("No employee found with id: " + empId) );
 
         User orignalUser = employee.getUser();
+
         User userToTest = getUser(employeeInputDto);
 
 //        if user is changed, check is user already has employee
+
         if(orignalUser != userToTest && userToTest.getEmployee()!= null) {
             throw new BadRequestException("User already has employee id.");
         }
@@ -144,7 +146,7 @@ public class EmployeeService {
             throw new BadRequestException("Not allowed to change team");
         }
 
-        employeeRepository.save(transferEmployeeInputDtoToEmployee(employeeInputDto, employee, orignalUser, employee.getTeam()));
+        employeeRepository.save(transferEmployeeInputDtoToEmployee(employeeInputDto, employee, userToTest, employee.getTeam()));
         return transferEmployeeToEmployeeOutputDto(employee);
     }
 
