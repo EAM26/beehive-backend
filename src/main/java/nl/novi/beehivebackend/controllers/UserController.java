@@ -79,7 +79,11 @@ public class UserController {
         return new ResponseEntity<>(userOutputDto.getUsername() + " updated.", HttpStatus.OK);
     }
 
-
+    @DeleteMapping("/{username}")
+    public ResponseEntity<Object> deleteUser(@PathVariable String  username) {
+        userService.deleteUser(username);
+        return ResponseEntity.noContent().build();
+    }
 
 
 }

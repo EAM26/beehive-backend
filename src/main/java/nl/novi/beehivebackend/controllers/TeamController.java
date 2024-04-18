@@ -57,11 +57,6 @@ public class TeamController {
         TeamOutputDto teamOutputDto = teamService.updateTeam(teamName, teamInputDto);
         return new ResponseEntity<>(teamOutputDto.getTeamName() + " updated.", HttpStatus.OK);
     }
-//
-//    @DeleteMapping("/{id}")
-//    public ResponseEntity<Object> deleteTeam(@PathVariable String teamName) {
-//        teamService.deleteTeam(teamName);
-//        return ResponseEntity.noContent().build();
-//    }
+
 
 }
