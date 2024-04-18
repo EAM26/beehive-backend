@@ -115,7 +115,13 @@ public class UserService {
         }
     }
 
-
+    public void deleteUser(String username) {
+        User user = userRepository.findById(username).orElseThrow(() -> new RecordNotFoundException("No user found with name " + username));
+        if(userHasEmployee(user)) {
+            throw new BadRequestException("User has employee data.");
+        }
+        userRepository.delete(user);
+    }
 
 //    Helper methods
 
@@ -208,7 +214,7 @@ public class UserService {
     }
 
     private User dtoToUserAsSelf(User currentUser, UserInputDto userInputDto) {
-        if(!currentUser.getUsername().equals(userInputDto.getUsername())) {
+        if (!currentUser.getUsername().equals(userInputDto.getUsername())) {
             throw new BadRequestException("Not allowed to change user name.");
         }
 
@@ -268,8 +274,6 @@ public class UserService {
     private boolean isSelf(User user) {
         return (user.getUsername().equals(getCurrentUserId()));
     }
-
-
 
 
     private boolean userHasEmployee(User user) {

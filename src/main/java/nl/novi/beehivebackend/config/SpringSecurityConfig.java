@@ -63,33 +63,32 @@ public class SpringSecurityConfig {
                 .requestMatchers(HttpMethod.GET, "/users/self").authenticated()
                 .requestMatchers(HttpMethod.GET, "/users/{username}").hasAnyRole("ADMIN", "MANAGER")
 
-
                 .requestMatchers(HttpMethod.POST, "/users").hasRole("ADMIN")
-                .requestMatchers(HttpMethod.POST, "/users/**").hasRole("ADMIN")
 
                 .requestMatchers(HttpMethod.PUT, "/users/self").authenticated()
                 .requestMatchers(HttpMethod.PUT, "/users/{username}").hasRole("ADMIN")
-                .requestMatchers(HttpMethod.PUT, "/users/auth/{username}").hasRole("ADMIN")
-                .requestMatchers(HttpMethod.PUT, "/users/**").hasRole("ADMIN")
-                .requestMatchers("/users/**").hasRole("ADMIN")
+
+                .requestMatchers(HttpMethod.DELETE, "/users/{username}").hasRole("ADMIN")
 
 //              ******************************************************
 
 
 //                IMAGE REQUESTS
                 .requestMatchers(HttpMethod.GET, "/image/{username}").hasAnyRole("ADMIN", "MANAGER")
+
                 .requestMatchers(HttpMethod.POST, "/image").hasAnyRole("ADMIN", "MANAGER")
+
                 .requestMatchers(HttpMethod.DELETE, "/image/{id}").hasAnyRole("ADMIN", "MANAGER")
+
 //              ******************************************************
 
 
 //                TEAM REQUESTS
                 .requestMatchers(HttpMethod.GET, "/teams").hasRole("ADMIN")
-//                .requestMatchers(HttpMethod.GET, "/teams/rosters/{teamName}").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.GET, "/teams/{teamName}").hasRole("ADMIN")
-//                .requestMatchers(HttpMethod.GET, "/teams/**").hasRole("ADMIN")
 
                 .requestMatchers(HttpMethod.POST, "/teams").hasRole("ADMIN")
+
                 .requestMatchers(HttpMethod.PUT, "/teams/{teamName}").hasRole("ADMIN")
 
 //              ******************************************************
