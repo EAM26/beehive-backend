@@ -40,6 +40,7 @@ public class AuthenticationController {
         return ResponseEntity.ok().body(principal);
     }
 
+
     /*
     This method returns the JWT token when the user provides the correct login details.
      */

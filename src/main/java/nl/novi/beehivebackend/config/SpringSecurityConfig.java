@@ -74,7 +74,7 @@ public class SpringSecurityConfig {
 
 
 //                IMAGE REQUESTS
-                .requestMatchers(HttpMethod.GET, "/image/{username}").hasAnyRole("ADMIN", "MANAGER")
+                .requestMatchers(HttpMethod.GET, "/image/{employeeId}").hasAnyRole("ADMIN", "MANAGER")
 
                 .requestMatchers(HttpMethod.POST, "/image").hasAnyRole("ADMIN", "MANAGER")
 
@@ -84,8 +84,8 @@ public class SpringSecurityConfig {
 
 
 //                TEAM REQUESTS
-                .requestMatchers(HttpMethod.GET, "/teams").hasRole("ADMIN")
-                .requestMatchers(HttpMethod.GET, "/teams/{teamName}").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.GET, "/teams").hasAnyRole("ADMIN", "MANAGER")
+                .requestMatchers(HttpMethod.GET, "/teams/{teamName}").hasAnyRole("ADMIN", "MANAGER")
 
                 .requestMatchers(HttpMethod.POST, "/teams").hasRole("ADMIN")
 
@@ -112,7 +112,6 @@ public class SpringSecurityConfig {
 
                 .requestMatchers(HttpMethod.GET, "/absences").hasAnyRole("ADMIN", "MANAGER")
                 .requestMatchers(HttpMethod.GET, "/absences/{id}").hasAnyRole("ADMIN", "MANAGER")
-                .requestMatchers(HttpMethod.GET, "/absences/**").hasAnyRole("ADMIN", "MANAGER")
 
                 .requestMatchers(HttpMethod.POST, "/absences").hasAnyRole("ADMIN", "MANAGER")
 
@@ -124,7 +123,9 @@ public class SpringSecurityConfig {
 
                 .requestMatchers(HttpMethod.GET, "/rosters").hasAnyRole("ADMIN", "MANAGER")
                 .requestMatchers(HttpMethod.GET, "/rosters/{id}").hasAnyRole("ADMIN", "MANAGER")
+
                 .requestMatchers(HttpMethod.POST, "/rosters").hasAnyRole("ADMIN", "MANAGER")
+
                 .requestMatchers(HttpMethod.DELETE, "/rosters/{id}").hasAnyRole("ADMIN", "MANAGER")
 
 
@@ -133,11 +134,13 @@ public class SpringSecurityConfig {
 
 //                Employee requests
                 .requestMatchers(HttpMethod.GET, "/employees").hasAnyRole("ADMIN", "MANAGER")
-//                .requestMatchers(HttpMethod.GET, "/employees/profile").authenticated()
                 .requestMatchers(HttpMethod.GET, "/employees/{id}").hasAnyRole("ADMIN", "MANAGER")
                 .requestMatchers(HttpMethod.GET, "/employees/shift/{id}").hasAnyRole("ADMIN", "MANAGER")
+
                 .requestMatchers(HttpMethod.POST, "/employees").hasAnyRole("ADMIN", "MANAGER")
+
                 .requestMatchers(HttpMethod.PUT, "/employees/{id}").hasRole("ADMIN")
+
                 .requestMatchers(HttpMethod.DELETE, "/employees/{id}").hasRole("ADMIN")
 
 
