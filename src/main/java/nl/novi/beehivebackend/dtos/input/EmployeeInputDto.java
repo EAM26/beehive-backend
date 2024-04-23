@@ -12,19 +12,19 @@ import java.time.LocalDate;
 public class EmployeeInputDto {
 
     @NotBlank(message = "First name is required.")
-    @Size(max = 20, message = "First name max 20 characters")
+    @Size(min = 2, max = 20, message = "First name between 2 and 20 characters")
     public String firstName;
 
     @Size(max = 10, message = "Preposition max 10 characters")
     public String preposition;
 
     @NotBlank(message = "Last name is required.")
-    @Size(max = 20, message = "Last name max 20 characters")
+    @Size(min = 2, max = 20, message = "Last name between 2 and 20 characters")
     public String lastName;
 
 
     @NotBlank(message = "Short name is required")
-    @Size(max = 20, message = "Short name max 20 characters")
+    @Size(min = 4, max = 20, message = "Short name between 4 and 20 characters")
     public String shortName;
 
 
@@ -32,7 +32,7 @@ public class EmployeeInputDto {
     public LocalDate dob;
 
 
-    @Pattern(regexp = "^\\d+$", message = "Phone number can only contain numbers")
+    @Pattern(regexp = "^\\d*$", message = "Phone number can only contain numbers")
     public String phoneNumber;
 
 
