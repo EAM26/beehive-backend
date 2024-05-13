@@ -64,7 +64,7 @@ VALUES ('drone', '$2a$12$3seFwZfJ/gm3E2VFHqz7g.T465Jw/IDe8.sibEOE9RsmCLzr6KUke',
 
 INSERT INTO employees (id, first_name, preposition, last_name, short_name, dob, phone_number,
                        is_active, team_name, username)
-VALUES (101, 'Jan', 'de', 'Groot', 'Jan', '1990-01-01', '1234567890', true, 'Kitchen', 'drone'),
+VALUES (101, 'Jan', 'de', 'Groot', 'JandeG', '1990-01-01', '1234567890', true, 'Kitchen', 'drone'),
        (102, 'Lotte', 'van', 'Beek', 'Lotte', '1992-05-15', '9876543210', true, 'Kitchen', 'bee'),
        (103, 'Pieter', 'van', 'Dijk', 'Pieter vD', '1985-07-20', '5555555555', true, 'Kitchen', 'queen'),
        (104, 'Emma', 'de', 'Vries', 'Emma', '1998-03-10', '1111111111', true, 'Bar', 'user104'),
@@ -73,7 +73,7 @@ VALUES (101, 'Jan', 'de', 'Groot', 'Jan', '1990-01-01', '1234567890', true, 'Kit
        (107, 'Thomas', 'van', 'Houten', 'Thomas van H', '1991-06-08', '7777777777', true, 'Bar', 'user107'),
        (108, 'Sophie', 'de', 'Lange', 'Sophie', '1997-02-14', '2222222222', false, 'Reception', 'user108'),
        (109, 'Ruben', 'van', 'Berg', 'Ruben', '1989-12-25', '6666666666', true, 'Reception', 'user109'),
-       (110, 'Eva', 'van', 'Rijn', 'Eef', '1994-04-18', '8888888888', true, 'RestaurantService', 'user110'),
+       (110, 'Eva', 'van', 'Rijn', 'EefRijn', '1994-04-18', '8888888888', true, 'RestaurantService', 'user110'),
        (111, 'Eva', 'de', 'Vries', 'evadv', '1993-07-12', '1234567890', true, 'Kitchen', 'user111'),
        (112, 'Daan', 'van der', 'Linden', 'daanvl', '1991-04-28', '9876543210', true, 'Bar', 'user112'),
        (113, 'Emma', '', 'Bakker', 'emmab', '1995-09-14', '5551234567', true, 'Bar', 'user113'),
