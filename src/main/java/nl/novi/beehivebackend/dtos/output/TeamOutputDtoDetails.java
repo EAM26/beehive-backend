@@ -23,8 +23,8 @@ public class TeamOutputDtoDetails {
     public TeamOutputDtoDetails() {
 
     }
-//    private List<EmployeeOutputDto> employeesOutputDtos;
-//    private List<RosterOutputDto> rostersOutputDtos;
+
+    private List<RosterOutputDto> rostersOutputDtos;
 
 
 }

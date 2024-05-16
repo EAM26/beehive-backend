@@ -10,8 +10,6 @@ public interface UserRepository extends JpaRepository<User, String> {
 
     List<User> findAll(Sort sort);
 
-//    User findByUsername(String username);
-
     boolean existsByEmail(String email);
 
     List<User> findAllByIsDeleted(Boolean isDeleted);
