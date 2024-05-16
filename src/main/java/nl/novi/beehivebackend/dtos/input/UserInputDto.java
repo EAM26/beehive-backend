@@ -10,7 +10,7 @@ import lombok.Setter;
 public class UserInputDto {
 
     @NotBlank(message = "User name is required.")
-    @Size(max = 20, message = "User name length max 20 characters")
+    @Size(min = 2, max = 20, message = "User name between 2 and 20 characters")
     private String username;
 
     @NotBlank(message = "Email is required.")

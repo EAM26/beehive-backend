@@ -205,7 +205,10 @@ public class ShiftService {
                 return roster;
             }
         }
-        throw new BadRequestException("No roster found for " + weekNumber + "-" + year + "-" + team.getTeamName());
+
+        Roster roster = new Roster(weekNumber, year, shift.getTeam());
+        rosterRepository.save(roster);
+        return roster;
 
     }
 

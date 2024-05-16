@@ -41,6 +41,15 @@ public class Roster {
     public Roster() {
     }
 
+    public Roster(int weekNumber, int year, Team team) {
+        this.week = weekNumber;
+        this.year = year;
+        this.team = team;
+    }
+
+    public Roster(int weekNumber, int year, String teamName) {
+    }
+
 
     public String createRosterName() {
         return (week + "-" + year + "-" + team.getTeamName());

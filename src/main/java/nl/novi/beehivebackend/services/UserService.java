@@ -117,6 +117,9 @@ public class UserService {
 
     public void deleteUser(String username) {
         User user = userRepository.findById(username).orElseThrow(() -> new RecordNotFoundException("No user found with name " + username));
+        if(isSelf(user)) {
+            throw new BadRequestException("Self delete not allowed");
+        }
         if(userHasEmployee(user)) {
             throw new BadRequestException("User has employee data.");
         }
