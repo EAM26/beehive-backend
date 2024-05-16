@@ -139,9 +139,9 @@ public class SpringSecurityConfig {
 
                 .requestMatchers(HttpMethod.POST, "/employees").hasAnyRole("ADMIN", "MANAGER")
 
-                .requestMatchers(HttpMethod.PUT, "/employees/{id}").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.PUT, "/employees/{id}").hasAnyRole("ADMIN", "MANAGER")
 
-                .requestMatchers(HttpMethod.DELETE, "/employees/{id}").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.DELETE, "/employees/{id}").hasAnyRole("ADMIN", "MANAGER")
 
 
                 .anyRequest().denyAll()
